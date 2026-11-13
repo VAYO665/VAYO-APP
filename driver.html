@@ -1,0 +1,1517 @@
+
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VAYO Driver</title>
+
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./config.js"></script>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ background:#f4f5f7;
+ font-family:Arial,sans-serif;
+ color:#202124;
+}
+header{
+ background:#171717;
+ color:white;
+ padding:18px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+}
+header a{
+ color:white;
+ text-decoration:none;
+}
+.logo{
+ font-size:24px;
+ font-weight:900;
+ color:#ffc400;
+}
+main{
+ max-width:950px;
+ margin:auto;
+ padding:15px;
+}
+.card{
+ background:white;
+ padding:18px;
+ border-radius:18px;
+ margin-bottom:14px;
+}
+.grid{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:10px;
+}
+.metric{
+ font-size:25px;
+ font-weight:bold;
+ margin-top:10px;
+}
+small{color:#777}
+button,.btn{
+ border:0;
+ border-radius:12px;
+ padding:13px 16px;
+ background:#ffc400;
+ color:#171717;
+ font-weight:bold;
+ font-size:15px;
+ cursor:pointer;
+ text-decoration:none;
+ display:inline-block;
+}
+button:disabled{opacity:.5}
+.green{
+ background:#16a34a;
+ color:white;
+}
+.red{
+ background:#dc2626;
+ color:white;
+}
+.gray{
+ background:#e5e7eb;
+ color:#222;
+}
+.full{width:100%}
+input,select{
+ width:100%;
+ padding:13px;
+ border:1px solid #ddd;
+ border-radius:10px;
+ margin:7px 0 15px;
+ font-size:16px;
+ background:white;
+}
+label{font-size:14px}
+.hidden{display:none!important}
+#map{
+ height:300px;
+ border-radius:18px;
+ margin-bottom:15px;
+ z-index:1;
+}
+.badge{
+ display:inline-block;
+ padding:7px 12px;
+ border-radius:20px;
+ background:#fff0c2;
+ color:#855600;
+ font-size:13px;
+}
+.ok{
+ background:#dcfce7;
+ color:#15803d;
+}
+.notice{
+ padding:14px;
+ background:#fff0c2;
+ border-radius:12px;
+ margin-bottom:12px;
+ overflow-wrap:anywhere;
+}
+.notice:empty{display:none}
+.order{
+ background:white;
+ border-radius:16px;
+ padding:18px;
+ margin-bottom:12px;
+ border-left:5px solid #ffc400;
+}
+.price{
+ font-size:27px;
+ font-weight:bold;
+}
+.actions{
+ display:flex;
+ gap:8px;
+ flex-wrap:wrap;
+ margin-top:12px;
+}
+.empty{
+ background:white;
+ border-radius:16px;
+ padding:30px;
+ text-align:center;
+ color:#777;
+}
+.tabs{
+ display:flex;
+ gap:8px;
+ margin:15px 0;
+}
+.tabs button{flex:1}
+.tabs .active{
+ background:#222;
+ color:white;
+}
+p{overflow-wrap:anywhere}
+@media(max-width:600px){
+ .metric{font-size:20px}
+ .card{padding:14px}
+ #map{height:270px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<a href="./index.html">←</a>
+<div class="logo">VAYO DRIVER</div>
+<a href="./account.html">👤</a>
+</header>
+
+<main>
+
+<div id="gate" class="card">
+<p id="gateText">Боргирӣ...</p>
+<a class="btn" href="./account.html">
+Ворид шудан
+</a>
+</div>
+
+<div id="app" class="hidden">
+
+<div id="notice" class="notice" role="status"></div>
+
+<section id="registration" class="hidden">
+
+<div class="card">
+
+<h2>🚕 Ронандаи VAYO шавед</h2>
+
+<p>Комиссия: 0%</p>
+
+<form id="driverForm">
+
+<label>Ному насаб</label>
+<input id="fullName" required maxlength="100">
+
+<label>Телефон</label>
+<input id="phone" type="tel"
+placeholder="+992900000000" required>
+
+<label>Маркаи мошин</label>
+<input id="carBrand"
+placeholder="Toyota" required>
+
+<label>Модели мошин</label>
+<input id="carModel"
+placeholder="Camry" required>
+
+<label>Ранги мошин</label>
+<input id="carColor"
+placeholder="Сафед" required>
+
+<label>Рақами давлатии мошин</label>
+<input id="carNumber"
+placeholder="1234 AB 01" required>
+
+<label>Категорияи мошин</label>
+<select id="carClass">
+<option value="economy">Эконом</option>
+<option value="comfort">Комфорт</option>
+<option value="business">Бизнес</option>
+<option value="minivan">Минивэн</option>
+</select>
+
+<label>Шаҳр</label>
+<select id="city">
+<option>Душанбе</option>
+<option>Хуҷанд</option>
+<option>Бохтар</option>
+<option>Кӯлоб</option>
+<option>Ҳисор</option>
+<option>Данғара</option>
+<option>Ваҳдат</option>
+</select>
+
+<button id="registerButton" class="full" type="submit">
+Сабти ронанда
+</button>
+
+</form>
+
+</div>
+
+</section>
+
+<section id="dashboard" class="hidden">
+
+<div class="card">
+
+<h2 id="driverName"></h2>
+
+<p id="carInfo"></p>
+
+<div id="approvalStatus"></div>
+
+<p id="gpsStatus">GPS ғайрифаъол</p>
+
+<button id="onlineButton"
+class="full green"
+onclick="toggleOnline()">
+
+● Онлайн шудан
+
+</button>
+
+</div>
+
+<div class="grid">
+
+<div class="card">
+<small>Сафарҳо</small>
+<div id="tripCount" class="metric">0</div>
+</div>
+
+<div class="card">
+<small>Даромади имрӯз</small>
+<div id="todayIncome" class="metric">0</div>
+</div>
+
+<div class="card">
+<small>Комиссия</small>
+<div class="metric">0%</div>
+</div>
+
+</div>
+
+<div id="map"></div>
+
+<div id="activeTrip"></div>
+
+<div class="tabs">
+
+<button id="availableTab"
+onclick="showTab('available')">
+Фармоишҳои нав
+</button>
+
+<button id="historyTab"
+onclick="showTab('history')">
+Таърих
+</button>
+
+</div>
+
+<section id="availableSection">
+
+<div class="actions">
+<button onclick="refresh()">
+↻ Навсозӣ
+</button>
+</div>
+
+<h3>Фармоишҳои дастрас</h3>
+
+<div id="availableList"></div>
+
+</section>
+
+<section id="historySection" class="hidden">
+
+<h3>Таърихи сафарҳо</h3>
+
+<div id="historyList"></div>
+
+</section>
+
+</section>
+
+</div>
+
+</main>
+
+<script>
+
+const db = window.vayo;
+const $ = id => document.getElementById(id);
+
+let user = null;
+let driver = null;
+let map = null;
+let driverMarker = null;
+let pickupMarker = null;
+let destinationMarker = null;
+let routeLine = null;
+
+let gpsWatch = null;
+let gpsPosition = null;
+let gpsGeneration = 0;
+let gpsQueue = Promise.resolve();
+let lastGpsSent = 0;
+
+let online = false;
+let startingGPS = false;
+let busy = false;
+let refreshing = false;
+
+let activeOrder = null;
+let orders = [];
+
+const classes = {
+ economy:"Эконом",
+ comfort:"Комфорт",
+ business:"Бизнес",
+ minivan:"Минивэн"
+};
+
+const statuses = {
+ searching:"Ҷустуҷӯи ронанда",
+ accepted:"Қабул шуд",
+ arrived:"Ронанда расид",
+ in_progress:"Сафар оғоз шуд",
+ completed:"Анҷом шуд",
+ cancelled:"Бекор шуд"
+};
+
+function esc(value){
+
+ return String(value ?? "").replace(
+ /[&<>"']/g,
+ c=>({
+  "&":"&amp;",
+  "<":"&lt;",
+  ">":"&gt;",
+  '"':"&quot;",
+  "'":"&#39;"
+ })[c]);
+
+}
+
+function val(id){
+ return $(id).value.trim();
+}
+
+function notice(text){
+ $("notice").textContent = text || "";
+}
+
+function money(value){
+ return Number(value || 0).toFixed(2)+" TJS";
+}
+
+function date(value){
+
+ return new Date(value).toLocaleString("ru-RU",{
+  timeZone:"Asia/Dushanbe"
+ });
+
+}
+
+function day(value){
+
+ return new Intl.DateTimeFormat("en-CA",{
+  timeZone:"Asia/Dushanbe",
+  year:"numeric",
+  month:"2-digit",
+  day:"2-digit"
+ }).format(new Date(value));
+
+}
+
+function normalizePhone(value){
+
+ let p = value.replace(/[\s()-]/g,"");
+
+ if(/^\d{9}$/.test(p)){
+  p = "+992"+p;
+ }
+
+ if(/^992\d{9}$/.test(p)){
+  p = "+"+p;
+ }
+
+ if(!/^\+992\d{9}$/.test(p)){
+  throw new Error("Рақами телефон нодуруст.");
+ }
+
+ return p;
+
+}
+
+async function rpc(name,args={}){
+
+ const {data,error} = await db.rpc(name,args);
+
+ if(error) throw error;
+
+ return data;
+
+}
+
+function initMap(){
+
+ if(map) return;
+
+ map = L.map("map").setView(
+ [38.5598,68.7870],13
+ );
+
+ L.tileLayer(
+ "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+ {
+  maxZoom:19,
+  attribution:"&copy; OpenStreetMap contributors"
+ }
+ ).addTo(map);
+
+}
+
+function showPosition(lat,lng){
+
+ if(!map) return;
+
+ if(!driverMarker){
+
+ driverMarker = L.marker([lat,lng])
+ .addTo(map)
+ .bindPopup("Мошини шумо");
+
+ map.setView([lat,lng],15);
+
+ }else{
+
+ driverMarker.setLatLng([lat,lng]);
+
+ }
+
+}
+
+async function loadDriver(){
+
+ const {data,error} = await db
+ .from("taxi_drivers")
+ .select("*")
+ .eq("id",user.id)
+ .maybeSingle();
+
+ if(error) throw error;
+
+ driver = data;
+
+ if(!driver){
+
+ $("registration").classList.remove("hidden");
+ $("dashboard").classList.add("hidden");
+
+ $("fullName").value =
+ user.user_metadata?.full_name || "";
+
+ $("phone").value =
+ user.user_metadata?.phone || "";
+
+ return;
+
+ }
+
+ $("registration").classList.add("hidden");
+ $("dashboard").classList.remove("hidden");
+
+ initMap();
+
+ $("driverName").textContent = driver.full_name;
+
+ $("carInfo").textContent =
+ driver.car_brand+" "+
+ driver.car_model+" · "+
+ driver.car_number+" · "+
+ (classes[driver.car_class] || driver.car_class);
+
+ $("approvalStatus").innerHTML = driver.approved
+
+ ? '<span class="badge ok">Тасдиқ шудааст</span>'
+
+ : '<span class="badge">Интизори тасдиқи Admin</span>';
+
+ $("onlineButton").disabled =
+ !driver.approved || startingGPS || busy;
+
+ if(!driver.approved && (online || startingGPS)){
+  await goOffline();
+ }
+
+ if(driver.latitude!==null
+ && driver.longitude!==null){
+
+  showPosition(
+   driver.latitude,
+   driver.longitude
+  );
+
+ }
+
+ renderOnline();
+
+ await refresh();
+
+}
+
+$("driverForm").addEventListener("submit",async e=>{
+
+ e.preventDefault();
+
+ if(busy) return;
+
+ busy = true;
+
+ $("registerButton").disabled = true;
+
+ try{
+
+ const row = {
+
+  id:user.id,
+
+  full_name:val("fullName"),
+  phone:normalizePhone(val("phone")),
+
+  car_brand:val("carBrand"),
+  car_model:val("carModel"),
+  car_color:val("carColor"),
+
+  car_number:val("carNumber").toUpperCase(),
+
+  car_class:val("carClass"),
+  city:val("city")
+
+ };
+
+ if(!row.full_name || !row.car_brand
+ || !row.car_model || !row.car_color
+ || !row.car_number){
+
+  throw new Error("Ҳамаи маълумотро ворид кунед.");
+
+ }
+
+ const {error} = await db
+ .from("taxi_drivers")
+ .insert(row);
+
+ if(error) throw error;
+
+ await loadDriver();
+
+ notice(
+ "Ронанда сабт шуд. Admin бояд шуморо тасдиқ кунад."
+ );
+
+ }catch(error){
+
+ notice(error.message);
+
+ }finally{
+
+ busy = false;
+ $("registerButton").disabled = false;
+ renderOnline();
+
+ }
+
+});
+
+function renderOnline(){
+
+ if(!driver) return;
+
+ const b = $("onlineButton");
+
+ b.disabled =
+ !driver.approved || busy;
+
+ if(startingGPS){
+
+  b.textContent = "Қатъ кардани GPS";
+  b.className = "full red";
+
+ }else if(online){
+
+  b.textContent = "● Офлайн шудан";
+  b.className = "full red";
+
+ }else{
+
+  b.textContent = "● Онлайн шудан";
+  b.className = "full green";
+
+ }
+
+}
+
+function sendLocation(position,isOnline,generation){
+
+ const task = gpsQueue.catch(()=>{}).then(async()=>{
+
+  if(generation!==gpsGeneration) return false;
+
+  await rpc("vayo_driver_location",{
+
+   p_lat:position.latitude,
+   p_lng:position.longitude,
+   p_online:isOnline
+
+  });
+
+  return true;
+
+ });
+
+ gpsQueue = task;
+
+ return task;
+
+}
+
+async function goOnline(){
+
+ if(!driver?.approved || online || startingGPS) return;
+
+ if(!navigator.geolocation){
+
+  notice("Телефон GPS-ро дастгирӣ намекунад.");
+
+  return;
+
+ }
+
+ startingGPS = true;
+
+ const generation = ++gpsGeneration;
+
+ lastGpsSent = 0;
+
+ renderOnline();
+
+ $("gpsStatus").textContent =
+ "Ҷустуҷӯи ҷойгиршавӣ...";
+
+ gpsWatch = navigator.geolocation.watchPosition(
+
+ async position=>{
+
+ if(generation!==gpsGeneration) return;
+
+ gpsPosition = position.coords;
+
+ showPosition(
+  gpsPosition.latitude,
+  gpsPosition.longitude
+ );
+
+ if(Date.now()-lastGpsSent<8000) return;
+
+ lastGpsSent = Date.now();
+
+ try{
+
+ const sent = await sendLocation(
+  gpsPosition,true,generation
+ );
+
+ if(!sent || generation!==gpsGeneration) return;
+
+ const first = !online;
+
+ online = true;
+ startingGPS = false;
+
+ $("gpsStatus").textContent =
+ "GPS фаъол · Дақиқӣ: "+
+ Math.round(gpsPosition.accuracy)+" м";
+
+ renderOnline();
+
+ if(first) await refresh();
+
+ }catch(error){
+
+ if(generation!==gpsGeneration) return;
+
+ await goOffline();
+
+ notice(error.message);
+
+ }
+
+ },
+
+ async error=>{
+
+ if(generation!==gpsGeneration) return;
+
+ await goOffline();
+
+ notice("GPS: "+error.message);
+
+ },
+
+ {
+  enableHighAccuracy:true,
+  maximumAge:5000,
+  timeout:20000
+ }
+
+ );
+
+}
+
+async function goOffline(){
+
+ const generation = ++gpsGeneration;
+
+ online = false;
+ startingGPS = false;
+
+ if(gpsWatch!==null){
+
+ navigator.geolocation.clearWatch(gpsWatch);
+
+ gpsWatch = null;
+
+ }
+
+ renderOnline();
+
+ $("gpsStatus").textContent = "GPS ғайрифаъол";
+
+ const position = gpsPosition ||
+
+ (
+ driver?.latitude!==null
+ && driver?.longitude!==null
+ ? {
+  latitude:driver.latitude,
+  longitude:driver.longitude
+ }
+ : null
+ );
+
+ try{
+
+ if(position && driver?.approved){
+
+ await sendLocation(
+  position,false,generation
+ );
+
+ }
+
+ }catch(error){
+
+ notice(
+ "Офлайн дар сервер тасдиқ нашуд: "+error.message
+ );
+
+ }
+
+ renderAvailable([]);
+
+}
+
+async function toggleOnline(){
+
+ if(busy) return;
+
+ if(online || startingGPS){
+
+  if(activeOrder){
+
+   notice(
+   "Аввал сафари ҷориро анҷом диҳед."
+   );
+
+   return;
+
+  }
+
+  await goOffline();
+
+ }else{
+
+  await goOnline();
+
+ }
+
+}
+
+function showTab(tab){
+
+ $("availableSection").classList.toggle(
+ "hidden",tab!=="available"
+ );
+
+ $("historySection").classList.toggle(
+ "hidden",tab!=="history"
+ );
+
+ $("availableTab").classList.toggle(
+ "active",tab==="available"
+ );
+
+ $("historyTab").classList.toggle(
+ "active",tab==="history"
+ );
+
+}
+
+async function loadOrders(){
+
+ const {data,error} = await db
+ .from("taxi_orders")
+ .select("*")
+ .eq("driver_id",user.id)
+ .order("created_at",{ascending:false})
+ .limit(500);
+
+ if(error) throw error;
+
+ orders = data || [];
+
+ activeOrder = orders.find(o=>
+ ["accepted","arrived","in_progress"]
+ .includes(o.status)
+ ) || null;
+
+ const completed = orders.filter(o=>
+ o.status==="completed"
+ );
+
+ $("tripCount").textContent = completed.length;
+
+ $("todayIncome").textContent = money(
+
+ completed.filter(o=>
+ o.completed_at &&
+ day(o.completed_at)===day(Date.now())
+ ).reduce((sum,o)=>sum+Number(o.price),0)
+
+ );
+
+ renderActive();
+ renderHistory();
+
+}
+
+async function loadAvailable(){
+
+ if(!online || !driver?.approved || activeOrder){
+
+  renderAvailable([]);
+
+  return;
+
+ }
+
+ const data = await rpc(
+ "vayo_available_taxi_orders"
+ );
+
+ renderAvailable(data || []);
+
+}
+
+function renderAvailable(list){
+
+ if(activeOrder){
+
+ $("availableList").innerHTML =
+ '<div class="empty">Шумо сафари фаъол доред.</div>';
+
+ return;
+
+ }
+
+ if(!online){
+
+ $("availableList").innerHTML =
+ '<div class="empty">Барои гирифтани фармоиш онлайн шавед.</div>';
+
+ return;
+
+ }
+
+ if(!list.length){
+
+ $("availableList").innerHTML =
+ '<div class="empty">🔍 Фармоиш ҷустуҷӯ мешавад...</div>';
+
+ return;
+
+ }
+
+ $("availableList").innerHTML = list.map(o=>`
+
+ <div class="order">
+
+ <span class="badge">Фармоиши нав</span>
+
+ <p>📍 ${esc(o.city)}</p>
+
+ <p>🚕 ${esc(classes[o.car_class] || o.car_class)}</p>
+
+ <p>Масофаи сафар: ${esc(o.distance_km)} км</p>
+
+ <p>Вақт: ${esc(o.duration_min)} дақиқа</p>
+
+ <div class="price">
+ ${esc(money(o.price))}
+ </div>
+
+ <p><small>Комиссия: 0%</small></p>
+
+ <button class="full green"
+ data-action="accept"
+ data-id="${esc(o.order_id)}">
+
+ Қабул кардани фармоиш
+
+ </button>
+
+ </div>
+
+ `).join("");
+
+}
+
+function clearTripMap(){
+
+ [pickupMarker,destinationMarker,routeLine]
+ .forEach(layer=>{
+
+  if(layer && map) map.removeLayer(layer);
+
+ });
+
+ pickupMarker = null;
+ destinationMarker = null;
+ routeLine = null;
+
+}
+
+function drawTrip(o){
+
+ clearTripMap();
+
+ if(!map) return;
+
+ const from = [o.pickup_lat,o.pickup_lng];
+
+ const to = [o.destination_lat,o.destination_lng];
+
+ pickupMarker = L.marker(from)
+ .addTo(map)
+ .bindPopup("Ҷойи гирифтани мусофир");
+
+ destinationMarker = L.marker(to)
+ .addTo(map)
+ .bindPopup("Ҷойи таъинот");
+
+ routeLine = L.polyline(
+ [from,to],
+ {
+  color:"#e6a900",
+  weight:4,
+  dashArray:"8 8"
+ }
+ ).addTo(map);
+
+ const points = [from,to];
+
+ if(gpsPosition){
+
+ points.push([
+ gpsPosition.latitude,
+ gpsPosition.longitude
+ ]);
+
+ }
+
+ map.fitBounds(points,{
+  padding:[30,30],
+  maxZoom:16
+ });
+
+}
+
+function statusButton(id,status,label,color="green"){
+
+ return `<button class="${color}"
+ data-action="status"
+ data-id="${esc(id)}"
+ data-status="${esc(status)}">
+ ${esc(label)}
+ </button>`;
+
+}
+
+function navigationLink(lat,lng,label){
+
+ return `<a class="btn gray"
+ href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(lat+","+lng)}"
+ target="_blank" rel="noopener noreferrer">
+
+ ${esc(label)}
+
+ </a>`;
+
+}
+
+function renderActive(){
+
+ if(!activeOrder){
+
+ $("activeTrip").innerHTML = "";
+
+ clearTripMap();
+
+ return;
+
+ }
+
+ const o = activeOrder;
+
+ let actions = "";
+
+ if(o.status==="accepted"){
+
+ actions = statusButton(
+ o.id,"arrived","Ба назди мусофир расидам"
+ )+
+
+ statusButton(
+ o.id,"cancelled","Бекор кардан","red"
+ );
+
+ }
+
+ if(o.status==="arrived"){
+
+ actions = statusButton(
+ o.id,"in_progress","Сафарро оғоз кардан"
+ )+
+
+ statusButton(
+ o.id,"cancelled","Бекор кардан","red"
+ );
+
+ }
+
+ if(o.status==="in_progress"){
+
+ actions = statusButton(
+ o.id,"completed","Сафар анҷом ёфт"
+ );
+
+ }
+
+ const tel = String(o.customer_phone || "")
+ .replace(/[^\d+]/g,"");
+
+ $("activeTrip").innerHTML = `
+
+ <div class="order">
+
+ <h2>🚕 Сафари фаъол</h2>
+
+ <span class="badge ok">
+ ${esc(statuses[o.status] || o.status)}
+ </span>
+
+ <p>👤 ${esc(o.customer_name)}</p>
+
+ <p>
+ 📞 <a href="tel:${esc(tel)}">
+ ${esc(o.customer_phone)}
+ </a>
+ </p>
+
+ <hr>
+
+ <p>🟢 Аз куҷо:</p>
+
+ <strong>${esc(o.pickup_address)}</strong>
+
+ <p>
+
+ ${navigationLink(
+ o.pickup_lat,o.pickup_lng,
+ "Роҳ ба назди мусофир"
+ )}
+
+ </p>
+
+ <p>🔴 Ба куҷо:</p>
+
+ <strong>${esc(o.destination_address)}</strong>
+
+ <p>
+
+ ${navigationLink(
+ o.destination_lat,o.destination_lng,
+ "Роҳ ба ҷойи таъинот"
+ )}
+
+ </p>
+
+ <p>📝 ${esc(o.note || "—")}</p>
+
+ <p>Занг задан ҳангоми расидан:
+ ${o.call_on_arrival?"Ҳа":"Не"}
+ </p>
+
+ <hr>
+
+ <p>${esc(o.distance_km)} км ·
+ ${esc(o.duration_min)} дақиқа</p>
+
+ <div class="price">
+ ${esc(money(o.price))}
+ </div>
+
+ <p><small>Пардохт: нақдӣ</small></p>
+
+ <div class="actions">
+
+ ${actions}
+
+ </div>
+
+ </div>
+
+ `;
+
+ drawTrip(o);
+
+}
+
+function renderHistory(){
+
+ if(!orders.length){
+
+ $("historyList").innerHTML =
+ '<div class="empty">Ҳоло сафар надоред.</div>';
+
+ return;
+
+ }
+
+ $("historyList").innerHTML = orders.map(o=>`
+
+ <div class="order">
+
+ <span class="badge ${o.status==="completed"?"ok":""}">
+
+ ${esc(statuses[o.status] || o.status)}
+
+ </span>
+
+ <p>${esc(date(o.created_at))}</p>
+
+ <p>🟢 ${esc(o.pickup_address)}</p>
+
+ <p>🔴 ${esc(o.destination_address)}</p>
+
+ <div class="price">
+ ${esc(money(o.price))}
+ </div>
+
+ </div>
+
+ `).join("");
+
+}
+
+async function refresh(){
+
+ if(refreshing || !driver) return;
+
+ refreshing = true;
+
+ try{
+
+ await loadOrders();
+
+ await loadAvailable();
+
+ }catch(error){
+
+ notice(error.message);
+
+ }finally{
+
+ refreshing = false;
+
+ }
+
+}
+
+async function acceptOrder(id){
+
+ if(busy || !online || activeOrder) return;
+
+ if(!confirm("Фармоишро қабул мекунед?")) return;
+
+ busy = true;
+
+ renderOnline();
+
+ try{
+
+ await rpc("vayo_accept_taxi_order",{
+
+  p_order_id:id
+
+ });
+
+ await refresh();
+
+ notice("Фармоиш қабул шуд.");
+
+ }catch(error){
+
+ notice(error.message);
+
+ await refresh();
+
+ }finally{
+
+ busy = false;
+
+ renderOnline();
+
+ }
+
+}
+
+async function updateStatus(id,status){
+
+ if(busy) return;
+
+ if(!confirm("Ин амалро тасдиқ мекунед?")) return;
+
+ busy = true;
+
+ renderOnline();
+
+ try{
+
+ await rpc("vayo_taxi_status",{
+
+  p_order_id:id,
+
+  p_status:status
+
+ });
+
+ await refresh();
+
+ notice("Ҳолати сафар нав шуд.");
+
+ }catch(error){
+
+ notice(error.message);
+
+ }finally{
+
+ busy = false;
+
+ renderOnline();
+
+ }
+
+}
+
+document.addEventListener("click",e=>{
+
+ const button = e.target.closest("[data-action]");
+
+ if(!button) return;
+
+ const {action,id,status} = button.dataset;
+
+ if(action==="accept"){
+
+  acceptOrder(id);
+
+ }
+
+ if(action==="status"){
+
+  updateStatus(id,status);
+
+ }
+
+});
+
+async function start(){
+
+ try{
+
+ if(!db){
+
+  throw new Error("config.js ёфт нашуд.");
+
+ }
+
+ const {data,error} = await db.auth.getUser();
+
+ if(error || !data.user){
+
+  throw new Error("Аввал ба аккаунт ворид шавед.");
+
+ }
+
+ user = data.user;
+
+ $("gate").classList.add("hidden");
+
+ $("app").classList.remove("hidden");
+
+ showTab("available");
+
+ await loadDriver();
+
+ // Require fresh GPS after opening the page.
+
+ if(driver?.approved && driver.online){
+
+  await goOffline();
+
+ }
+
+ }catch(error){
+
+ $("gateText").textContent = error.message;
+
+ notice(error.message);
+
+ }
+
+}
+
+// Keep location fresh while the driver is online.
+
+setInterval(async()=>{
+
+ if(!online || !gpsPosition || !driver?.approved) return;
+
+ if(Date.now()-lastGpsSent<20000) return;
+
+ if(document.visibilityState!=="visible") return;
+
+ // Do not send old GPS readings as fresh locations.
+
+ if(!navigator.geolocation) return;
+
+ const generation = gpsGeneration;
+
+ navigator.geolocation.getCurrentPosition(
+
+ async position=>{
+
+ if(generation!==gpsGeneration || !online) return;
+
+ gpsPosition = position.coords;
+
+ lastGpsSent = Date.now();
+
+ showPosition(
+ gpsPosition.latitude,
+ gpsPosition.longitude
+ );
+
+ try{
+
+ await sendLocation(
+ gpsPosition,true,generation
+ );
+
+ }catch(error){
+
+ notice(error.message);
+
+ }
+
+ },
+
+ ()=>{},
+
+ {
+  enableHighAccuracy:true,
+  maximumAge:5000,
+  timeout:15000
+ }
+
+ );
+
+},25000);
+
+// Refresh orders and approval status.
+
+setInterval(async()=>{
+
+ if(!user || busy || refreshing
+ || document.visibilityState!=="visible") return;
+
+ try{
+
+ if(driver && !driver.approved){
+
+  await loadDriver();
+
+ }else if(driver){
+
+ const {data,error} = await db
+ .from("taxi_drivers")
+ .select("approved")
+ .eq("id",user.id)
+ .single();
+
+ if(error) throw error;
+
+ if(!data.approved){
+
+  driver.approved = false;
+
+  await goOffline();
+
+  await loadDriver();
+
+ }else{
+
+  await refresh();
+
+ }
+
+ }
+
+ }catch(error){
+
+ notice(error.message);
+
+ }
+
+},12000);
+
+start();
+
+</script>
+
+</body>
+</html>
