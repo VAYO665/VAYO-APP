@@ -1,0 +1,1597 @@
+
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#ffcc00">
+<title>VAYO Taxi</title>
+
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<style>
+:root{
+ --yellow:#ffcc00;
+ --orange:#ff6500;
+ --dark:#171717;
+ --gray:#777;
+ --bg:#f5f6f8;
+}
+*{box-sizing:border-box}
+body{
+ margin:0;
+ background:var(--bg);
+ color:var(--dark);
+ font-family:Arial,sans-serif;
+ padding-bottom:90px;
+}
+button,input,textarea{font:inherit}
+button{cursor:pointer;border:0}
+button:disabled{opacity:.5;cursor:not-allowed}
+a{color:inherit;text-decoration:none}
+header{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ background:white;
+ padding:15px 18px;
+}
+.logo{
+ font-size:26px;
+ font-weight:900;
+ color:var(--orange);
+}
+.icon-btn{
+ background:#f1f2f4;
+ width:43px;
+ height:43px;
+ border-radius:14px;
+ font-size:21px;
+}
+main{
+ max-width:850px;
+ margin:auto;
+}
+.map-box{
+ position:relative;
+}
+#map{
+ width:100%;
+ height:340px;
+ z-index:1;
+ background:#e8e8e8;
+}
+.gps-btn{
+ position:absolute;
+ bottom:25px;
+ right:15px;
+ z-index:500;
+ width:48px;
+ height:48px;
+ background:white;
+ border-radius:16px;
+ box-shadow:0 3px 15px #0003;
+ font-size:25px;
+}
+.map-status{
+ position:absolute;
+ top:12px;
+ left:50px;
+ right:15px;
+ z-index:500;
+ background:white;
+ padding:10px 12px;
+ border-radius:12px;
+ font-size:12px;
+ box-shadow:0 2px 12px #0002;
+}
+.panel{
+ background:white;
+ border-radius:25px;
+ padding:20px;
+ margin:12px;
+ box-shadow:0 4px 20px #00000008;
+}
+h1{
+ font-size:26px;
+ margin:0 0 17px;
+}
+h2{
+ font-size:19px;
+ margin:0 0 15px;
+}
+.caption{
+ color:var(--gray);
+ font-size:12px;
+}
+.address{
+ background:#f4f5f7;
+ border-radius:16px;
+ margin-bottom:12px;
+ padding:12px;
+}
+.address label{
+ display:block;
+ color:#777;
+ font-size:12px;
+ margin-bottom:5px;
+}
+.address-row{
+ display:flex;
+ align-items:center;
+ gap:9px;
+}
+.dot{
+ width:12px;
+ height:12px;
+ border-radius:50%;
+ flex-shrink:0;
+ background:#19a65b;
+}
+.dot.end{background:var(--orange)}
+.address input{
+ width:100%;
+ min-width:0;
+ border:0;
+ background:transparent;
+ outline:none;
+ padding:8px 0;
+ font-weight:bold;
+ font-size:15px;
+}
+.search-btn{
+ background:white;
+ border-radius:10px;
+ padding:10px;
+ font-size:17px;
+}
+.results button{
+ width:100%;
+ background:white;
+ padding:12px;
+ margin-top:5px;
+ border-radius:10px;
+ text-align:left;
+ line-height:1.5;
+ font-size:13px;
+}
+.map-tools{
+ display:flex;
+ gap:8px;
+}
+.map-tools button{
+ flex:1;
+ background:#f1f2f4;
+ padding:12px 8px;
+ border-radius:12px;
+ font-size:12px;
+ font-weight:bold;
+}
+.route-info{
+ display:flex;
+ justify-content:space-around;
+ background:#fff8d9;
+ border-radius:15px;
+ padding:15px;
+ margin-top:15px;
+ text-align:center;
+}
+.route-info strong{
+ display:block;
+ margin-bottom:5px;
+ font-size:18px;
+}
+.route-info span{
+ font-size:12px;
+ color:#777;
+}
+.cars{
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap:10px;
+}
+.car{
+ border:2px solid #eeeeee;
+ background:white;
+ border-radius:18px;
+ padding:13px;
+ text-align:left;
+}
+.car.selected{
+ border-color:var(--yellow);
+ background:#fffbea;
+}
+.car svg{
+ width:100%;
+ height:65px;
+}
+.car-name{
+ font-size:16px;
+ font-weight:bold;
+}
+.car-desc{
+ color:#777;
+ font-size:11px;
+ margin:6px 0;
+}
+.car-price{
+ font-size:17px;
+ font-weight:900;
+ margin-top:8px;
+}
+.field{
+ margin-bottom:15px;
+}
+.field label{
+ display:block;
+ font-size:13px;
+ font-weight:bold;
+ margin-bottom:7px;
+}
+.field input,.field textarea{
+ width:100%;
+ padding:14px;
+ border:1px solid #e5e5e5;
+ border-radius:13px;
+ background:#f7f8fa;
+ outline:none;
+}
+.field input:focus,.field textarea:focus{
+ border-color:var(--orange);
+}
+.check{
+ display:flex;
+ align-items:center;
+ gap:10px;
+ padding:12px 0;
+ font-size:14px;
+}
+.check input{
+ width:20px;
+ height:20px;
+ accent-color:var(--orange);
+}
+.payment{
+ background:#f5f6f8;
+ border-radius:14px;
+ padding:15px;
+ margin-top:12px;
+ font-weight:bold;
+}
+.total{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ margin-bottom:15px;
+}
+.total strong{font-size:26px}
+.order-btn{
+ width:100%;
+ background:var(--yellow);
+ color:#111;
+ padding:17px;
+ border-radius:16px;
+ font-size:17px;
+ font-weight:900;
+}
+.commission{
+ text-align:center;
+ color:#159447;
+ font-size:12px;
+ font-weight:bold;
+ margin-top:12px;
+}
+nav{
+ position:fixed;
+ bottom:0;
+ left:0;
+ right:0;
+ z-index:900;
+ background:white;
+ border-top:1px solid #eee;
+ display:flex;
+ justify-content:space-around;
+ padding:12px 5px;
+ padding-bottom:max(12px,env(safe-area-inset-bottom));
+}
+nav button,nav a{
+ background:none;
+ color:#777;
+ display:flex;
+ flex-direction:column;
+ align-items:center;
+ gap:5px;
+ font-size:11px;
+}
+nav span{font-size:24px}
+nav .active{color:var(--orange)}
+dialog{
+ width:min(92%,450px);
+ max-height:85vh;
+ overflow:auto;
+ border:0;
+ border-radius:24px;
+ padding:22px;
+}
+dialog::backdrop{background:#0008}
+.close-btn{
+ width:100%;
+ padding:13px;
+ border-radius:12px;
+ background:#eee;
+ margin-top:10px;
+}
+.order-card{
+ padding:15px;
+ background:#f5f6f8;
+ border-radius:15px;
+ margin-bottom:12px;
+ font-size:13px;
+ line-height:1.7;
+ overflow-wrap:anywhere;
+}
+.toast{
+ position:fixed;
+ bottom:95px;
+ left:50%;
+ transform:translateX(-50%);
+ z-index:2000;
+ background:#222;
+ color:white;
+ padding:14px 20px;
+ border-radius:15px;
+ width:max-content;
+ max-width:90%;
+ text-align:center;
+ font-size:14px;
+}
+.hidden{display:none!important}
+@media(min-width:700px){
+ #map{height:420px}
+ .cars{grid-template-columns:repeat(4,1fr)}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+ <a href="./index.html" class="icon-btn"
+ style="display:grid;place-items:center">←</a>
+
+ <div class="logo">VAYO Taxi</div>
+
+ <a href="./account.html" class="icon-btn"
+ style="display:grid;place-items:center">👤</a>
+</header>
+
+<main>
+
+<!-- LIVE MAP -->
+
+<div class="map-box">
+ <div id="map"></div>
+
+ <div class="map-status" id="mapStatus">
+ Ҷойгиршавӣ муайян шуда истодааст...
+ </div>
+
+ <button class="gps-btn"
+ onclick="getLocation()"
+ aria-label="Ҷойгиршавии ман">◎</button>
+</div>
+
+<!-- ADDRESSES -->
+
+<section class="panel">
+
+ <h1>Ба куҷо меравем?</h1>
+
+ <div class="address">
+  <label for="from">Аз куҷо?</label>
+
+  <div class="address-row">
+   <span class="dot"></span>
+
+   <input id="from"
+   placeholder="Ҷойгиршавии шумо">
+
+   <button class="search-btn"
+   onclick="searchAddress('from')">🔍</button>
+  </div>
+
+  <div id="fromResults" class="results"></div>
+ </div>
+
+ <div class="address">
+  <label for="to">Ба куҷо?</label>
+
+  <div class="address-row">
+   <span class="dot end"></span>
+
+   <input id="to"
+   placeholder="Суроғаи таъинот">
+
+   <button class="search-btn"
+   onclick="searchAddress('to')">🔍</button>
+  </div>
+
+  <div id="toResults" class="results"></div>
+ </div>
+
+ <div class="map-tools">
+  <button onclick="getLocation()">
+   📍 Ҷойгиршавии ман
+  </button>
+
+  <button onclick="selectOnMap('from')">
+   Аз харита: оғоз
+  </button>
+
+  <button onclick="selectOnMap('to')">
+   Аз харита: таъинот
+  </button>
+ </div>
+
+ <div class="route-info">
+  <div>
+   <strong id="distance">—</strong>
+   <span>Масофа</span>
+  </div>
+
+  <div>
+   <strong id="duration">—</strong>
+   <span>Вақти сафар</span>
+  </div>
+ </div>
+
+</section>
+
+<!-- CARS -->
+
+<section class="panel">
+ <h2>Мошинро интихоб кунед</h2>
+ <div class="cars" id="cars"></div>
+</section>
+
+<!-- CUSTOMER -->
+
+<section class="panel">
+
+ <h2>Маълумоти мусофир</h2>
+
+ <div class="field">
+  <label for="name">Номи шумо</label>
+  <input id="name"
+  autocomplete="name"
+  placeholder="Ном">
+ </div>
+
+ <div class="field">
+  <label for="phone">Рақами телефон</label>
+
+  <input id="phone"
+  type="tel"
+  autocomplete="tel"
+  placeholder="+992 90 123 45 67">
+ </div>
+
+ <div class="field">
+  <label for="note">Шарҳи иловагӣ</label>
+
+  <textarea id="note"
+  rows="2"
+  maxlength="300"
+  placeholder="Дар назди даромадгоҳ..."></textarea>
+ </div>
+
+ <label class="check">
+  <input id="callOnArrival"
+  type="checkbox" checked>
+
+  Вақте расидед, занг занед
+ </label>
+
+ <div class="payment">
+  💵 Пардохт бо пули нақд
+ </div>
+
+</section>
+
+<!-- ORDER -->
+
+<section class="panel">
+
+ <div class="total">
+  <div>
+   <div class="caption">Нархи тахминии сафар</div>
+   <strong id="total">— TJS</strong>
+  </div>
+  <span style="font-size:30px">🚕</span>
+ </div>
+
+ <button id="orderBtn"
+ class="order-btn"
+ onclick="prepareOrder()"
+ disabled>
+  Такси фармоиш додан
+ </button>
+
+ <div class="commission">
+  Комиссияи VAYO — 0%
+ </div>
+
+ <p class="caption" style="text-align:center">
+  Версияи озмоишӣ — фармоиш ба ронандаи воқеӣ
+  фиристода намешавад.
+ </p>
+
+</section>
+
+</main>
+
+<nav>
+
+ <a href="./index.html">
+  <span>⌂</span>
+  Асосӣ
+ </a>
+
+ <button class="active"
+ onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <span>🚕</span>
+  Такси
+ </button>
+
+ <button onclick="showHistory()">
+  <span>📋</span>
+  Сафарҳо
+ </button>
+
+ <a href="./account.html">
+  <span>👤</span>
+  Аккаунт
+ </a>
+
+</nav>
+
+<!-- CONFIRM ORDER -->
+
+<dialog id="orderDialog">
+ <h2>Тасдиқи фармоиш</h2>
+ <div id="orderSummary" class="order-card"></div>
+
+ <button class="order-btn"
+ onclick="confirmOrder()">
+  Тасдиқ кардан
+ </button>
+
+ <button class="close-btn"
+ onclick="document.getElementById('orderDialog').close()">
+  Бекор кардан
+ </button>
+</dialog>
+
+<!-- HISTORY -->
+
+<dialog id="historyDialog">
+ <h2>Таърихи сафарҳо</h2>
+ <div id="historyList"></div>
+
+ <button class="close-btn"
+ onclick="document.getElementById('historyDialog').close()">
+  Пӯшидан
+ </button>
+</dialog>
+
+<div id="toast" class="toast hidden"></div>
+
+<script>
+
+// =====================================
+// VAYO TAXI SETTINGS
+// =====================================
+
+const $ = id => document.getElementById(id);
+
+const tariffs = {
+ economy:{
+  name:"Economy",
+  desc:"Сафари арзон · 4 ҷой",
+  base:5,
+  km:2.5,
+  color:"#eeeeee"
+ },
+ comfort:{
+  name:"Comfort",
+  desc:"Сафари бароҳат · 4 ҷой",
+  base:8,
+  km:3.5,
+  color:"#b7c5d4"
+ },
+ business:{
+  name:"Business",
+  desc:"Дараҷаи олӣ · 4 ҷой",
+  base:12,
+  km:5,
+  color:"#292929"
+ },
+ minivan:{
+  name:"Minivan",
+  desc:"Барои оила · 6 ҷой",
+  base:15,
+  km:5.5,
+  color:"#e5e7eb"
+ }
+};
+
+let selectedCar = "economy";
+
+let points = {
+ from:null,
+ to:null
+};
+
+let markers = {
+ from:null,
+ to:null
+};
+
+let addressVersion = {
+ from:0,
+ to:0
+};
+
+let routeVersion = 0;
+let routeController = null;
+let routeLine = null;
+let routeReady = false;
+
+let distanceKm = 0;
+let durationMin = 0;
+
+let mapMode = "to";
+let pendingOrder = null;
+let gpsRequest = 0;
+let toastTimer;
+let lastGeoRequest = 0;
+let geoQueue = Promise.resolve();
+
+const ORDER_KEY = "vayo_taxi_orders_v3";
+
+
+// =====================================
+// MAP
+// =====================================
+
+const map = L.map("map").setView(
+ [38.5598,68.7870],13
+);
+
+L.tileLayer(
+ "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+ {
+  maxZoom:19,
+  attribution:"&copy; OpenStreetMap contributors"
+ }
+).addTo(map);
+
+function markerIcon(type){
+
+ const color = type === "from"
+  ? "#16a34a"
+  : "#ff6500";
+
+ return L.divIcon({
+  className:"",
+  html:`<div style="
+   width:24px;
+   height:24px;
+   border:4px solid white;
+   background:${color};
+   border-radius:50%;
+   box-shadow:0 2px 10px #0005;
+  "></div>`,
+  iconSize:[24,24],
+  iconAnchor:[12,12]
+ });
+}
+
+function status(text){
+ $("mapStatus").textContent = text;
+}
+
+function toast(text){
+
+ clearTimeout(toastTimer);
+
+ $("toast").textContent = text;
+ $("toast").classList.remove("hidden");
+
+ toastTimer = setTimeout(()=>{
+  $("toast").classList.add("hidden");
+ },3500);
+}
+
+
+// =====================================
+// GEOCODING
+// =====================================
+
+// Public Nominatim:
+// explicit search, no autocomplete,
+// maximum one request per second
+// in this browser.
+
+function geoRequest(url){
+
+ const task = geoQueue.then(async()=>{
+
+  const wait = Math.max(
+   0,
+   1100-(Date.now()-lastGeoRequest)
+  );
+
+  await new Promise(resolve=>
+   setTimeout(resolve,wait)
+  );
+
+  lastGeoRequest = Date.now();
+
+  const response = await fetch(url,{
+   headers:{
+    "Accept":"application/json"
+   }
+  });
+
+  if(!response.ok){
+   throw new Error("Geocoding unavailable");
+  }
+
+  return response.json();
+ });
+
+ geoQueue = task.catch(()=>{});
+
+ return task;
+}
+
+async function reverseAddress(lat,lng){
+
+ const params = new URLSearchParams({
+  format:"jsonv2",
+  lat:String(lat),
+  lon:String(lng),
+  "accept-language":"tg,ru,en"
+ });
+
+ const data = await geoRequest(
+  "https://nominatim.openstreetmap.org/reverse?"
+  +params
+ );
+
+ return data.display_name ||
+  `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+}
+
+
+// =====================================
+// AUTOMATIC GPS
+// =====================================
+
+function getLocation(){
+
+ if(!navigator.geolocation){
+
+  status("GPS дастрас нест.");
+
+  toast("Суроғаро дастӣ интихоб кунед.");
+
+  return;
+ }
+
+ const request = ++gpsRequest;
+ const version = ++addressVersion.from;
+
+ status("Ҷойгиршавӣ муайян шуда истодааст...");
+
+ navigator.geolocation.getCurrentPosition(
+
+  async position=>{
+
+   if(request!==gpsRequest ||
+      version!==addressVersion.from){
+    return;
+   }
+
+   const lat = position.coords.latitude;
+   const lng = position.coords.longitude;
+
+   map.setView([lat,lng],17);
+
+   setPoint(
+    "from",lat,lng,
+    `${lat.toFixed(5)}, ${lng.toFixed(5)}`
+   );
+
+   status(
+    "GPS фаъол · дақиқӣ тақрибан "+
+    Math.round(position.coords.accuracy)+" м"
+   );
+
+   try{
+
+    const address = await reverseAddress(lat,lng);
+
+    if(version===addressVersion.from){
+
+     $("from").value = address;
+     points.from.address = address;
+
+    }
+
+   }catch(error){
+
+    toast("GPS ёфт шуд. Номи суроға дастрас нест.");
+
+   }
+  },
+
+  error=>{
+
+   if(request!==gpsRequest ||
+      version!==addressVersion.from){
+    return;
+   }
+
+   status("Суроғаро дастӣ интихоб кунед.");
+
+   if(error.code===1){
+    toast("Барои GPS иҷозат диҳед.");
+   }else{
+    toast("Ҷойгиршавӣ муайян нашуд.");
+   }
+  },
+
+  {
+   enableHighAccuracy:true,
+   timeout:15000,
+   maximumAge:0
+  }
+
+ );
+}
+
+
+// =====================================
+// SET PICKUP / DESTINATION
+// =====================================
+
+function setPoint(type,lat,lng,address){
+
+ points[type] = {
+  lat,
+  lng,
+  address
+ };
+
+ $(type).value = address;
+ $(type+"Results").replaceChildren();
+
+ if(markers[type]){
+  map.removeLayer(markers[type]);
+ }
+
+ markers[type] = L.marker(
+  [lat,lng],
+  {icon:markerIcon(type)}
+ ).addTo(map);
+
+ calculateRoute();
+}
+
+function invalidateRoute(){
+
+ routeVersion++;
+
+ if(routeController){
+  routeController.abort();
+ }
+
+ routeReady = false;
+ distanceKm = 0;
+ durationMin = 0;
+
+ if(routeLine){
+  map.removeLayer(routeLine);
+  routeLine = null;
+ }
+
+ $("distance").textContent = "—";
+ $("duration").textContent = "—";
+
+ renderCars();
+ updateTotal();
+}
+
+function clearPoint(type){
+
+ addressVersion[type]++;
+
+ points[type] = null;
+
+ if(markers[type]){
+  map.removeLayer(markers[type]);
+  markers[type] = null;
+ }
+
+ $(type+"Results").replaceChildren();
+
+ invalidateRoute();
+}
+
+["from","to"].forEach(type=>{
+
+ $(type).addEventListener("input",()=>{
+  clearPoint(type);
+ });
+
+ $(type).addEventListener("keydown",event=>{
+
+  if(event.key==="Enter"){
+   event.preventDefault();
+   searchAddress(type);
+  }
+
+ });
+
+});
+
+
+// =====================================
+// ADDRESS SEARCH
+// =====================================
+
+async function searchAddress(type){
+
+ const query = $(type).value.trim();
+
+ if(query.length<3){
+  toast("Суроғаро пурра нависед.");
+  return;
+ }
+
+ const version = ++addressVersion[type];
+
+ status("Ҷустуҷӯи суроға...");
+
+ const results = $(type+"Results");
+
+ results.replaceChildren();
+
+ try{
+
+  const params = new URLSearchParams({
+   q:query,
+   format:"jsonv2",
+   countrycodes:"tj",
+   limit:"5",
+   "accept-language":"tg,ru,en"
+  });
+
+  const data = await geoRequest(
+   "https://nominatim.openstreetmap.org/search?"
+   +params
+  );
+
+  if(version!==addressVersion[type]){
+   return;
+  }
+
+  if(!data.length){
+
+   status("Суроға ёфт нашуд.");
+
+   toast("Аз харита интихоб кунед.");
+
+   return;
+  }
+
+  data.forEach(place=>{
+
+   const button = document.createElement("button");
+
+   button.type = "button";
+   button.textContent = place.display_name;
+
+   button.onclick = ()=>{
+
+    addressVersion[type]++;
+
+    const lat = Number(place.lat);
+    const lng = Number(place.lon);
+
+    setPoint(
+     type,lat,lng,place.display_name
+    );
+
+    map.setView([lat,lng],16);
+
+    status("Суроға интихоб шуд.");
+
+   };
+
+   results.appendChild(button);
+
+  });
+
+  status("Суроғаро аз натиҷаҳо интихоб кунед.");
+
+ }catch(error){
+
+  if(version!==addressVersion[type]){
+   return;
+  }
+
+  status("Ҷустуҷӯ дастрас нест.");
+
+  toast("Аз харита истифода баред.");
+
+ }
+}
+
+
+// =====================================
+// SELECT ON MAP
+// =====================================
+
+function selectOnMap(type){
+
+ mapMode = type;
+
+ status(
+  type==="from"
+   ? "Ҷойи оғозро дар харита пахш кунед."
+   : "Ҷойи таъинотро дар харита пахш кунед."
+ );
+
+ window.scrollTo({
+  top:0,
+  behavior:"smooth"
+ });
+}
+
+map.on("click",async event=>{
+
+ const type = mapMode;
+ const version = ++addressVersion[type];
+
+ const lat = event.latlng.lat;
+ const lng = event.latlng.lng;
+
+ setPoint(
+  type,lat,lng,
+  `${lat.toFixed(5)}, ${lng.toFixed(5)}`
+ );
+
+ status("Ҷой интихоб шуд.");
+
+ try{
+
+  const address = await reverseAddress(lat,lng);
+
+  if(version===addressVersion[type]){
+
+   $(type).value = address;
+   points[type].address = address;
+
+  }
+
+ }catch(error){
+
+  // Coordinates remain available.
+
+ }
+
+});
+
+
+// =====================================
+// ROUTE AND DISTANCE
+// =====================================
+
+async function calculateRoute(){
+
+ invalidateRoute();
+
+ if(!points.from || !points.to){
+  return;
+ }
+
+ const version = routeVersion;
+
+ routeController = new AbortController();
+
+ const from = points.from;
+ const to = points.to;
+
+ status("Ҳисоби масир...");
+
+ try{
+
+  const url =
+   "https://router.project-osrm.org/route/v1/driving/"
+   +from.lng+","+from.lat+";"
+   +to.lng+","+to.lat
+   +"?overview=full&geometries=geojson";
+
+  const response = await fetch(url,{
+   signal:routeController.signal
+  });
+
+  if(!response.ok){
+   throw new Error("Route unavailable");
+  }
+
+  const data = await response.json();
+
+  if(version!==routeVersion){
+   return;
+  }
+
+  if(data.code!=="Ok" || !data.routes?.length){
+   throw new Error("No route");
+  }
+
+  const route = data.routes[0];
+
+  distanceKm = route.distance/1000;
+  durationMin = Math.max(
+   1,Math.ceil(route.duration/60)
+  );
+
+  routeLine = L.geoJSON(
+   route.geometry,
+   {
+    style:{
+     color:"#ff6500",
+     weight:6,
+     opacity:.9
+    }
+   }
+  ).addTo(map);
+
+  map.fitBounds(routeLine.getBounds(),{
+   padding:[45,45],
+   maxZoom:16
+  });
+
+  $("distance").textContent =
+   distanceKm.toFixed(1)+" км";
+
+  $("duration").textContent =
+   durationMin+" дақ";
+
+  routeReady = true;
+
+  renderCars();
+  updateTotal();
+
+  status("Масир омода аст.");
+
+ }catch(error){
+
+  if(error.name==="AbortError" ||
+     version!==routeVersion){
+   return;
+  }
+
+  status("Масир ҳисоб нашуд.");
+
+  toast("Суроға ё пайвасти интернетро санҷед.");
+
+ }
+}
+
+
+// =====================================
+// CAR DESIGN
+// =====================================
+
+function carSVG(type){
+
+ const color = tariffs[type].color;
+ const van = type==="minivan";
+
+ return `
+ <svg viewBox="0 0 180 90">
+  <ellipse cx="90" cy="78"
+   rx="78" ry="6" fill="#00000015"/>
+
+  <path d="${van
+   ? "M22 55L28 15H138L158 55Z"
+   : "M25 55L52 25H116L148 55Z"}"
+   fill="${color}"
+   stroke="#aaa" stroke-width="1"/>
+
+  <path d="${van
+   ? "M38 22H130L145 49H35Z"
+   : "M48 50L60 31H111L132 50Z"}"
+   fill="#435269"/>
+
+  <rect x="9" y="49"
+   width="162" height="26"
+   rx="11" fill="${color}"
+   stroke="#aaa"/>
+
+  <rect x="10" y="56"
+   width="19" height="9"
+   rx="4" fill="#ffdb55"/>
+
+  <rect x="151" y="56"
+   width="18" height="9"
+   rx="4" fill="#ff5b45"/>
+
+  <circle cx="43" cy="73"
+   r="14" fill="#222"/>
+
+  <circle cx="138" cy="73"
+   r="14" fill="#222"/>
+
+  <circle cx="43" cy="73"
+   r="6" fill="#aaa"/>
+
+  <circle cx="138" cy="73"
+   r="6" fill="#aaa"/>
+
+  <text x="90" y="65"
+   text-anchor="middle"
+   font-size="10"
+   font-weight="bold"
+   fill="#ff6500">VAYO</text>
+ </svg>`;
+}
+
+
+// =====================================
+// PRICES
+// =====================================
+
+function getPrice(type){
+
+ if(!routeReady){
+  return null;
+ }
+
+ const tariff = tariffs[type];
+
+ return Math.round(
+  (tariff.base+distanceKm*tariff.km)*100
+ )/100;
+}
+
+function renderCars(){
+
+ $("cars").replaceChildren();
+
+ Object.entries(tariffs).forEach(([key,car])=>{
+
+  const button = document.createElement("button");
+
+  button.className =
+   "car"+(selectedCar===key?" selected":"");
+
+  const price = getPrice(key);
+
+  button.innerHTML = `
+   ${carSVG(key)}
+   <div class="car-name">${car.name}</div>
+   <div class="car-desc">${car.desc}</div>
+   <div class="car-price">
+    ${price===null?"—":price.toFixed(2)} TJS
+   </div>
+  `;
+
+  button.onclick = ()=>{
+
+   selectedCar = key;
+
+   renderCars();
+   updateTotal();
+
+  };
+
+  $("cars").appendChild(button);
+
+ });
+
+}
+
+function updateTotal(){
+
+ const price = getPrice(selectedCar);
+
+ $("total").textContent =
+  price===null?"— TJS":price.toFixed(2)+" TJS";
+
+ $("orderBtn").disabled = !routeReady;
+}
+
+
+// =====================================
+// PHONE VALIDATION
+// =====================================
+
+function normalizePhone(value){
+
+ let digits = value.replace(/\D/g,"");
+
+ if(digits.startsWith("00992")){
+  digits = digits.slice(2);
+ }
+
+ if(digits.length===9){
+  digits = "992"+digits;
+ }
+
+ if(!/^992\d{9}$/.test(digits)){
+  return null;
+ }
+
+ return "+"+digits;
+}
+
+
+// =====================================
+// PREPARE ORDER
+// =====================================
+
+function prepareOrder(){
+
+ if(!routeReady ||
+    !points.from ||
+    !points.to){
+
+  toast("Аввал суроғаҳоро интихоб кунед.");
+  return;
+ }
+
+ const name = $("name").value.trim();
+
+ const phone = normalizePhone(
+  $("phone").value
+ );
+
+ if(!name || name.length>100){
+
+  toast("Номи худро дуруст нависед.");
+
+  $("name").focus();
+
+  return;
+ }
+
+ if(!phone){
+
+  toast("Рақами телефонро дуруст нависед.");
+
+  $("phone").focus();
+
+  return;
+ }
+
+ pendingOrder = {
+  id:crypto.randomUUID(),
+  name,
+  phone,
+  from:{...points.from},
+  to:{...points.to},
+  car:tariffs[selectedCar].name,
+  carType:selectedCar,
+  distance:Number(distanceKm.toFixed(2)),
+  duration:durationMin,
+  price:getPrice(selectedCar),
+  note:$("note").value.trim(),
+  callOnArrival:$("callOnArrival").checked,
+  commission:0,
+  status:"demo",
+  created:new Date().toISOString()
+ };
+
+ const summary = [
+  "Мошин: "+pendingOrder.car,
+  "Аз: "+pendingOrder.from.address,
+  "Ба: "+pendingOrder.to.address,
+  "Масофа: "+pendingOrder.distance+" км",
+  "Вақт: "+pendingOrder.duration+" дақ",
+  "Нарх: "+pendingOrder.price.toFixed(2)+" TJS",
+  "Телефон: "+pendingOrder.phone,
+  "Комиссия: 0%"
+ ];
+
+ $("orderSummary").replaceChildren();
+
+ summary.forEach(text=>{
+
+  const line = document.createElement("div");
+
+  line.textContent = text;
+
+  $("orderSummary").appendChild(line);
+
+ });
+
+ $("orderDialog").showModal();
+}
+
+
+// =====================================
+// CONFIRM DEMO ORDER
+// =====================================
+
+function readOrders(){
+
+ try{
+
+  const data = JSON.parse(
+   localStorage.getItem(ORDER_KEY)||"[]"
+  );
+
+  return Array.isArray(data)?data:[];
+
+ }catch(error){
+
+  return [];
+
+ }
+}
+
+function confirmOrder(){
+
+ if(!pendingOrder){
+  return;
+ }
+
+ // Store only a limited demo summary.
+ // Phone and exact addresses are not saved.
+
+ const saved = {
+  id:pendingOrder.id,
+  car:pendingOrder.car,
+  distance:pendingOrder.distance,
+  duration:pendingOrder.duration,
+  price:pendingOrder.price,
+  status:"demo",
+  created:pendingOrder.created
+ };
+
+ try{
+
+  const orders = readOrders();
+
+  orders.unshift(saved);
+
+  localStorage.setItem(
+   ORDER_KEY,
+   JSON.stringify(orders.slice(0,50))
+  );
+
+ }catch(error){
+
+  toast("Сабти фармоиш имконнопазир аст.");
+
+  return;
+ }
+
+ pendingOrder = null;
+
+ $("orderDialog").close();
+
+ toast("Фармоиши озмоишӣ сабт шуд!");
+
+ showHistory();
+}
+
+
+// =====================================
+// ORDER HISTORY
+// =====================================
+
+function showHistory(){
+
+ const list = $("historyList");
+
+ list.replaceChildren();
+
+ const orders = readOrders();
+
+ if(!orders.length){
+
+  list.textContent = "Ҳоло сафарҳо нестанд.";
+
+ }else{
+
+  orders.forEach(order=>{
+
+   const card = document.createElement("div");
+
+   card.className = "order-card";
+
+   const lines = [
+    "🚕 "+order.car,
+    "Масофа: "+order.distance+" км",
+    "Нарх: "+order.price+" TJS",
+    "Ҳолат: Озмоишӣ",
+    new Date(order.created).toLocaleString("ru-RU")
+   ];
+
+   lines.forEach(text=>{
+
+    const line = document.createElement("div");
+
+    line.textContent = text;
+
+    card.appendChild(line);
+
+   });
+
+   list.appendChild(card);
+
+  });
+
+  const clear = document.createElement("button");
+
+  clear.className = "close-btn";
+  clear.textContent = "Тоза кардани таърих";
+
+  clear.onclick = ()=>{
+
+   if(confirm("Таърихи сафарҳо тоза шавад?")){
+
+    try{
+     localStorage.removeItem(ORDER_KEY);
+     list.textContent = "Ҳоло сафарҳо нестанд.";
+    }catch(error){
+     toast("Тоза кардан имконнопазир аст.");
+    }
+
+   }
+
+  };
+
+  list.appendChild(clear);
+
+ }
+
+ if(!$("historyDialog").open){
+  $("historyDialog").showModal();
+ }
+}
+
+$("orderDialog").addEventListener("close",()=>{
+ pendingOrder = null;
+});
+
+
+// =====================================
+// START VAYO TAXI
+// =====================================
+
+renderCars();
+updateTotal();
+
+// Automatically request GPS on opening.
+
+window.addEventListener("load",()=>{
+
+ getLocation();
+
+});
+
+</script>
+
+</body>
+</html>
