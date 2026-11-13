@@ -1,0 +1,1648 @@
+
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VAYO Restaurant</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./config.js"></script>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ font-family:Arial,sans-serif;
+ background:#f5f6fa;
+ color:#202124;
+}
+header{
+ background:#ff6500;
+ color:white;
+ padding:20px;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+}
+header a{
+ color:white;
+ text-decoration:none;
+}
+header strong{font-size:23px}
+main{
+ max-width:1100px;
+ margin:auto;
+ padding:16px;
+}
+.card{
+ background:white;
+ padding:20px;
+ border-radius:18px;
+ margin-bottom:14px;
+}
+.grid{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:12px;
+}
+.metric{
+ font-size:26px;
+ color:#ff6500;
+ font-weight:bold;
+ margin-top:10px;
+}
+small{color:#777}
+button,.btn{
+ background:#ff6500;
+ color:white;
+ border:0;
+ border-radius:10px;
+ padding:12px 16px;
+ font-weight:bold;
+ font-size:14px;
+ cursor:pointer;
+ text-decoration:none;
+ display:inline-block;
+}
+button:disabled{opacity:.5}
+.green{background:#16a34a}
+.red{background:#dc2626}
+.gray{background:#64748b}
+.secondary{
+ background:#fff0e5;
+ color:#ff6500;
+}
+input,select,textarea{
+ width:100%;
+ border:1px solid #ddd;
+ border-radius:10px;
+ padding:12px;
+ font-size:16px;
+ margin:7px 0 15px;
+ background:white;
+}
+label{font-size:14px}
+.tabs{
+ display:flex;
+ gap:8px;
+ overflow:auto;
+ margin:15px 0;
+}
+.tabs button{
+ flex:1;
+ white-space:nowrap;
+}
+.tabs button.active{background:#222}
+.hidden{display:none!important}
+.badge{
+ background:#fff0df;
+ color:#b45309;
+ padding:7px 10px;
+ border-radius:20px;
+ display:inline-block;
+ font-size:12px;
+}
+.ok{
+ background:#dcfce7;
+ color:#15803d;
+}
+.food{
+ background:white;
+ padding:14px;
+ border-radius:16px;
+ display:flex;
+ gap:14px;
+ margin-bottom:12px;
+ align-items:center;
+}
+.food img{
+ width:105px;
+ height:105px;
+ object-fit:cover;
+ border-radius:12px;
+}
+.info{
+ flex:1;
+ min-width:0;
+ overflow-wrap:anywhere;
+}
+.price{
+ color:#ff6500;
+ font-size:22px;
+ font-weight:bold;
+}
+.actions{
+ display:flex;
+ flex-wrap:wrap;
+ gap:8px;
+ margin-top:12px;
+}
+dialog{
+ border:0;
+ border-radius:20px;
+ padding:22px;
+ width:min(94%,500px);
+ max-height:90vh;
+ overflow:auto;
+}
+dialog::backdrop{background:#0008}
+.notice{
+ background:#fff0df;
+ padding:14px;
+ border-radius:10px;
+ margin:12px 0;
+ overflow-wrap:anywhere;
+}
+.notice:empty{display:none}
+.empty{
+ background:white;
+ border-radius:15px;
+ padding:35px;
+ text-align:center;
+ color:#777;
+}
+.order p{overflow-wrap:anywhere}
+.cover{
+ width:100%;
+ height:170px;
+ object-fit:cover;
+ border-radius:14px;
+}
+@media(max-width:700px){
+ .grid{grid-template-columns:repeat(2,1fr)}
+ .metric{font-size:22px}
+ .food img{width:80px;height:80px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<a href="./index.html">←</a>
+<strong>VAYO Restaurant</strong>
+<a href="./account.html">👤</a>
+</header>
+
+<main>
+
+<div id="gate" class="card">
+<p id="gateText">Боргирӣ...</p>
+<a class="btn" href="./account.html">
+Ворид шудан
+</a>
+</div>
+
+<div id="app" class="hidden">
+
+<div id="notice" class="notice" role="status"></div>
+
+<section id="registration" class="hidden">
+
+<div class="card">
+
+<h2>🍔 Сабти тарабхона</h2>
+
+<p>Тарабхонаи худро ба VAYO илова кунед.</p>
+
+<form id="restaurantForm">
+
+<label>Номи тарабхона</label>
+<input id="restaurantName" required maxlength="150">
+
+<label>Телефон</label>
+<input id="restaurantPhone"
+ type="tel" placeholder="+992900000000" required>
+
+<label>Шаҳр</label>
+<select id="restaurantCity">
+<option>Душанбе</option>
+<option>Хуҷанд</option>
+<option>Бохтар</option>
+<option>Кӯлоб</option>
+<option>Ҳисор</option>
+<option>Данғара</option>
+<option>Ваҳдат</option>
+<option>Дигар</option>
+</select>
+
+<label>Суроға</label>
+<input id="restaurantAddress" required>
+
+<label>Навъи тарабхона</label>
+<select id="restaurantCategory">
+<option>Таомҳои миллӣ</option>
+<option>Fast Food</option>
+<option>Пицца</option>
+<option>Бургер</option>
+<option>Шашлик</option>
+<option>Қаҳвахона</option>
+<option>Ширинӣ</option>
+<option>Дигар</option>
+</select>
+
+<label>Тавсиф</label>
+<textarea id="restaurantDescription"></textarea>
+
+<label>Вақти кушодашавӣ</label>
+<input id="openingTime" type="time" value="08:00" required>
+
+<label>Вақти басташавӣ</label>
+<input id="closingTime" type="time" value="23:00" required>
+
+<label>Нархи расонидан (TJS)</label>
+<input id="deliveryFee" type="number"
+ min="0" step="0.01" value="10" required>
+
+<label>Ҳадди ақали фармоиш (TJS)</label>
+<input id="minimumOrder" type="number"
+ min="0" step="0.01" value="0" required>
+
+<label>Акси тарабхона</label>
+<input id="restaurantImage" type="file"
+ accept="image/jpeg,image/png,image/webp">
+
+<button id="registerButton" type="submit">
+Сабти тарабхона
+</button>
+
+</form>
+
+</div>
+</section>
+
+<section id="dashboard" class="hidden">
+
+<div class="card">
+
+<label>Тарабхонаи интихобшуда</label>
+
+<select id="restaurantSelect"></select>
+
+<div id="restaurantInfo"></div>
+
+<div class="actions">
+
+<button id="openButton" onclick="toggleOpen()">
+Кушодан
+</button>
+
+<button class="secondary" onclick="editRestaurant()">
+⚙️ Танзимот
+</button>
+
+<button class="secondary" onclick="newRestaurant()">
+＋ Тарабхонаи нав
+</button>
+
+</div>
+
+</div>
+
+<div class="grid">
+
+<div class="card">
+<small>Таомҳо</small>
+<div class="metric" id="foodCount">0</div>
+</div>
+
+<div class="card">
+<small>Фармоишҳои нав</small>
+<div class="metric" id="pendingCount">0</div>
+</div>
+
+<div class="card">
+<small>Фурӯши таомҳо</small>
+<div class="metric" id="sales">0</div>
+</div>
+
+<div class="card">
+<small>Комиссияи VAYO</small>
+<div class="metric">0%</div>
+</div>
+
+</div>
+
+<div class="tabs">
+
+<button id="menuTab" onclick="showTab('menu')">
+🍔 Меню
+</button>
+
+<button id="ordersTab" onclick="showTab('orders')">
+📦 Фармоишҳо
+</button>
+
+<button class="secondary" onclick="refreshAll()">
+↻
+</button>
+
+</div>
+
+<section id="menuSection">
+
+<button onclick="openFoodForm()">
+＋ Таоми нав
+</button>
+
+<h3>Менюи тарабхона</h3>
+
+<div id="foodList"></div>
+
+</section>
+
+<section id="ordersSection" class="hidden">
+
+<select id="orderFilter" onchange="renderOrders()">
+
+<option value="all">Ҳамаи фармоишҳо</option>
+<option value="pending">Нав</option>
+<option value="accepted">Қабулшуда</option>
+<option value="preparing">Омодасозӣ</option>
+<option value="ready">Омода</option>
+<option value="delivering">Дар роҳ</option>
+<option value="completed">Анҷомшуда</option>
+<option value="cancelled">Бекоршуда</option>
+
+</select>
+
+<div id="orderList"></div>
+
+</section>
+
+</section>
+
+</div>
+
+</main>
+
+<dialog id="foodDialog">
+
+<h2 id="foodDialogTitle">Таоми нав</h2>
+
+<div id="foodError" class="notice"></div>
+
+<form id="foodForm">
+
+<input type="hidden" id="foodId">
+
+<label>Номи таом</label>
+<input id="foodName" required maxlength="150">
+
+<label>Категория</label>
+<select id="foodCategory">
+<option>Ош</option>
+<option>Бургер</option>
+<option>Пицца</option>
+<option>Шашлик</option>
+<option>Самбӯса</option>
+<option>Нӯшокӣ</option>
+<option>Ширинӣ</option>
+<option>Салат</option>
+<option>Дигар</option>
+</select>
+
+<label>Нарх (TJS)</label>
+<input id="foodPrice" type="number"
+ min="0.01" step="0.01" required>
+
+<label>Вақти омодасозӣ (дақиқа)</label>
+<input id="foodMinutes" type="number"
+ min="1" max="300" value="20" required>
+
+<label>Тавсифи таом</label>
+<textarea id="foodDescription" required></textarea>
+
+<label>Акси таом</label>
+<input id="foodImage" type="file"
+ accept="image/jpeg,image/png,image/webp">
+
+<label>Тахфиф</label>
+<select id="saleEnabled" onchange="toggleSale()">
+<option value="no">Бе тахфиф</option>
+<option value="yes">Бо тахфиф</option>
+</select>
+
+<div id="saleFields" class="hidden">
+
+<label>Нархи тахфифӣ</label>
+<input id="salePrice" type="number"
+ min="0.01" step="0.01">
+
+<label>Оғози тахфиф (вақти Душанбе)</label>
+<input id="saleStart" type="datetime-local">
+
+<label>Анҷоми тахфиф (вақти Душанбе)</label>
+<input id="saleEnd" type="datetime-local">
+
+</div>
+
+<button id="saveFoodButton" type="submit">
+Сабт кардан
+</button>
+
+<button type="button" class="secondary"
+ onclick="document.getElementById('foodDialog').close()">
+Бекор
+</button>
+
+</form>
+
+</dialog>
+
+<dialog id="settingsDialog">
+
+<h2>Танзимоти тарабхона</h2>
+
+<div id="settingsError" class="notice"></div>
+
+<form id="settingsForm">
+
+<label>Ном</label>
+<input id="settingsName" required>
+
+<label>Телефон</label>
+<input id="settingsPhone" required>
+
+<label>Суроға</label>
+<input id="settingsAddress" required>
+
+<label>Тавсиф</label>
+<textarea id="settingsDescription"></textarea>
+
+<label>Нархи расонидан</label>
+<input id="settingsFee" type="number"
+ min="0" step="0.01" required>
+
+<label>Ҳадди ақали фармоиш</label>
+<input id="settingsMinimum" type="number"
+ min="0" step="0.01" required>
+
+<label>Вақти кушодашавӣ</label>
+<input id="settingsOpening" type="time" required>
+
+<label>Вақти басташавӣ</label>
+<input id="settingsClosing" type="time" required>
+
+<button type="submit" id="saveSettingsButton">
+Сабт кардан
+</button>
+
+<button type="button" class="secondary"
+ onclick="document.getElementById('settingsDialog').close()">
+Бекор
+</button>
+
+</form>
+
+</dialog>
+
+<script>
+
+const db = window.vayo;
+const $ = id => document.getElementById(id);
+
+let user = null;
+let restaurants = [];
+let restaurant = null;
+let foods = [];
+let orders = [];
+let busy = false;
+let loadVersion = 0;
+
+const statusNames = {
+ pending:"Фармоиши нав",
+ accepted:"Қабул шуд",
+ preparing:"Омода мешавад",
+ ready:"Барои расонанда омода",
+ delivering:"Дар роҳ",
+ completed:"Расонида шуд",
+ cancelled:"Бекор шуд"
+};
+
+function esc(value){
+ return String(value ?? "").replace(
+ /[&<>"']/g,
+ c=>({
+  "&":"&amp;",
+  "<":"&lt;",
+  ">":"&gt;",
+  '"':"&quot;",
+  "'":"&#39;"
+ })[c]);
+}
+
+function safeURL(value){
+
+ try{
+
+  const url = new URL(value);
+
+  return url.protocol==="https:" ? url.href : "";
+
+ }catch{
+
+  return "";
+
+ }
+
+}
+
+function money(value){
+ return Number(value || 0).toFixed(2)+" TJS";
+}
+
+function notice(text){
+ $("notice").textContent = text || "";
+}
+
+function val(id){
+ return $(id).value.trim();
+}
+
+function phone(value){
+
+ let p = value.replace(/[\s()-]/g,"");
+
+ if(/^\d{9}$/.test(p)) p = "+992"+p;
+
+ if(/^992\d{9}$/.test(p)) p = "+"+p;
+
+ if(!/^\+992\d{9}$/.test(p)){
+  throw new Error("Рақами телефон нодуруст аст.");
+ }
+
+ return p;
+
+}
+
+function localDate(value){
+
+ if(!value) return "";
+
+ return new Date(
+  new Date(value).getTime()+5*3600000
+ ).toISOString().slice(0,16);
+
+}
+
+function date(value){
+
+ return new Date(value).toLocaleString("ru-RU",{
+  timeZone:"Asia/Dushanbe"
+ });
+
+}
+
+async function uploadImage(bucket,file){
+
+ if(!file || !file.size) return null;
+
+ if(file.size>5242880){
+  throw new Error("Акс бояд то 5 MB бошад.");
+ }
+
+ const types = {
+  "image/jpeg":"jpg",
+  "image/png":"png",
+  "image/webp":"webp"
+ };
+
+ const ext = types[file.type];
+
+ if(!ext){
+  throw new Error("Формати акс нодуруст.");
+ }
+
+ const path =
+ user.id+"/"+crypto.randomUUID()+"."+ext;
+
+ const {error} = await db.storage
+ .from(bucket)
+ .upload(path,file);
+
+ if(error) throw error;
+
+ const {data} = db.storage
+ .from(bucket)
+ .getPublicUrl(path);
+
+ return {
+  bucket,
+  path,
+  url:data.publicUrl
+ };
+
+}
+
+async function removeUpload(upload){
+
+ if(upload){
+
+  await db.storage
+  .from(upload.bucket)
+  .remove([upload.path]);
+
+ }
+
+}
+
+async function loadRestaurants(preferredId){
+
+ const {data,error} = await db
+ .from("restaurants")
+ .select("*")
+ .eq("owner_id",user.id)
+ .order("created_at",{ascending:false});
+
+ if(error) throw error;
+
+ restaurants = data || [];
+
+ if(!restaurants.length){
+
+  $("registration").classList.remove("hidden");
+  $("dashboard").classList.add("hidden");
+
+  return;
+
+ }
+
+ restaurant = restaurants.find(r=>
+ r.id===preferredId
+ ) || restaurants[0];
+
+ $("restaurantSelect").innerHTML =
+ restaurants.map(r=>`
+
+ <option value="${esc(r.id)}">
+ ${esc(r.name)}
+ </option>
+
+ `).join("");
+
+ $("restaurantSelect").value = restaurant.id;
+
+ $("registration").classList.add("hidden");
+ $("dashboard").classList.remove("hidden");
+
+ renderRestaurant();
+
+ await loadData();
+
+}
+
+function renderRestaurant(){
+
+ const r = restaurant;
+
+ if(!r) return;
+
+ const image = safeURL(r.cover_url);
+
+ $("restaurantInfo").innerHTML = `
+
+ ${image
+ ? `<img class="cover" src="${esc(image)}" alt="">`
+ : ""}
+
+ <h2>${esc(r.name)}</h2>
+
+ <p>📍 ${esc(r.city)}, ${esc(r.address)}</p>
+
+ <p>📞 ${esc(r.phone)}</p>
+
+ <p>
+
+ <span class="badge ${r.approved?"ok":""}">
+
+ ${r.approved
+ ? "Тасдиқ шудааст"
+ : "Интизори тасдиқи Admin"}
+
+ </span>
+
+ <span class="badge ${r.is_open?"ok":""}">
+
+ ${r.is_open?"Кушода":"Баста"}
+
+ </span>
+
+ </p>
+
+ <p>
+ Расонидан: ${esc(money(r.delivery_fee))}
+ </p>
+
+ `;
+
+ $("openButton").disabled = !r.approved;
+
+ $("openButton").textContent =
+ r.is_open?"Бастани тарабхона":"Кушодани тарабхона";
+
+ $("openButton").className =
+ r.is_open?"red":"green";
+
+}
+
+function newRestaurant(){
+
+ if(busy) return;
+
+ $("registration").classList.remove("hidden");
+
+ $("registration").scrollIntoView({
+  behavior:"smooth"
+ });
+
+}
+
+$("restaurantForm").addEventListener("submit",async e=>{
+
+ e.preventDefault();
+
+ if(busy) return;
+
+ busy = true;
+
+ $("registerButton").disabled = true;
+
+ let upload = null;
+ let saved = false;
+
+ try{
+
+ const name = val("restaurantName");
+ const address = val("restaurantAddress");
+
+ if(!name || !address){
+  throw new Error("Ном ва суроғаро ворид кунед.");
+ }
+
+ const row = {
+
+  id:crypto.randomUUID(),
+  owner_id:user.id,
+
+  name,
+  phone:phone(val("restaurantPhone")),
+  city:val("restaurantCity"),
+  address,
+
+  category:val("restaurantCategory"),
+  description:val("restaurantDescription"),
+
+  opening_time:val("openingTime"),
+  closing_time:val("closingTime"),
+
+  delivery_fee:Number(val("deliveryFee")),
+  minimum_order:Number(val("minimumOrder"))
+
+ };
+
+ upload = await uploadImage(
+  "restaurant-images",
+  $("restaurantImage").files[0]
+ );
+
+ if(upload) row.cover_url = upload.url;
+
+ const {error} = await db
+ .from("restaurants")
+ .insert(row);
+
+ if(error) throw error;
+
+ saved = true;
+
+ $("restaurantForm").reset();
+
+ await loadRestaurants(row.id);
+
+ notice(
+ "Тарабхона сабт шуд. Admin бояд онро тасдиқ кунад."
+ );
+
+ }catch(error){
+
+ if(!saved) await removeUpload(upload);
+
+ notice(error.message);
+
+ }finally{
+
+ busy = false;
+ $("registerButton").disabled = false;
+
+ }
+
+});
+
+$("restaurantSelect").addEventListener("change",async e=>{
+
+ if(busy){
+
+  e.target.value = restaurant.id;
+  return;
+
+ }
+
+ restaurant = restaurants.find(r=>r.id===e.target.value);
+
+ renderRestaurant();
+
+ try{
+
+  await loadData();
+
+ }catch(error){
+
+  notice(error.message);
+
+ }
+
+});
+
+async function toggleOpen(){
+
+ if(busy || !restaurant || !restaurant.approved) return;
+
+ busy = true;
+
+ try{
+
+ const id = restaurant.id;
+
+ const {error} = await db
+ .from("restaurants")
+ .update({is_open:!restaurant.is_open})
+ .eq("id",id)
+ .eq("owner_id",user.id)
+ .select("id")
+ .single();
+
+ if(error) throw error;
+
+ await loadRestaurants(id);
+
+ notice("Ҳолати тарабхона нав шуд.");
+
+ }catch(error){
+
+ notice(error.message);
+
+ }finally{
+
+ busy = false;
+
+ }
+
+}
+
+function showTab(tab){
+
+ $("menuSection").classList.toggle(
+ "hidden",tab!=="menu"
+ );
+
+ $("ordersSection").classList.toggle(
+ "hidden",tab!=="orders"
+ );
+
+ $("menuTab").classList.toggle(
+ "active",tab==="menu"
+ );
+
+ $("ordersTab").classList.toggle(
+ "active",tab==="orders"
+ );
+
+}
+
+async function loadData(){
+
+ if(!restaurant) return;
+
+ const id = restaurant.id;
+ const version = ++loadVersion;
+
+ const [f,o] = await Promise.all([
+
+  db.from("food_items")
+  .select("*")
+  .eq("restaurant_id",id)
+  .order("created_at",{ascending:false})
+  .limit(500),
+
+  db.from("food_orders")
+  .select("*,food_order_items(*)")
+  .eq("restaurant_id",id)
+  .order("created_at",{ascending:false})
+  .limit(500)
+
+ ]);
+
+ if(version!==loadVersion) return;
+
+ if(f.error) throw f.error;
+ if(o.error) throw o.error;
+
+ foods = f.data || [];
+ orders = o.data || [];
+
+ $("foodCount").textContent = foods.length;
+
+ $("pendingCount").textContent =
+ orders.filter(o=>o.status==="pending").length;
+
+ $("sales").textContent = money(
+
+  orders.filter(o=>o.status==="completed")
+  .reduce((sum,o)=>sum+Number(o.subtotal),0)
+
+ );
+
+ renderFoods();
+ renderOrders();
+
+}
+
+async function refreshAll(){
+
+ if(busy || !restaurant) return;
+
+ busy = true;
+
+ try{
+
+  await loadRestaurants(restaurant.id);
+
+ }catch(error){
+
+  notice(error.message);
+
+ }finally{
+
+  busy = false;
+
+ }
+
+}
+
+function saleActive(f){
+
+ return f.sale_price!==null
+ && new Date(f.sale_start)<=new Date()
+ && new Date(f.sale_end)>new Date();
+
+}
+
+function renderFoods(){
+
+ if(!foods.length){
+
+  $("foodList").innerHTML =
+  '<div class="empty">Ҳоло таом илова нашудааст.</div>';
+
+  return;
+
+ }
+
+ $("foodList").innerHTML = foods.map(f=>{
+
+ const image = safeURL(f.image_url);
+ const discount = saleActive(f);
+
+ return `
+
+ <div class="food">
+
+ ${image
+ ? `<img src="${esc(image)}" alt="">`
+ : '<div style="font-size:45px">🍽️</div>'}
+
+ <div class="info">
+
+ <strong>${esc(f.name)}</strong>
+
+ <p class="price">
+
+ ${esc(money(discount?f.sale_price:f.price))}
+
+ ${discount
+ ? `<del style="font-size:14px;color:#999">
+ ${esc(money(f.price))}
+ </del>`
+ : ""}
+
+ </p>
+
+ <small>
+
+ ${esc(f.category)} ·
+ ${esc(f.preparation_minutes)} дақиқа
+
+ </small>
+
+ <p>
+
+ <span class="badge ${f.available?"ok":""}">
+
+ ${f.available?"Дар фурӯш":"Ғайрифаъол"}
+
+ </span>
+
+ </p>
+
+ <div class="actions">
+
+ <button data-action="edit"
+ data-id="${esc(f.id)}">
+ ✏️ Тағйир
+ </button>
+
+ <button class="secondary"
+ data-action="availability"
+ data-id="${esc(f.id)}">
+
+ ${f.available?"Пинҳон кардан":"Фаъол кардан"}
+
+ </button>
+
+ </div>
+
+ </div>
+
+ </div>
+
+ `;
+
+ }).join("");
+
+}
+
+function toggleSale(){
+
+ const enabled = val("saleEnabled")==="yes";
+
+ $("saleFields").classList.toggle("hidden",!enabled);
+
+ ["salePrice","saleStart","saleEnd"]
+ .forEach(id=>$(id).required=enabled);
+
+}
+
+function openFoodForm(id=null){
+
+ if(busy || !restaurant) return;
+
+ $("foodForm").reset();
+
+ $("foodId").value = "";
+
+ $("foodError").textContent = "";
+
+ $("foodDialogTitle").textContent = "Таоми нав";
+
+ if(id){
+
+ const f = foods.find(f=>f.id===id);
+
+ if(!f) return;
+
+ $("foodDialogTitle").textContent = "Тағйири таом";
+
+ $("foodId").value = f.id;
+ $("foodName").value = f.name;
+ $("foodCategory").value = f.category;
+ $("foodPrice").value = f.price;
+ $("foodMinutes").value = f.preparation_minutes;
+ $("foodDescription").value = f.description;
+
+ $("saleEnabled").value =
+ f.sale_price!==null?"yes":"no";
+
+ $("salePrice").value = f.sale_price ?? "";
+ $("saleStart").value = localDate(f.sale_start);
+ $("saleEnd").value = localDate(f.sale_end);
+
+ }
+
+ toggleSale();
+
+ $("foodDialog").showModal();
+
+}
+
+$("foodForm").addEventListener("submit",async e=>{
+
+ e.preventDefault();
+
+ if(busy || !restaurant) return;
+
+ busy = true;
+
+ $("saveFoodButton").disabled = true;
+ $("foodError").textContent = "";
+
+ let upload = null;
+ let saved = false;
+
+ try{
+
+ const id = val("foodId");
+
+ const price = Number(val("foodPrice"));
+
+ const minutes = Number(val("foodMinutes"));
+
+ if(!val("foodName") || !val("foodDescription")
+ || !Number.isFinite(price) || price<=0
+ || !Number.isInteger(minutes)
+ || minutes<1 || minutes>300){
+
+  throw new Error("Маълумоти таом нодуруст.");
+
+ }
+
+ const row = {
+
+  name:val("foodName"),
+  category:val("foodCategory"),
+  description:val("foodDescription"),
+  price,
+  preparation_minutes:minutes,
+
+  sale_price:null,
+  sale_start:null,
+  sale_end:null
+
+ };
+
+ if(val("saleEnabled")==="yes"){
+
+ const sale = Number(val("salePrice"));
+
+ const start = new Date(val("saleStart")+"+05:00");
+
+ const end = new Date(val("saleEnd")+"+05:00");
+
+ if(!Number.isFinite(sale)
+ || sale<=0 || sale>=price
+ || !Number.isFinite(start.getTime())
+ || !Number.isFinite(end.getTime())
+ || end<=start){
+
+  throw new Error("Нарх ё вақти тахфиф нодуруст.");
+
+ }
+
+ row.sale_price = sale;
+ row.sale_start = start.toISOString();
+ row.sale_end = end.toISOString();
+
+ }
+
+ upload = await uploadImage(
+  "food-images",
+  $("foodImage").files[0]
+ );
+
+ if(upload) row.image_url = upload.url;
+
+ let result;
+
+ if(id){
+
+ result = await db
+ .from("food_items")
+ .update(row)
+ .eq("id",id)
+ .eq("restaurant_id",restaurant.id)
+ .select("id")
+ .single();
+
+ }else{
+
+ row.restaurant_id = restaurant.id;
+ row.available = true;
+
+ result = await db
+ .from("food_items")
+ .insert(row);
+
+ }
+
+ if(result.error) throw result.error;
+
+ saved = true;
+
+ $("foodDialog").close();
+
+ await loadData();
+
+ notice("Таом бомуваффақият сабт шуд.");
+
+ }catch(error){
+
+ if(!saved) await removeUpload(upload);
+
+ $("foodError").textContent = error.message;
+
+ notice(error.message);
+
+ }finally{
+
+ busy = false;
+ $("saveFoodButton").disabled = false;
+
+ }
+
+});
+
+async function toggleAvailability(id){
+
+ if(busy) return;
+
+ const f = foods.find(f=>f.id===id);
+
+ if(!f) return;
+
+ busy = true;
+
+ try{
+
+ const {error} = await db
+ .from("food_items")
+ .update({available:!f.available})
+ .eq("id",id)
+ .eq("restaurant_id",restaurant.id)
+ .select("id")
+ .single();
+
+ if(error) throw error;
+
+ await loadData();
+
+ notice("Ҳолати таом нав шуд.");
+
+ }catch(error){
+
+ notice(error.message);
+
+ }finally{
+
+ busy = false;
+
+ }
+
+}
+
+function orderButton(id,status,label,color="green"){
+
+ return `<button class="${color}"
+ data-action="status"
+ data-id="${esc(id)}"
+ data-status="${esc(status)}">
+ ${esc(label)}
+ </button>`;
+
+}
+
+function orderActions(o){
+
+ if(o.status==="pending"){
+
+ return orderButton(o.id,"accepted","Қабул кардан")
+ +orderButton(o.id,"cancelled","Рад кардан","red");
+
+ }
+
+ if(o.status==="accepted"){
+
+ return orderButton(o.id,"preparing","Омода кардан")
+ +orderButton(o.id,"cancelled","Бекор кардан","red");
+
+ }
+
+ if(o.status==="preparing"){
+
+ return orderButton(o.id,"ready","Таом омода шуд");
+
+ }
+
+ if(o.status==="ready"){
+
+ return `<span class="badge">
+
+ ${o.courier_id
+ ? "Расонанда қабул кард"
+ : "Интизори расонанда"}
+
+ </span>`;
+
+ }
+
+ return "";
+
+}
+
+function renderOrders(){
+
+ const filter = val("orderFilter");
+
+ const list = orders.filter(o=>
+ filter==="all" || o.status===filter
+ );
+
+ if(!list.length){
+
+ $("orderList").innerHTML =
+ '<div class="empty">Фармоиш вуҷуд надорад.</div>';
+
+ return;
+
+ }
+
+ $("orderList").innerHTML = list.map(o=>`
+
+ <div class="card order">
+
+ <strong>Фармоиш #${esc(o.id.slice(0,8))}</strong>
+
+ <p>
+ <span class="badge">
+ ${esc(statusNames[o.status] || o.status)}
+ </span>
+ </p>
+
+ <small>${esc(date(o.created_at))}</small>
+
+ <hr>
+
+ <p>👤 ${esc(o.customer_name)}</p>
+
+ <p>📞 ${esc(o.customer_phone)}</p>
+
+ <p>📍 ${esc(o.delivery_address)}</p>
+
+ <p>📝 ${esc(o.note || "—")}</p>
+
+ <hr>
+
+ ${(o.food_order_items || []).map(i=>`
+
+ <p>
+
+ ${esc(i.food_name)}
+ × ${esc(i.quantity)}
+
+ — ${esc(money(i.price*i.quantity))}
+
+ </p>
+
+ `).join("")}
+
+ <p>Таомҳо: ${esc(money(o.subtotal))}</p>
+
+ <p>Расонидан: ${esc(money(o.delivery_fee))}</p>
+
+ <p class="price">
+
+ Ҳамагӣ: ${esc(money(o.total))}
+
+ </p>
+
+ <small>Пардохт: нақдӣ · Комиссия: 0%</small>
+
+ <div class="actions">
+
+ ${orderActions(o)}
+
+ </div>
+
+ </div>
+
+ `).join("");
+
+}
+
+async function updateOrder(id,status){
+
+ if(busy) return;
+
+ if(!confirm("Ин амалро тасдиқ мекунед?")) return;
+
+ busy = true;
+
+ try{
+
+ const {error} = await db.rpc(
+ "vayo_food_status",{
+
+  p_order_id:id,
+  p_status:status
+
+ });
+
+ if(error) throw error;
+
+ await loadData();
+
+ notice("Ҳолати фармоиш нав шуд.");
+
+ }catch(error){
+
+ notice(error.message);
+
+ }finally{
+
+ busy = false;
+
+ }
+
+}
+
+function editRestaurant(){
+
+ if(busy || !restaurant) return;
+
+ $("settingsError").textContent = "";
+
+ $("settingsName").value = restaurant.name;
+
+ $("settingsPhone").value = restaurant.phone;
+
+ $("settingsAddress").value = restaurant.address;
+
+ $("settingsDescription").value =
+ restaurant.description || "";
+
+ $("settingsFee").value = restaurant.delivery_fee;
+
+ $("settingsMinimum").value = restaurant.minimum_order;
+
+ $("settingsOpening").value =
+ restaurant.opening_time.slice(0,5);
+
+ $("settingsClosing").value =
+ restaurant.closing_time.slice(0,5);
+
+ $("settingsDialog").showModal();
+
+}
+
+$("settingsForm").addEventListener("submit",async e=>{
+
+ e.preventDefault();
+
+ if(busy || !restaurant) return;
+
+ busy = true;
+
+ $("saveSettingsButton").disabled = true;
+
+ try{
+
+ const id = restaurant.id;
+
+ const row = {
+
+  name:val("settingsName"),
+  phone:phone(val("settingsPhone")),
+  address:val("settingsAddress"),
+  description:val("settingsDescription"),
+
+  delivery_fee:Number(val("settingsFee")),
+
+  minimum_order:Number(val("settingsMinimum")),
+
+  opening_time:val("settingsOpening"),
+
+  closing_time:val("settingsClosing")
+
+ };
+
+ if(!row.name || !row.address){
+
+  throw new Error("Ном ва суроға ҳатмӣ мебошанд.");
+
+ }
+
+ const {error} = await db
+ .from("restaurants")
+ .update(row)
+ .eq("id",id)
+ .eq("owner_id",user.id)
+ .select("id")
+ .single();
+
+ if(error) throw error;
+
+ $("settingsDialog").close();
+
+ await loadRestaurants(id);
+
+ notice("Танзимот сабт шуд.");
+
+ }catch(error){
+
+ $("settingsError").textContent = error.message;
+
+ notice(error.message);
+
+ }finally{
+
+ busy = false;
+
+ $("saveSettingsButton").disabled = false;
+
+ }
+
+});
+
+document.addEventListener("click",e=>{
+
+ const b = e.target.closest("[data-action]");
+
+ if(!b) return;
+
+ const {action,id,status} = b.dataset;
+
+ if(action==="edit") openFoodForm(id);
+
+ if(action==="availability") toggleAvailability(id);
+
+ if(action==="status") updateOrder(id,status);
+
+});
+
+async function start(){
+
+ try{
+
+ if(!db){
+
+  throw new Error("config.js ёфт нашуд.");
+
+ }
+
+ const {data,error} = await db.auth.getUser();
+
+ if(error || !data.user){
+
+  throw new Error("Аввал ба аккаунт ворид шавед.");
+
+ }
+
+ user = data.user;
+
+ $("gate").classList.add("hidden");
+
+ $("app").classList.remove("hidden");
+
+ showTab("menu");
+
+ await loadRestaurants();
+
+ }catch(error){
+
+ $("gateText").textContent = error.message;
+
+ notice(error.message);
+
+ }
+
+}
+
+setInterval(async()=>{
+
+ if(!user || !restaurant || busy
+ || document.visibilityState!=="visible"
+ || $("foodDialog").open
+ || $("settingsDialog").open){
+
+  return;
+
+ }
+
+ try{
+
+  await loadData();
+
+ }catch(error){
+
+  notice(error.message);
+
+ }
+
+},20000);
+
+start();
+
+</script>
+
+</body>
+</html>
