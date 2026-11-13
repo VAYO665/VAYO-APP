@@ -6,337 +6,275 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>VAYO Food</title>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./config.js"></script>
+
 <style>
 *{box-sizing:border-box}
 body{
  margin:0;
- font-family:Arial,sans-serif;
  background:#f7f7f7;
- color:#222;
- padding-bottom:90px;
+ color:#202124;
+ font-family:Arial,sans-serif;
 }
-button,input,textarea,select{font:inherit}
-button{border:0;cursor:pointer}
-a{text-decoration:none;color:inherit}
 header{
+ background:white;
+ padding:16px;
  position:sticky;
  top:0;
- background:white;
- z-index:100;
- padding:14px;
- box-shadow:0 2px 12px #0001;
+ z-index:10;
+ border-bottom:1px solid #eee;
 }
 .top{
  display:flex;
  align-items:center;
  justify-content:space-between;
- max-width:1100px;
- margin:auto;
+ gap:10px;
 }
 .logo{
- color:#ff6500;
- font-size:27px;
+ font-size:26px;
  font-weight:900;
+ color:#ff6500;
 }
-.location{
- font-size:13px;
- color:#555;
- background:#f3f3f3;
- padding:10px;
- border-radius:12px;
-}
-.search{
- display:flex;
- align-items:center;
- background:#f1f1f1;
- border-radius:16px;
- padding:13px;
- gap:10px;
- max-width:1100px;
- margin:12px auto 0;
-}
-.search input{
- border:0;
- outline:0;
- background:transparent;
- width:100%;
+a{
+ color:inherit;
+ text-decoration:none;
 }
 main{
  max-width:1100px;
  margin:auto;
+ padding:15px 15px 100px;
 }
-.hero{
- margin:12px;
- padding:25px;
- border-radius:22px;
- background:linear-gradient(120deg,#ff5100,#ffa600);
+input,select,textarea{
+ width:100%;
+ padding:13px;
+ border:1px solid #ddd;
+ border-radius:12px;
+ background:#f7f7f7;
+ font-size:16px;
+ margin:8px 0 12px;
+}
+button,.btn{
+ border:0;
+ border-radius:13px;
+ padding:13px 16px;
+ background:#ff6500;
  color:white;
- display:flex;
- align-items:center;
- overflow:hidden;
- min-height:190px;
-}
-.hero h1{
- font-size:30px;
- margin:8px 0;
-}
-.hero p{
- font-size:14px;
- line-height:1.6;
-}
-.hero img{
- width:43%;
- max-width:240px;
- height:155px;
- object-fit:cover;
- border-radius:50%;
-}
-.categories{
- display:flex;
- overflow:auto;
- gap:12px;
- padding:12px;
- scrollbar-width:none;
-}
-.category{
- min-width:76px;
- background:white;
- border:2px solid transparent;
- border-radius:18px;
- padding:10px;
- text-align:center;
-}
-.category.active{
- border-color:#ff6500;
- background:#fff3e8;
-}
-.category span{
- display:block;
- font-size:33px;
- margin-bottom:8px;
-}
-.category small{
- font-size:12px;
+ font-size:15px;
  font-weight:bold;
+ cursor:pointer;
+ display:inline-block;
 }
-.section-title{
- padding:5px 14px;
+button:disabled{
+ opacity:.5;
+ cursor:not-allowed;
+}
+.full{width:100%}
+.gray{background:#eee;color:#222}
+.green{background:#16a34a}
+.red{background:#dc2626}
+.hero{
+ background:linear-gradient(120deg,#ff6500,#ff9c38);
+ color:white;
+ border-radius:24px;
+ padding:25px;
  display:flex;
  align-items:center;
  justify-content:space-between;
+ margin-bottom:20px;
 }
-.section-title h2{font-size:21px}
-.badge{
- background:#e8f9ec;
- color:#169344;
- border-radius:10px;
- padding:7px 10px;
- font-size:12px;
+.hero h1{
+ font-size:27px;
+ margin:0;
 }
-.restaurants{
+.hero p{
+ line-height:1.5;
+}
+.heroIcon{font-size:75px}
+.categories{
+ display:flex;
+ gap:10px;
+ overflow:auto;
+ margin-bottom:20px;
+ padding-bottom:5px;
+}
+.category{
+ flex-shrink:0;
+ background:white;
+ color:#222;
+ border:1px solid #eee;
+}
+.category.active{
+ background:#ff6500;
+ color:white;
+}
+.grid{
  display:grid;
  grid-template-columns:repeat(2,minmax(0,1fr));
  gap:12px;
- padding:0 12px;
 }
-.restaurant{
+.card{
  background:white;
  border-radius:18px;
  overflow:hidden;
- cursor:pointer;
- box-shadow:0 3px 12px #0001;
+ border:1px solid #eee;
 }
-.restaurant img{
+.cardBody{
+ padding:13px;
+ overflow-wrap:anywhere;
+}
+.cover{
  width:100%;
- height:150px;
+ height:155px;
  object-fit:cover;
  display:block;
 }
-.restaurant-body{padding:12px}
-.restaurant h3{
- font-size:16px;
- margin:0 0 8px;
-}
-.small{
- color:#777;
- font-size:12px;
- line-height:1.6;
-}
-.foods{
- display:grid;
- grid-template-columns:repeat(2,minmax(0,1fr));
- gap:10px;
- padding:12px;
-}
-.food{
- background:white;
- border-radius:17px;
- overflow:hidden;
- box-shadow:0 2px 9px #0001;
-}
-.food img{
- width:100%;
- aspect-ratio:1.15;
- object-fit:cover;
- display:block;
-}
-.food-body{padding:12px}
-.food h3{
- font-size:15px;
- margin:0 0 8px;
+.placeholder{
+ height:155px;
+ background:#fff0df;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-size:65px;
 }
 .price{
- font-size:19px;
- color:#ff6500;
+ font-size:21px;
  font-weight:900;
+ color:#ff6500;
 }
-.old{
- text-decoration:line-through;
+.oldPrice{
  color:#999;
+ text-decoration:line-through;
+ font-size:13px;
+}
+small{color:#777}
+.badge{
+ display:inline-block;
+ background:#fff0df;
+ color:#b45309;
+ padding:6px 10px;
+ border-radius:20px;
  font-size:12px;
 }
-.add{
- background:#fff0e5;
- color:#ff6500;
+.open{
+ background:#dcfce7;
+ color:#15803d;
+}
+.hidden{display:none!important}
+.notice{
+ padding:13px;
+ background:#fff0df;
  border-radius:12px;
- width:100%;
- padding:12px;
- font-weight:bold;
- margin-top:10px;
+ margin-bottom:12px;
+ overflow-wrap:anywhere;
+}
+.notice:empty{display:none}
+.empty{
+ background:white;
+ padding:35px 15px;
+ border-radius:18px;
+ text-align:center;
+ color:#777;
 }
 nav{
  position:fixed;
  bottom:0;
  left:0;
  right:0;
- background:white;
- z-index:200;
  display:flex;
  justify-content:space-around;
- padding:10px;
- padding-bottom:max(10px,env(safe-area-inset-bottom));
- border-top:1px solid #eee;
+ background:white;
+ border-top:1px solid #ddd;
+ padding:12px 4px;
+ z-index:20;
 }
 nav button,nav a{
- display:flex;
- flex-direction:column;
- align-items:center;
- gap:5px;
- background:white;
  color:#555;
- font-size:11px;
+ background:transparent;
+ font-size:12px;
+ text-align:center;
+ padding:5px;
 }
-nav span{font-size:25px}
+nav span{
+ display:block;
+ font-size:24px;
+ margin-bottom:5px;
+}
 nav .active{color:#ff6500}
 dialog{
  border:0;
- border-radius:23px;
- width:min(95%,550px);
- max-height:90dvh;
+ border-radius:22px;
+ width:min(95%,520px);
+ max-height:90vh;
  overflow:auto;
  padding:20px;
 }
-dialog::backdrop{background:#0008}
-.dialog-top{
- display:flex;
- align-items:center;
- justify-content:space-between;
- margin-bottom:15px;
+dialog::backdrop{
+ background:#0008;
 }
-.dialog-top h2{margin:0}
-.close{
- width:35px;
- height:35px;
- border-radius:50%;
- background:#eee;
- font-size:23px;
-}
-.primary{
- width:100%;
- background:#ff6500;
- color:white;
- border-radius:15px;
- padding:16px;
- font-weight:bold;
- margin-top:12px;
-}
-.primary:disabled{opacity:.5}
-.field{margin-bottom:13px}
-.field label{
- display:block;
- font-size:13px;
- font-weight:bold;
- margin-bottom:6px;
-}
-.field input,.field textarea,.field select{
- width:100%;
- border:1px solid #ddd;
- background:#f8f8f8;
- border-radius:13px;
- padding:13px;
-}
-.cart-row{
- display:flex;
- align-items:center;
- gap:12px;
- padding:12px 0;
- border-bottom:1px solid #eee;
-}
-.cart-row img{
- width:75px;
- height:75px;
- object-fit:cover;
- border-radius:12px;
-}
-.quantity{
+.row{
  display:flex;
  align-items:center;
  gap:10px;
- margin-top:8px;
 }
-.quantity button{
- width:30px;
- height:30px;
- border-radius:8px;
- background:#eee;
+.between{
+ justify-content:space-between;
 }
-.summary{
- background:#f5f5f5;
- border-radius:14px;
- padding:15px;
+.cartItem{
+ padding:12px 0;
+ border-bottom:1px solid #eee;
+}
+.qty{
+ display:flex;
+ align-items:center;
+ gap:12px;
+}
+.qty button{
+ padding:8px 13px;
+}
+.panel{
+ background:white;
+ border-radius:18px;
+ padding:17px;
+ margin-bottom:14px;
+ overflow-wrap:anywhere;
+}
+.total{
+ font-size:24px;
+ font-weight:bold;
+ color:#ff6500;
+}
+.steps{
+ display:flex;
+ flex-direction:column;
+ gap:12px;
+ margin:18px 0;
+}
+.step{
+ color:#999;
+}
+.step.done{
+ color:#16a34a;
+ font-weight:bold;
+}
+.restaurantTitle{
+ font-size:25px;
  margin:12px 0;
- line-height:1.8;
 }
-.toast{
- position:fixed;
- bottom:90px;
- left:50%;
- transform:translateX(-50%);
- background:#222;
- color:white;
- border-radius:13px;
- padding:14px 20px;
- z-index:1000;
- max-width:90%;
- width:max-content;
+.menuLinks{
+ display:flex;
+ gap:8px;
+ flex-wrap:wrap;
+ margin-top:20px;
 }
-.hidden{display:none!important}
-.empty{
- grid-column:1/-1;
- padding:30px;
- text-align:center;
- color:#777;
+.menuLinks a{
+ font-size:13px;
 }
 @media(min-width:750px){
- .restaurants{
-  grid-template-columns:repeat(3,minmax(0,1fr));
+ .grid{
+ grid-template-columns:repeat(4,minmax(0,1fr));
  }
- .foods{
-  grid-template-columns:repeat(4,minmax(0,1fr));
- }
- .hero{padding:35px}
- .hero img{margin-left:auto}
- .restaurant img{height:210px}
+ .cover,.placeholder{height:180px}
 }
 </style>
 </head>
@@ -344,1075 +282,2038 @@ dialog::backdrop{background:#0008}
 <body>
 
 <header>
- <div class="top">
-  <a href="./index.html">❮</a>
-  <div class="logo">VAYO Food</div>
-  <button class="location" onclick="openAddress()">
-   📍 <span id="locationText">Душанбе</span>
-  </button>
- </div>
 
- <div class="search">
-  🔍
-  <input id="search"
-   placeholder="Хӯрок ё тарабхонаро ҷӯед">
- </div>
+<div class="top">
+
+<a href="./index.html">←</a>
+
+<div class="logo">VAYO FOOD</div>
+
+<a href="./account.html">👤</a>
+
+</div>
+
+<input id="search"
+placeholder="🔍 Таом ё тарабхонаро ҷустуҷӯ кунед">
+
+<select id="city">
+
+<option>Душанбе</option>
+<option>Хуҷанд</option>
+<option>Бохтар</option>
+<option>Кӯлоб</option>
+<option>Ҳисор</option>
+<option>Данғара</option>
+<option>Ваҳдат</option>
+
+</select>
+
 </header>
 
 <main>
 
-<section class="hero">
- <div>
-  <small>VAYO FOOD</small>
-  <h1>Гурусна шудед?</h1>
-  <p>
-   Хӯроки дӯстдоштаатонро фармоиш диҳед!
-  </p>
-  <b>Комиссия 0%</b>
- </div>
+<div id="notice" class="notice" role="status"></div>
 
- <img
- src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&auto=format&fit=crop"
- alt="Бургер">
+<section id="homeScreen">
+
+<div class="hero">
+
+<div>
+
+<h1>Таоми дӯстдоштаатон!</h1>
+
+<p>Аз тарабхона фармоиш диҳед.</p>
+
+<strong>Комиссияи VAYO — 0%</strong>
+
+</div>
+
+<div class="heroIcon">🍔</div>
+
+</div>
+
+<div id="categories" class="categories"></div>
+
+<h2>Тарабхонаҳо</h2>
+
+<div id="restaurants" class="grid"></div>
+
+<h2>Таомҳо</h2>
+
+<div id="foods" class="grid"></div>
+
+<div class="menuLinks">
+
+<a class="btn gray" href="./restaurant.html">
+🍽 Тарабхона илова кардан
+</a>
+
+<a class="btn gray" href="./courier.html">
+🛵 Расонанда шудан
+</a>
+
+</div>
+
 </section>
 
-<div class="categories" id="categories"></div>
+<section id="restaurantScreen" class="hidden">
 
-<div class="section-title">
- <h2>Тарабхонаҳо</h2>
- <span class="badge">Намуна</span>
-</div>
+<button class="gray" onclick="goHome()">
+← Тарабхонаҳо
+</button>
 
-<div class="restaurants" id="restaurants"></div>
+<div id="restaurantInfo"></div>
 
-<div class="section-title">
- <h2 id="foodTitle">Хӯрокҳои маъмул</h2>
- <button onclick="showAll()"
- style="background:transparent;color:#ff6500">
-  Ҳама
- </button>
-</div>
+<h2>Меню</h2>
 
-<div class="foods" id="foods"></div>
+<div id="restaurantMenu" class="grid"></div>
 
-<p class="small" style="padding:15px;text-align:center">
- Тарабхонаҳо, нархҳо ва менюи ҳозира
- барои санҷиши барнома мебошанд.
-</p>
+</section>
+
+<section id="ordersScreen" class="hidden">
+
+<h2>Фармоишҳои ман</h2>
+
+<button class="gray" onclick="loadOrders()">
+↻ Навсозӣ
+</button>
+
+<br><br>
+
+<div id="orders"></div>
+
+</section>
+
+<section id="favoritesScreen" class="hidden">
+
+<h2>Тарабхонаҳои дӯстдошта</h2>
+
+<div id="favorites" class="grid"></div>
+
+</section>
 
 </main>
 
 <nav>
 
- <a href="./index.html">
-  <span>⌂</span>Асосӣ
- </a>
+<button class="active" onclick="goHome()">
 
- <button class="active" onclick="showAll()">
-  <span>🍔</span>Хӯрок
- </button>
+<span>🏠</span>
+Асосӣ
 
- <button onclick="showHistory()">
-  <span>📋</span>Фармоиш
- </button>
+</button>
 
- <button onclick="openCart()">
-  <span>🛒</span>
-  <div id="cartCount">Сабад (0)</div>
- </button>
+<button onclick="openFavorites()">
 
- <a href="./account.html">
-  <span>👤</span>Аккаунт
- </a>
+<span>❤️</span>
+Дӯстдошта
+
+</button>
+
+<button onclick="openOrders()">
+
+<span>📋</span>
+Фармоишҳо
+
+</button>
+
+<button onclick="openCart()">
+
+<span>🛒</span>
+Сабад (<b id="cartCount">0</b>)
+
+</button>
+
+<a href="./account.html">
+
+<span>👤</span>
+Аккаунт
+
+</a>
 
 </nav>
 
-<!-- ADDRESS -->
-
-<dialog id="addressDialog">
-
- <div class="dialog-top">
-  <h2>Суроғаи шумо</h2>
-  <button class="close"
-   onclick="closeDialog('addressDialog')">×</button>
- </div>
-
- <div class="field">
-  <label>Шаҳр</label>
-  <select id="city">
-   <option>Душанбе</option>
-   <option>Хуҷанд</option>
-   <option>Бохтар</option>
-   <option>Кӯлоб</option>
-   <option>Ҳисор</option>
-   <option>Данғара</option>
-   <option>Ваҳдат</option>
-  </select>
- </div>
-
- <div class="field">
-  <label>Кӯча ва рақами хона</label>
-  <input id="address"
-   placeholder="Суроғаи пурра">
- </div>
-
- <button class="primary" onclick="getGPS()">
-  📍 Муайян кардани ҷой бо GPS
- </button>
-
- <p class="small" id="gpsStatus"></p>
-
- <button class="primary" onclick="saveAddress()">
-  Сабт кардани суроға
- </button>
-
-</dialog>
-
-<!-- FOOD DETAILS -->
-
-<dialog id="foodDialog">
-
- <div class="dialog-top">
-  <h2>Хӯрок</h2>
-  <button class="close"
-   onclick="closeDialog('foodDialog')">×</button>
- </div>
-
- <div id="foodDetails"></div>
-
-</dialog>
-
-<!-- CART -->
-
 <dialog id="cartDialog">
 
- <div class="dialog-top">
-  <h2>Сабади шумо</h2>
-  <button class="close"
-   onclick="closeDialog('cartDialog')">×</button>
- </div>
+<h2>Сабади шумо</h2>
 
- <div id="cartItems"></div>
+<div id="cartError" class="notice"></div>
 
- <div id="cartSummary" class="summary"></div>
+<div id="cartContent"></div>
 
- <button class="primary"
- id="checkoutBtn"
- onclick="openCheckout()">
-  Фармоиш додан
- </button>
+<button id="checkoutButton"
+class="full"
+onclick="openCheckout()">
+
+Давом додан
+
+</button>
+
+<br><br>
+
+<button class="gray full"
+onclick="document.getElementById('cartDialog').close()">
+
+Пӯшидан
+
+</button>
 
 </dialog>
-
-<!-- CHECKOUT -->
 
 <dialog id="checkoutDialog">
 
- <div class="dialog-top">
-  <h2>Расонидани хӯрок</h2>
-  <button class="close"
-   onclick="closeDialog('checkoutDialog')">×</button>
- </div>
+<h2>Суроғаи расонидан</h2>
 
- <form id="checkoutForm">
+<div id="checkoutError" class="notice"></div>
 
-  <div class="field">
-   <label>Ному насаб</label>
-   <input id="buyerName" required maxlength="100">
-  </div>
+<form id="checkoutForm">
 
-  <div class="field">
-   <label>Рақами телефон</label>
-   <input id="buyerPhone" type="tel"
-    placeholder="+992" required>
-  </div>
+<label>Ному насаб</label>
 
-  <div class="field">
-   <label>Шаҳр ва суроғаи пурра</label>
-   <textarea id="buyerAddress"
-    rows="3" required></textarea>
-  </div>
+<input id="customerName"
+maxlength="100" required>
 
-  <div class="field">
-   <label>Ҳуҷра, ошёна ё даромадгоҳ</label>
-   <input id="apartment">
-  </div>
+<label>Телефон</label>
 
-  <div class="field">
-   <label>Шарҳи иловагӣ</label>
-   <textarea id="note" rows="2"
-    maxlength="300"></textarea>
-  </div>
+<input id="customerPhone"
+type="tel"
+placeholder="+992900000000"
+required>
 
-  <label>
-   <input type="checkbox"
-    id="callOnArrival" checked>
-   Вақте расидед, занг занед
-  </label>
+<label>Шаҳр</label>
 
-  <div class="summary">
-   💵 Пардохт бо пули нақд
-   <br>
-   <b id="checkoutTotal"></b>
-  </div>
+<input id="deliveryCity" readonly>
 
-  <button class="primary" type="submit">
-   Тасдиқи фармоиши озмоишӣ
-  </button>
+<label>Кӯча ва рақами хона</label>
 
- </form>
+<input id="deliveryStreet"
+maxlength="300"
+required>
+
+<label>Хона, ошёна ё ҳуҷра</label>
+
+<input id="apartment"
+maxlength="100">
+
+<button class="gray full"
+type="button"
+onclick="getGPS()">
+
+📍 Илова кардани GPS
+
+</button>
+
+<p id="gpsInfo"></p>
+
+<label>Шарҳ барои расонанда</label>
+
+<textarea id="note"
+maxlength="500"></textarea>
+
+<label>
+
+<input id="callOnArrival"
+type="checkbox"
+style="width:auto"
+checked>
+
+Ҳангоми расидан занг занад
+
+</label>
+
+<div class="panel">
+
+<p>Пардохт: нақдӣ</p>
+
+<div id="checkoutTotal"></div>
+
+</div>
+
+<button id="confirmButton"
+type="submit"
+class="full">
+
+Тасдиқи фармоиш
+
+</button>
+
+<br><br>
+
+<button class="gray full"
+type="button"
+onclick="closeCheckout()">
+
+Бозгашт
+
+</button>
+
+</form>
 
 </dialog>
-
-<!-- HISTORY -->
-
-<dialog id="historyDialog">
-
- <div class="dialog-top">
-  <h2>Фармоишҳои ман</h2>
-  <button class="close"
-   onclick="closeDialog('historyDialog')">×</button>
- </div>
-
- <div id="historyList"></div>
-
-</dialog>
-
-<div class="toast hidden" id="toast"></div>
 
 <script>
 
-const $=id=>document.getElementById(id);
+const db = window.vayo;
+const $ = id => document.getElementById(id);
 
-const categories=[
- ["Ҳама","🍽️"],
+let user = null;
+let restaurants = [];
+let foods = [];
+let favorites = new Set();
+
+let currentRestaurant = null;
+let selectedCategory = "Ҳама";
+let currentScreen = "homeScreen";
+
+let cart = [];
+let gps = null;
+let gpsVersion = 0;
+let busy = false;
+let loadingOrders = false;
+let catalogVersion = 0;
+let checkoutSnapshot = "";
+
+const categories = [
+ ["Ҳама","🍽"],
  ["Ош","🍚"],
  ["Бургер","🍔"],
  ["Пицца","🍕"],
- ["Шашлик","🍖"],
+ ["Шашлик","🍢"],
  ["Самбӯса","🥟"],
  ["Нӯшокӣ","🥤"],
  ["Ширинӣ","🍰"]
 ];
 
-const photos={
- burger:"https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&auto=format&fit=crop",
- pizza:"https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=600&auto=format&fit=crop",
- rice:"https://images.unsplash.com/photo-1512058564366-18510be2db19?w=600&auto=format&fit=crop",
- meat:"https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop",
- cake:"https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&auto=format&fit=crop",
- drink:"https://images.unsplash.com/photo-1544145945-f90425340c7e?w=600&auto=format&fit=crop"
+const statuses = {
+ pending:"Интизори тарабхона",
+ accepted:"Тарабхона қабул кард",
+ preparing:"Таом омода мешавад",
+ ready:"Таом омода аст",
+ delivering:"Расонанда дар роҳ аст",
+ completed:"Расонида шуд",
+ cancelled:"Бекор шуд"
 };
 
-// DEMO RESTAURANTS
+function esc(value){
 
-const restaurants=[
- {
-  id:1,
-  name:"VAYO Milliy",
-  category:"Хӯрокҳои миллӣ",
-  image:photos.rice
- },
- {
-  id:2,
-  name:"VAYO Burger",
-  category:"Бургер ва фастфуд",
-  image:photos.burger
- },
- {
-  id:3,
-  name:"VAYO Pizza",
-  category:"Пицца ва нӯшокиҳо",
-  image:photos.pizza
- }
-];
-
-// DEMO MENU
-
-const foods=[
- {
-  id:1,
-  restaurant:1,
-  name:"Оши палав",
-  category:"Ош",
-  price:30,
-  old:35,
-  image:photos.rice,
-  description:"Биринҷ, гӯшт, сабзӣ ва ҳанут."
- },
- {
-  id:2,
-  restaurant:2,
-  name:"Чизбургер",
-  category:"Бургер",
-  price:25,
-  old:30,
-  image:photos.burger,
-  description:"Гӯшт, панир, сабзавот ва соус."
- },
- {
-  id:3,
-  restaurant:3,
-  name:"Пицца Маргарита",
-  category:"Пицца",
-  price:55,
-  old:65,
-  image:photos.pizza,
-  description:"Панир, помидор ва хамири пицца."
- },
- {
-  id:4,
-  restaurant:1,
-  name:"Шашлики гӯштӣ",
-  category:"Шашлик",
-  price:35,
-  old:0,
-  image:photos.meat,
-  description:"Гӯшти бирён бо ҳанут."
- },
- {
-  id:5,
-  restaurant:3,
-  name:"Торт",
-  category:"Ширинӣ",
-  price:20,
-  old:25,
-  image:photos.cake,
-  description:"Як порча торти шоколадӣ."
- },
- {
-  id:6,
-  restaurant:2,
-  name:"Нӯшокии хунук",
-  category:"Нӯшокӣ",
-  price:10,
-  old:0,
-  image:photos.drink,
-  description:"Нӯшокии хунук."
- }
-];
-
-let category="Ҳама";
-let restaurantId=null;
-let cart=[];
-let deliveryAddress="";
-let gps=null;
-let toastTimer;
-
-const CART_KEY="vayo_food_cart_v1";
-const ORDER_KEY="vayo_food_orders_v1";
-
-function read(key){
-
- try{
-  const data=JSON.parse(
-   localStorage.getItem(key)||"[]"
-  );
-
-  return Array.isArray(data)?data:[];
-
- }catch{
-  return [];
- }
+ return String(value ?? "").replace(
+ /[&<>"']/g,
+ c=>({
+ "&":"&amp;",
+ "<":"&lt;",
+ ">":"&gt;",
+ '"':"&quot;",
+ "'":"&#39;"
+ })[c]);
 
 }
 
-cart=read(CART_KEY).filter(i=>
- foods.some(f=>f.id===i.id) &&
- Number.isInteger(i.quantity) &&
- i.quantity>0 &&
- i.quantity<=99
-);
-
-function save(key,value){
+function safeURL(value){
 
  try{
 
-  localStorage.setItem(
-   key,JSON.stringify(value)
-  );
+ const url = new URL(value);
 
-  return true;
+ return url.protocol==="https:"
+ ? url.href
+ : "";
 
  }catch{
 
-  toast("Маълумот сабт нашуд.");
-
-  return false;
+ return "";
 
  }
 
 }
 
-function toast(text){
+function money(value){
 
- clearTimeout(toastTimer);
-
- $("toast").textContent=text;
-
- $("toast").classList.remove("hidden");
-
- toastTimer=setTimeout(()=>{
-  $("toast").classList.add("hidden");
- },3500);
+ return Number(value || 0).toFixed(2)+" TJS";
 
 }
 
-function closeDialog(id){
- $(id).close();
-}
+function notice(text){
 
-function money(n){
- return Number(n).toFixed(2)+" TJS";
-}
-
-// CATEGORIES
-
-function renderCategories(){
-
- $("categories").replaceChildren();
-
- categories.forEach(([name,emoji])=>{
-
-  const button=document.createElement("button");
-
-  button.className="category"+
-   (category===name?" active":"");
-
-  button.innerHTML=`
-   <span>${emoji}</span>
-   <small>${name}</small>
-  `;
-
-  button.onclick=()=>{
-
-   category=name;
-   restaurantId=null;
-
-   renderCategories();
-   renderFoods();
-
-  };
-
-  $("categories").appendChild(button);
-
- });
-
-}
-
-// RESTAURANTS
-
-function renderRestaurants(){
-
- $("restaurants").replaceChildren();
-
- const query=$("search").value
-  .trim().toLowerCase();
-
- restaurants.filter(r=>
-  !query ||
-  (r.name+" "+r.category)
-   .toLowerCase().includes(query) ||
-  foods.some(f=>
-   f.restaurant===r.id &&
-   f.name.toLowerCase().includes(query)
-  )
- ).forEach(r=>{
-
-  const card=document.createElement("article");
-
-  card.className="restaurant";
-
-  card.innerHTML=`
-   <img src="${r.image}" alt="${r.name}"
-    loading="lazy">
-   <div class="restaurant-body">
-    <h3>${r.name}</h3>
-    <div class="small">${r.category}</div>
-    <div class="small">Менюи озмоишӣ</div>
-   </div>
-  `;
-
-  card.onclick=()=>{
-
-   restaurantId=r.id;
-   category="Ҳама";
-   $("search").value="";
-
-   renderCategories();
-   renderFoods();
-
-   $("foodTitle").scrollIntoView({
-    behavior:"smooth",
-    block:"center"
-   });
-
-  };
-
-  $("restaurants").appendChild(card);
-
- });
-
-}
-
-// FOOD MENU
-
-function renderFoods(){
-
- const query=$("search").value
-  .trim().toLowerCase();
-
- const list=foods.filter(f=>{
-
-  const restaurant=restaurants.find(
-   r=>r.id===f.restaurant
-  );
-
-  return (
-   category==="Ҳама" ||
-   f.category===category
-  ) && (
-   restaurantId===null ||
-   f.restaurant===restaurantId
-  ) && (
-   f.name+" "+restaurant.name+" "+f.description
-  ).toLowerCase().includes(query);
-
- });
-
- $("foodTitle").textContent=
-  restaurantId
-  ?restaurants.find(r=>r.id===restaurantId).name
-  :category==="Ҳама"
-   ?"Хӯрокҳои маъмул"
-   :category;
-
- $("foods").replaceChildren();
-
- if(!list.length){
-
-  $("foods").innerHTML=
-   '<div class="empty">Хӯрок ёфт нашуд.</div>';
-
-  return;
-
- }
-
- list.forEach(f=>{
-
-  const card=document.createElement("article");
-
-  card.className="food";
-
-  card.innerHTML=`
-
-   <img src="${f.image}"
-    alt="${f.name}" loading="lazy">
-
-   <div class="food-body">
-
-    <h3>${f.name}</h3>
-
-    <div class="small">${f.description}</div>
-
-    <br>
-
-    <div class="price">${money(f.price)}</div>
-
-    ${f.old>f.price?
-     `<div class="old">${money(f.old)}</div>`
-     :""
-    }
-
-    <button class="add">
-     + Ба сабад
-    </button>
-
-   </div>
-
-  `;
-
-  card.querySelector("img").onclick=()=>
-   openFood(f.id);
-
-  card.querySelector("h3").onclick=()=>
-   openFood(f.id);
-
-  card.querySelector(".add").onclick=()=>
-   addToCart(f.id);
-
-  $("foods").appendChild(card);
-
- });
-
-}
-
-function showAll(){
-
- category="Ҳама";
- restaurantId=null;
- $("search").value="";
-
- renderCategories();
- renderRestaurants();
- renderFoods();
-
- window.scrollTo({top:0,behavior:"smooth"});
-
-}
-
-$("search").addEventListener("input",()=>{
-
- restaurantId=null;
-
- renderRestaurants();
- renderFoods();
-
-});
-
-function openFood(id){
-
- const f=foods.find(x=>x.id===id);
-
- if(!f)return;
-
- $("foodDetails").innerHTML=`
-
-  <img src="${f.image}"
-   style="width:100%;border-radius:17px"
-   alt="${f.name}">
-
-  <h2>${f.name}</h2>
-
-  <p>${f.description}</p>
-
-  <div class="price">${money(f.price)}</div>
-
-  <button class="primary" id="detailAdd">
-   Ба сабад илова кардан
-  </button>
-
- `;
-
- $("detailAdd").onclick=()=>{
-
-  addToCart(id);
-
-  closeDialog("foodDialog");
-
- };
-
- $("foodDialog").showModal();
-
-}
-
-// CART
-
-function updateCart(){
-
- save(CART_KEY,cart);
-
- $("cartCount").textContent=
-  "Сабад ("+
-  cart.reduce((s,i)=>s+i.quantity,0)+")";
-
-}
-
-function addToCart(id){
-
- const food=foods.find(f=>f.id===id);
-
- if(!food)return;
-
- const existing=cart.find(i=>i.id===id);
-
- if(existing){
-
-  if(existing.quantity>=99)return;
-
-  existing.quantity++;
-
- }else{
-
-  cart.push({id,quantity:1});
-
- }
-
- updateCart();
-
- toast("Ба сабад илова шуд!");
-
-}
-
-function subtotal(){
-
- return cart.reduce((sum,item)=>{
-
-  const f=foods.find(f=>f.id===item.id);
-
-  return sum+f.price*item.quantity;
-
- },0);
-
-}
-
-// Sample delivery fee per restaurant
-
-function deliveryFee(){
-
- const sellers=new Set(
-  cart.map(i=>
-   foods.find(f=>f.id===i.id).restaurant
-  )
- );
-
- return sellers.size*10;
-
-}
-
-function total(){
- return subtotal()+deliveryFee();
-}
-
-function changeQuantity(id,change){
-
- const item=cart.find(i=>i.id===id);
-
- if(!item)return;
-
- item.quantity=Math.min(
-  99,item.quantity+change
- );
-
- if(item.quantity<=0){
-
-  cart=cart.filter(i=>i.id!==id);
-
- }
-
- updateCart();
-
- renderCart();
-
-}
-
-function renderCart(){
-
- $("cartItems").replaceChildren();
-
- if(!cart.length){
-
-  $("cartItems").textContent="Сабад холӣ аст.";
-
- }
-
- cart.forEach(item=>{
-
-  const f=foods.find(f=>f.id===item.id);
-
-  const row=document.createElement("div");
-
-  row.className="cart-row";
-
-  row.innerHTML=`
-
-   <img src="${f.image}" alt="${f.name}">
-
-   <div style="flex:1">
-
-    <b>${f.name}</b>
-
-    <div class="price" style="font-size:16px">
-     ${money(f.price*item.quantity)}
-    </div>
-
-    <div class="quantity">
-
-     <button class="minus">−</button>
-
-     ${item.quantity}
-
-     <button class="plus">+</button>
-
-    </div>
-
-   </div>
-
-  `;
-
-  row.querySelector(".minus").onclick=()=>
-   changeQuantity(item.id,-1);
-
-  row.querySelector(".plus").onclick=()=>
-   changeQuantity(item.id,1);
-
-  $("cartItems").appendChild(row);
-
- });
-
- $("cartSummary").innerHTML=`
-
-  Хӯрок: ${money(subtotal())}<br>
-
-  Расонидан: ${money(deliveryFee())}<br>
-
-  Комиссия: 0 TJS<br>
-
-  <b>Ҳамагӣ: ${money(total())}</b>
-
- `;
-
- $("checkoutBtn").disabled=!cart.length;
-
-}
-
-function openCart(){
-
- renderCart();
-
- $("cartDialog").showModal();
-
-}
-
-// ADDRESS AND GPS
-
-function openAddress(){
-
- $("addressDialog").showModal();
-
-}
-
-function getGPS(){
-
- if(!navigator.geolocation){
-
-  toast("GPS дастрас нест.");
-
-  return;
-
- }
-
- $("gpsStatus").textContent=
-  "Ҷойгиршавӣ муайян шуда истодааст...";
-
- navigator.geolocation.getCurrentPosition(
-
-  position=>{
-
-   gps={
-    lat:position.coords.latitude,
-    lng:position.coords.longitude
-   };
-
-   $("gpsStatus").textContent=
-    "GPS муайян шуд: "+
-    gps.lat.toFixed(5)+", "+
-    gps.lng.toFixed(5)+
-    ". Суроғаи кӯчаро низ нависед.";
-
-  },
-
-  ()=>{
-
-   $("gpsStatus").textContent=
-    "GPS дастрас нест. Суроғаро дастӣ нависед.";
-
-  },
-
-  {
-   enableHighAccuracy:true,
-   timeout:15000,
-   maximumAge:0
-  }
-
- );
-
-}
-
-function saveAddress(){
-
- const address=$("address").value.trim();
-
- if(!address){
-
-  toast("Суроғаи худро нависед.");
-
-  return;
-
- }
-
- deliveryAddress=$("city").value+", "+address;
-
- $("locationText").textContent=$("city").value;
-
- closeDialog("addressDialog");
-
- toast("Суроға интихоб шуд.");
-
-}
-
-// CHECKOUT
-
-function openCheckout(){
-
- if(!cart.length)return;
-
- $("buyerAddress").value=deliveryAddress;
-
- $("checkoutTotal").textContent=
-  "Ҳамагӣ: "+money(total());
-
- closeDialog("cartDialog");
-
- $("checkoutDialog").showModal();
+ $("notice").textContent = text || "";
 
 }
 
 function normalizePhone(value){
 
- let n=value.replace(/\D/g,"");
+ let p = value.replace(/[\s()-]/g,"");
 
- if(n.startsWith("00992"))n=n.slice(2);
+ if(/^\d{9}$/.test(p)) p = "+992"+p;
 
- if(n.length===9)n="992"+n;
+ if(/^992\d{9}$/.test(p)) p = "+"+p;
 
- return /^992\d{9}$/.test(n)
-  ?"+"+n:null;
+ if(!/^\+992\d{9}$/.test(p)){
+
+  throw new Error("Рақами телефон нодуруст.");
+
+ }
+
+ return p;
 
 }
 
-$("checkoutForm").addEventListener("submit",event=>{
+function imageHTML(url,emoji){
 
- event.preventDefault();
+ const src = safeURL(url);
 
- if(!cart.length)return;
+ return src
 
- if(!normalizePhone($("buyerPhone").value)){
+ ? `<img class="cover"
+ loading="lazy"
+ src="${esc(src)}" alt="">`
 
-  toast("Рақами телефонро дуруст нависед.");
+ : `<div class="placeholder">${emoji}</div>`;
 
-  return;
+}
 
- }
+function currentPrice(food){
 
- if(!$("buyerName").value.trim() ||
-    !$("buyerAddress").value.trim()){
+ const now = Date.now();
 
-  toast("Маълумотро пурра ворид кунед.");
+ if(food.sale_price!==null
+ && food.sale_start
+ && food.sale_end
+ && now>=new Date(food.sale_start).getTime()
+ && now<new Date(food.sale_end).getTime()){
 
-  return;
-
- }
-
- // Demo order: no personal data stored.
-
- const order={
-
-  id:crypto.randomUUID(),
-
-  items:cart.map(item=>({
-
-   name:foods.find(f=>f.id===item.id).name,
-
-   quantity:item.quantity
-
-  })),
-
-  total:total(),
-
-  status:"demo",
-
-  created:new Date().toISOString()
-
- };
-
- const orders=read(ORDER_KEY);
-
- orders.unshift(order);
-
- if(!save(ORDER_KEY,orders.slice(0,50)))return;
-
- cart=[];
-
- updateCart();
-
- $("checkoutForm").reset();
-
- closeDialog("checkoutDialog");
-
- toast("Фармоиши озмоишӣ сабт шуд!");
-
- showHistory();
-
-});
-
-// ORDER HISTORY
-
-function showHistory(){
-
- $("historyList").replaceChildren();
-
- const orders=read(ORDER_KEY);
-
- if(!orders.length){
-
-  $("historyList").textContent=
-   "Ҳоло фармоиш нест.";
+  return Number(food.sale_price);
 
  }
 
- orders.forEach(order=>{
+ return Number(food.price);
 
-  const card=document.createElement("div");
+}
 
-  card.className="summary";
+async function rpc(name,args={}){
 
-  const title=document.createElement("b");
+ const {data,error} = await db.rpc(name,args);
 
-  title.textContent="🍔 Фармоиши озмоишӣ";
+ if(error) throw error;
 
-  card.appendChild(title);
+ return data;
 
-  (order.items||[]).forEach(item=>{
+}
 
-   const line=document.createElement("div");
+async function requireUser(){
 
-   line.textContent=
-    item.name+" × "+item.quantity;
+ const {data,error} = await db.auth.getUser();
 
-   card.appendChild(line);
+ if(error || !data.user){
 
-  });
+  if(confirm("Аввал ба аккаунт ворид шавед.")){
 
-  const price=document.createElement("div");
+   location.href = "./account.html";
 
-  price.textContent="Ҳамагӣ: "+money(order.total);
+  }
 
-  card.appendChild(price);
+  return null;
 
-  const date=document.createElement("div");
+ }
 
-  date.className="small";
+ if(!user || user.id!==data.user.id){
 
-  date.textContent=new Date(order.created)
-   .toLocaleString("ru-RU");
+  user = data.user;
 
-  card.appendChild(date);
+  readCart();
 
-  $("historyList").appendChild(card);
+  await loadFavorites();
+
+ }
+
+ return user;
+
+}
+
+function cartKey(){
+
+ return "vayo_food_cart_v5_"
+ +(user?.id || "guest");
+
+}
+
+function readCart(){
+
+ try{
+
+ const saved = JSON.parse(
+ localStorage.getItem(cartKey()) || "[]"
+ );
+
+ cart = Array.isArray(saved)
+
+ ? saved.filter(i=>
+ typeof i.id==="string"
+ && Number.isInteger(i.quantity)
+ && i.quantity>=1
+ && i.quantity<=99
+ )
+
+ : [];
+
+ }catch{
+
+ cart = [];
+
+ }
+
+ updateCartCount();
+
+}
+
+function saveCart(){
+
+ try{
+
+ localStorage.setItem(
+ cartKey(),JSON.stringify(cart)
+ );
+
+ }catch{}
+
+ updateCartCount();
+
+}
+
+function updateCartCount(){
+
+ $("cartCount").textContent =
+
+ cart.reduce((sum,i)=>sum+i.quantity,0);
+
+}
+
+function showScreen(id){
+
+ currentScreen = id;
+
+ [
+ "homeScreen",
+ "restaurantScreen",
+ "ordersScreen",
+ "favoritesScreen"
+ ].forEach(name=>{
+
+ $(name).classList.toggle(
+ "hidden",name!==id
+ );
 
  });
 
- $("historyDialog").showModal();
+ window.scrollTo(0,0);
 
 }
 
-// START
+function renderCategories(){
 
-renderCategories();
-renderRestaurants();
-renderFoods();
-updateCart();
+ $("categories").innerHTML =
+
+ categories.map(([name,emoji])=>`
+
+ <button class="category
+ ${selectedCategory===name?"active":""}"
+
+ data-category="${esc(name)}">
+
+ ${emoji} ${esc(name)}
+
+ </button>
+
+ `).join("");
+
+}
+
+async function loadCatalog(){
+
+ const version = ++catalogVersion;
+
+ const city = $("city").value;
+
+ const {data,error} = await db
+
+ .from("restaurants")
+
+ .select("*")
+
+ .eq("approved",true)
+
+ .eq("city",city)
+
+ .order("created_at",{ascending:false})
+
+ .limit(300);
+
+ if(error) throw error;
+
+ if(version!==catalogVersion) return;
+
+ const list = data || [];
+
+ let menu = [];
+
+ if(list.length){
+
+ const {data:items,error:itemError} = await db
+
+ .from("food_items")
+
+ .select("*")
+
+ .in("restaurant_id",list.map(r=>r.id))
+
+ .eq("available",true)
+
+ .limit(1000);
+
+ if(itemError) throw itemError;
+
+ menu = items || [];
+
+ }
+
+ if(version!==catalogVersion) return;
+
+ restaurants = list;
+
+ foods = menu;
+
+ renderHome();
+
+}
+
+function restaurantCard(r){
+
+ return `
+
+ <article class="card">
+
+ <div data-action="restaurant"
+ data-id="${esc(r.id)}">
+
+ ${imageHTML(r.cover_url || r.logo_url,"🍽")}
+
+ </div>
+
+ <div class="cardBody">
+
+ <span class="badge ${r.is_open?"open":""}">
+
+ ${r.is_open?"Кушода":"Пӯшида"}
+
+ </span>
+
+ <h3>${esc(r.name)}</h3>
+
+ <small>${esc(r.category || "Тарабхона")}</small>
+
+ <p>📍 ${esc(r.address)}</p>
+
+ <p>🛵 ${esc(money(r.delivery_fee))}</p>
+
+ <div class="row">
+
+ <button data-action="restaurant"
+ data-id="${esc(r.id)}">
+
+ Меню
+
+ </button>
+
+ <button class="gray"
+ data-action="favorite"
+ data-id="${esc(r.id)}">
+
+ ${favorites.has(r.id)?"❤️":"🤍"}
+
+ </button>
+
+ </div>
+
+ </div>
+
+ </article>
+
+ `;
+
+}
+
+function foodCard(f){
+
+ const r = restaurants.find(
+ r=>r.id===f.restaurant_id
+ );
+
+ const price = currentPrice(f);
+
+ return `
+
+ <article class="card">
+
+ ${imageHTML(f.image_url,"🍲")}
+
+ <div class="cardBody">
+
+ <h3>${esc(f.name)}</h3>
+
+ <small>${esc(r?.name || "")}</small>
+
+ <p>${esc(f.description)}</p>
+
+ <p>⏱ ${esc(f.preparation_minutes)} дақ.</p>
+
+ <div class="price">${esc(money(price))}</div>
+
+ ${price<Number(f.price)
+
+ ? `<div class="oldPrice">
+ ${esc(money(f.price))}
+ </div>`
+
+ : ""}
+
+ <br>
+
+ <button class="full"
+ data-action="add"
+ data-id="${esc(f.id)}"
+ ${r?.is_open?"":"disabled"}>
+
+ ${r?.is_open?"＋ Ба сабад":"Пӯшида"}
+
+ </button>
+
+ </div>
+
+ </article>
+
+ `;
+
+}
+
+function renderHome(){
+
+ const q = $("search").value.trim().toLowerCase();
+
+ const filteredFoods = foods.filter(f=>{
+
+ const r = restaurants.find(
+ r=>r.id===f.restaurant_id
+ );
+
+ const text = [
+
+ f.name,
+ f.description,
+ f.category,
+ r?.name
+
+ ].join(" ").toLowerCase();
+
+ return text.includes(q)
+
+ && (
+
+ selectedCategory==="Ҳама"
+
+ || String(f.category).toLowerCase()
+
+ .includes(selectedCategory.toLowerCase())
+
+ );
+
+ });
+
+ const filteredRestaurants = restaurants.filter(r=>{
+
+ const matches =
+
+ [r.name,r.category,r.address]
+
+ .join(" ").toLowerCase().includes(q);
+
+ const menuMatches = filteredFoods.some(
+
+ f=>f.restaurant_id===r.id
+
+ );
+
+ return selectedCategory==="Ҳама"
+
+ ? matches || menuMatches
+
+ : menuMatches;
+
+ });
+
+ $("restaurants").innerHTML =
+
+ filteredRestaurants.map(restaurantCard).join("")
+
+ || '<div class="empty">Тарабхона ёфт нашуд.</div>';
+
+ $("foods").innerHTML =
+
+ filteredFoods.map(foodCard).join("")
+
+ || '<div class="empty">Таом ёфт нашуд.</div>';
+
+}
+
+function goHome(){
+
+ notice("");
+
+ showScreen("homeScreen");
+
+ renderHome();
+
+}
+
+function openRestaurant(id){
+
+ const r = restaurants.find(r=>r.id===id);
+
+ if(!r) return;
+
+ currentRestaurant = r;
+
+ $("restaurantInfo").innerHTML = `
+
+ <div class="panel">
+
+ ${imageHTML(r.cover_url || r.logo_url,"🍽")}
+
+ <h1 class="restaurantTitle">${esc(r.name)}</h1>
+
+ <span class="badge ${r.is_open?"open":""}">
+
+ ${r.is_open?"Кушода":"Пӯшида"}
+
+ </span>
+
+ <p>${esc(r.description || "")}</p>
+
+ <p>📍 ${esc(r.address)}</p>
+
+ <p>🕐 ${esc(r.opening_time)} —
+ ${esc(r.closing_time)}</p>
+
+ <p>Расонидан: ${esc(money(r.delivery_fee))}</p>
+
+ <p>Фармоиши ҳадди ақал:
+
+ ${esc(money(r.minimum_order))}</p>
+
+ </div>
+
+ `;
+
+ $("restaurantMenu").innerHTML =
+
+ foods.filter(f=>f.restaurant_id===id)
+
+ .map(foodCard).join("")
+
+ || '<div class="empty">Меню ҳоло холӣ аст.</div>';
+
+ showScreen("restaurantScreen");
+
+}
+
+async function loadFavorites(){
+
+ favorites = new Set();
+
+ if(!user) return;
+
+ const {data,error} = await db
+
+ .from("food_favorites")
+
+ .select("restaurant_id")
+
+ .eq("user_id",user.id);
+
+ if(error) throw error;
+
+ favorites = new Set(
+
+ (data || []).map(i=>i.restaurant_id)
+
+ );
+
+}
+
+async function toggleFavorite(id){
+
+ try{
+
+ if(!await requireUser()) return;
+
+ let result;
+
+ if(favorites.has(id)){
+
+ result = await db
+
+ .from("food_favorites")
+
+ .delete()
+
+ .eq("user_id",user.id)
+
+ .eq("restaurant_id",id);
+
+ if(result.error) throw result.error;
+
+ favorites.delete(id);
+
+ }else{
+
+ result = await db
+
+ .from("food_favorites")
+
+ .upsert({
+
+ user_id:user.id,
+ restaurant_id:id
+
+ });
+
+ if(result.error) throw result.error;
+
+ favorites.add(id);
+
+ }
+
+ renderHome();
+
+ if(currentScreen==="favoritesScreen"){
+
+ renderFavorites();
+
+ }
+
+ }catch(error){
+
+ notice(error.message);
+
+ }
+
+}
+
+function renderFavorites(){
+
+ $("favorites").innerHTML =
+
+ restaurants.filter(r=>favorites.has(r.id))
+
+ .map(restaurantCard).join("")
+
+ || '<div class="empty">Рӯйхат холӣ аст.</div>';
+
+}
+
+async function openFavorites(){
+
+ try{
+
+ if(!await requireUser()) return;
+
+ await loadFavorites();
+
+ renderFavorites();
+
+ showScreen("favoritesScreen");
+
+ }catch(error){
+
+ notice(error.message);
+
+ }
+
+}
+
+function addToCart(id){
+
+ if(busy) return;
+
+ const f = foods.find(f=>f.id===id);
+
+ if(!f) return;
+
+ const r = restaurants.find(
+
+ r=>r.id===f.restaurant_id
+
+ );
+
+ if(!r?.is_open){
+
+ notice("Тарабхона пӯшида аст.");
+
+ return;
+
+ }
+
+ const first = foods.find(
+
+ f=>f.id===cart[0]?.id
+
+ );
+
+ if(cart.length &&
+
+ (!first || first.restaurant_id!==f.restaurant_id)){
+
+ if(!confirm(
+
+ "Сабадро холӣ карда, аз ин тарабхона фармоиш медиҳед?"
+
+ )) return;
+
+ cart = [];
+
+ }
+
+ const item = cart.find(i=>i.id===id);
+
+ if(item){
+
+ item.quantity = Math.min(99,item.quantity+1);
+
+ }else{
+
+ cart.push({id,quantity:1});
+
+ }
+
+ saveCart();
+
+ notice("Таом ба сабад илова шуд.");
+
+}
+
+function changeQuantity(id,delta){
+
+ if(busy) return;
+
+ const item = cart.find(i=>i.id===id);
+
+ if(!item) return;
+
+ item.quantity = Math.min(
+
+ 99,item.quantity+delta
+
+ );
+
+ cart = cart.filter(i=>i.quantity>0);
+
+ saveCart();
+
+ renderCart();
+
+}
+
+function cartDetails(){
+
+ const items = cart.map(i=>({
+
+ ...i,
+
+ food:foods.find(f=>f.id===i.id)
+
+ }));
+
+ const valid = items.filter(i=>i.food);
+
+ const restaurant = restaurants.find(
+
+ r=>r.id===valid[0]?.food.restaurant_id
+
+ );
+
+ const subtotal = valid.reduce(
+
+ (sum,i)=>sum+currentPrice(i.food)*i.quantity,0
+
+ );
+
+ const fee = Number(restaurant?.delivery_fee || 0);
+
+ return {
+
+ items,
+
+ valid,
+
+ restaurant,
+
+ subtotal,
+
+ fee,
+
+ total:subtotal+fee
+
+ };
+
+}
+
+function validateCart(){
+
+ const d = cartDetails();
+
+ if(!cart.length){
+
+ throw new Error("Сабад холӣ аст.");
+
+ }
+
+ if(d.valid.length!==cart.length){
+
+ throw new Error(
+
+ "Баъзе таомҳо дастрас нестанд. Онҳоро аз сабад хориҷ кунед."
+
+ );
+
+ }
+
+ if(!d.restaurant?.is_open){
+
+ throw new Error("Тарабхона пӯшида аст.");
+
+ }
+
+ if(d.valid.some(i=>
+
+ i.food.restaurant_id!==d.restaurant.id
+
+ )){
+
+ throw new Error("Танҳо аз як тарабхона фармоиш диҳед.");
+
+ }
+
+ if(d.subtotal<Number(d.restaurant.minimum_order)){
+
+ throw new Error(
+
+ "Фармоиши ҳадди ақал: "
+
+ +money(d.restaurant.minimum_order)
+
+ );
+
+ }
+
+ return d;
+
+}
+
+function snapshot(d){
+
+ return JSON.stringify({
+
+ items:d.valid.map(i=>[
+
+ i.id,i.quantity,currentPrice(i.food)
+
+ ]),
+
+ restaurant:d.restaurant?.id,
+
+ fee:d.fee,
+
+ minimum:d.restaurant?.minimum_order
+
+ });
+
+}
+
+function totalsHTML(d){
+
+ return `
+
+ <p>Таомҳо: ${esc(money(d.subtotal))}</p>
+
+ <p>Расонидан: ${esc(money(d.fee))}</p>
+
+ <p>Комиссияи VAYO: 0%</p>
+
+ <div class="total">
+
+ Ҳамагӣ: ${esc(money(d.total))}
+
+ </div>
+
+ `;
+
+}
+
+function renderCart(){
+
+ const d = cartDetails();
+
+ $("cartContent").innerHTML =
+
+ d.items.map(i=>`
+
+ <div class="cartItem">
+
+ <strong>
+
+ ${esc(i.food?.name || "Таоми дастнорас")}
+
+ </strong>
+
+ <p>${i.food
+
+ ? esc(money(currentPrice(i.food)*i.quantity))
+
+ : "Дастрас нест"}
+
+ </p>
+
+ <div class="qty">
+
+ <button class="gray"
+ data-action="minus"
+ data-id="${esc(i.id)}">−</button>
+
+ <strong>${i.quantity}</strong>
+
+ <button class="gray"
+ data-action="plus"
+ data-id="${esc(i.id)}"
+ ${i.food?"":"disabled"}>＋</button>
+
+ <button class="red"
+ data-action="remove"
+ data-id="${esc(i.id)}">✕</button>
+
+ </div>
+
+ </div>
+
+ `).join("")
+
+ + (cart.length
+
+ ? totalsHTML(d)
+
+ : "<p>Сабад холӣ аст.</p>");
+
+ $("checkoutButton").disabled = !cart.length;
+
+}
+
+function openCart(){
+
+ $("cartError").textContent = "";
+
+ renderCart();
+
+ if(!$("cartDialog").open){
+
+ $("cartDialog").showModal();
+
+ }
+
+}
+
+async function openCheckout(){
+
+ if(busy) return;
+
+ try{
+
+ const guestCart = !user ? [...cart] : null;
+
+ if(!await requireUser()) return;
+
+ if(guestCart?.length && !cart.length){
+
+ cart = guestCart;
+
+ saveCart();
+
+ }
+
+ await loadCatalog();
+
+ const d = validateCart();
+
+ checkoutSnapshot = snapshot(d);
+
+ gps = null;
+
+ gpsVersion++;
+
+ $("gpsInfo").textContent = "";
+
+ $("customerName").value =
+
+ user.user_metadata?.full_name || "";
+
+ $("customerPhone").value =
+
+ user.user_metadata?.phone || "";
+
+ $("deliveryCity").value = d.restaurant.city;
+
+ $("checkoutTotal").innerHTML = totalsHTML(d);
+
+ $("checkoutError").textContent = "";
+
+ $("cartDialog").close();
+
+ $("checkoutDialog").showModal();
+
+ }catch(error){
+
+ $("cartError").textContent = error.message;
+
+ renderCart();
+
+ }
+
+}
+
+function closeCheckout(){
+
+ if(busy) return;
+
+ gpsVersion++;
+
+ $("checkoutDialog").close();
+
+ openCart();
+
+}
+
+function getGPS(){
+
+ if(busy) return;
+
+ if(!navigator.geolocation){
+
+ $("gpsInfo").textContent = "GPS дастрас нест.";
+
+ return;
+
+ }
+
+ const version = ++gpsVersion;
+
+ $("gpsInfo").textContent = "GPS ҷустуҷӯ мешавад...";
+
+ navigator.geolocation.getCurrentPosition(
+
+ position=>{
+
+ if(version!==gpsVersion) return;
+
+ gps = {
+
+ lat:position.coords.latitude,
+
+ lng:position.coords.longitude
+
+ };
+
+ $("gpsInfo").textContent =
+
+ "GPS илова шуд: "
+
+ +gps.lat.toFixed(5)+", "
+
+ +gps.lng.toFixed(5);
+
+ },
+
+ error=>{
+
+ if(version!==gpsVersion) return;
+
+ $("gpsInfo").textContent =
+
+ "GPS дастрас нест: "+error.message;
+
+ },
+
+ {
+
+ enableHighAccuracy:true,
+
+ timeout:15000,
+
+ maximumAge:5000
+
+ }
+
+ );
+
+}
+
+$("checkoutForm").addEventListener(
+
+ "submit",async event=>{
+
+ event.preventDefault();
+
+ if(busy) return;
+
+ busy = true;
+
+ $("confirmButton").disabled = true;
+
+ $("checkoutError").textContent = "";
+
+ try{
+
+ await loadCatalog();
+
+ const d = validateCart();
+
+ if(snapshot(d)!==checkoutSnapshot){
+
+ checkoutSnapshot = snapshot(d);
+
+ $("checkoutTotal").innerHTML = totalsHTML(d);
+
+ throw new Error(
+
+ "Нарх тағйир ёфт. Маблағи навро санҷида, боз тасдиқ кунед."
+
+ );
+
+ }
+
+ const name = $("customerName").value.trim();
+
+ const phone = normalizePhone(
+
+ $("customerPhone").value
+
+ );
+
+ const street = $("deliveryStreet").value.trim();
+
+ if(!name || !street){
+
+ throw new Error("Ном ва суроғаро ворид кунед.");
+
+ }
+
+ const address = [
+
+ d.restaurant.city,
+
+ street,
+
+ $("apartment").value.trim()
+
+ ].filter(Boolean).join(", ");
+
+ await rpc("vayo_create_food_order",{
+
+ p_restaurant_id:d.restaurant.id,
+
+ p_items:d.valid.map(i=>({
+
+ food_id:i.id,
+
+ quantity:i.quantity
+
+ })),
+
+ p_customer_name:name,
+
+ p_customer_phone:phone,
+
+ p_delivery_address:address,
+
+ p_lat:gps?.lat ?? null,
+
+ p_lng:gps?.lng ?? null,
+
+ p_note:$("note").value.trim(),
+
+ p_call_on_arrival:$("callOnArrival").checked
+
+ });
+
+ cart = [];
+
+ saveCart();
+
+ gpsVersion++;
+
+ $("checkoutDialog").close();
+
+ $("checkoutForm").reset();
+
+ notice("Фармоиш ба тарабхона фиристода шуд!");
+
+ showScreen("ordersScreen");
+
+ await loadOrders();
+
+ }catch(error){
+
+ $("checkoutError").textContent = error.message;
+
+ }finally{
+
+ busy = false;
+
+ $("confirmButton").disabled = false;
+
+ }
+
+ });
+
+$("checkoutDialog").addEventListener(
+
+ "cancel",event=>{
+
+ if(busy){
+
+ event.preventDefault();
+
+ }else{
+
+ gpsVersion++;
+
+ }
+
+ });
+
+function trackingHTML(status){
+
+ const steps = [
+
+ ["pending","Фармоиш сабт шуд"],
+
+ ["accepted","Тарабхона қабул кард"],
+
+ ["preparing","Таом омода мешавад"],
+
+ ["ready","Таом омода аст"],
+
+ ["delivering","Расонанда дар роҳ"],
+
+ ["completed","Расонида шуд"]
+
+ ];
+
+ if(status==="cancelled"){
+
+ return "<p>❌ Фармоиш бекор шуд.</p>";
+
+ }
+
+ const index = steps.findIndex(
+
+ s=>s[0]===status
+
+ );
+
+ return `<div class="steps">
+
+ ${steps.map(([key,label],i)=>`
+
+ <div class="step ${i<=index?"done":""}">
+
+ ${i<=index?"✓":"○"} ${label}
+
+ </div>
+
+ `).join("")}
+
+ </div>`;
+
+}
+
+async function courierHTML(order){
+
+ if(!order.courier_id ||
+
+ !["ready","delivering"].includes(order.status)){
+
+ return "";
+
+ }
+
+ try{
+
+ const result = await rpc("vayo_my_courier",{
+
+ p_order_id:order.id
+
+ });
+
+ const c = Array.isArray(result)
+
+ ? result[0]
+
+ : result;
+
+ if(!c) return "";
+
+ const tel = String(c.phone || "")
+
+ .replace(/[^\d+]/g,"");
+
+ const fresh = c.location_updated_at
+
+ && Date.now()-new Date(
+
+ c.location_updated_at
+
+ ).getTime()<120000;
+
+ const mapLink = fresh
+
+ && c.latitude!==null
+
+ && c.longitude!==null
+
+ ? `<a class="btn gray"
+
+ href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.latitude+","+c.longitude)}"
+
+ target="_blank" rel="noopener noreferrer">
+
+ 📍 Ҷойгиршавии расонанда
+
+ </a>`
+
+ : "<p>GPS-и нав дастрас нест.</p>";
+
+ return `
+
+ <div class="panel">
+
+ <h3>🛵 Расонандаи шумо</h3>
+
+ <p>${esc(c.full_name)}</p>
+
+ <a class="btn green" href="tel:${esc(tel)}">
+
+ 📞 Занг задан
+
+ </a>
+
+ <br><br>
+
+ ${mapLink}
+
+ </div>
+
+ `;
+
+ }catch{
+
+ return "<p>Маълумоти расонанда ҳоло дастрас нест.</p>";
+
+ }
+
+}
+
+async function loadOrders(){
+
+ if(!user || loadingOrders) return;
+
+ loadingOrders = true;
+
+ try{
+
+ const {data,error} = await db
+
+ .from("food_orders")
+
+ .select("*,food_order_items(*)")
+
+ .eq("customer_id",user.id)
+
+ .order("created_at",{ascending:false})
+
+ .limit(100);
+
+ if(error) throw error;
+
+ const rows = await Promise.all(
+
+ (data || []).map(async o=>{
+
+ const r = restaurants.find(
+
+ r=>r.id===o.restaurant_id
+
+ );
+
+ const courier = await courierHTML(o);
+
+ return `
+
+ <article class="panel">
+
+ <span class="badge">
+
+ ${esc(statuses[o.status] || o.status)}
+
+ </span>
+
+ <h3>${esc(r?.name || "Тарабхона")}</h3>
+
+ <small>Фармоиш #${esc(o.id.slice(0,8))}</small>
+
+ <p>${esc(new Date(o.created_at)
+
+ .toLocaleString("ru-RU",{
+
+ timeZone:"Asia/Dushanbe"
+
+ }))}</p>
+
+ ${(o.food_order_items || []).map(i=>`
+
+ <p>${esc(i.food_name)} × ${esc(i.quantity)}</p>
+
+ `).join("")}
+
+ <p>📍 ${esc(o.delivery_address)}</p>
+
+ <p>Расонидан: ${esc(money(o.delivery_fee))}</p>
+
+ <div class="total">
+
+ ${esc(money(o.total))}
+
+ </div>
+
+ ${trackingHTML(o.status)}
+
+ ${courier}
+
+ ${o.status==="pending"
+
+ ? `<button class="red full"
+
+ data-action="cancel"
+
+ data-id="${esc(o.id)}">
+
+ Бекор кардани фармоиш
+
+ </button>`
+
+ : ""}
+
+ ${o.status==="completed"
+
+ ? `<button class="gray full"
+
+ data-action="review"
+
+ data-id="${esc(o.id)}">
+
+ ⭐ Баҳо додан
+
+ </button>`
+
+ : ""}
+
+ </article>
+
+ `;
+
+ })
+
+ );
+
+ $("orders").innerHTML = rows.join("")
+
+ || '<div class="empty">Ҳоло фармоиш надоред.</div>';
+
+ }catch(error){
+
+ notice(error.message);
+
+ }finally{
+
+ loadingOrders = false;
+
+ }
+
+}
+
+async function openOrders(){
+
+ try{
+
+ if(!await requireUser()) return;
+
+ showScreen("ordersScreen");
+
+ await loadOrders();
+
+ }catch(error){
+
+ notice(error.message);
+
+ }
+
+}
+
+async function cancelOrder(id){
+
+ if(busy) return;
+
+ if(!confirm("Фармоишро бекор мекунед?")) return;
+
+ busy = true;
+
+ try{
+
+ await rpc("vayo_food_status",{
+
+ p_order_id:id,
+
+ p_status:"cancelled"
+
+ });
+
+ await loadOrders();
+
+ notice("Фармоиш бекор шуд.");
+
+ }catch(error){
+
+ notice(error.message);
+
+ }finally{
+
+ busy = false;
+
+ }
+
+}
+
+async function reviewOrder(id){
+
+ if(busy) return;
+
+ const input = prompt(
+
+ "Ба тарабхона аз 1 то 5 баҳо диҳед:","5"
+
+ );
+
+ if(input===null) return;
+
+ const rating = Number(input);
+
+ if(!Number.isInteger(rating)
+
+ || rating<1 || rating>5){
+
+ notice("Баҳо бояд аз 1 то 5 бошад.");
+
+ return;
+
+ }
+
+ const comment = prompt("Назари шумо:","");
+
+ if(comment===null) return;
+
+ if(comment.length>1000){
+
+ notice("Матн хеле дароз аст.");
+
+ return;
+
+ }
+
+ busy = true;
+
+ try{
+
+ await rpc("vayo_food_review",{
+
+ p_order_id:id,
+
+ p_rating:rating,
+
+ p_comment:comment
+
+ });
+
+ notice("Ташаккур барои баҳо!");
+
+ }catch(error){
+
+ notice(error.message);
+
+ }finally{
+
+ busy = false;
+
+ }
+
+}
+
+document.addEventListener("click",event=>{
+
+ const category = event.target.closest(
+
+ "[data-category]"
+
+ );
+
+ if(category){
+
+ selectedCategory = category.dataset.category;
+
+ renderCategories();
+
+ renderHome();
+
+ return;
+
+ }
+
+ const b = event.target.closest("[data-action]");
+
+ if(!b || busy) return;
+
+ const {action,id} = b.dataset;
+
+ if(action==="restaurant") openRestaurant(id);
+
+ if(action==="favorite") toggleFavorite(id);
+
+ if(action==="add") addToCart(id);
+
+ if(action==="plus") changeQuantity(id,1);
+
+ if(action==="minus") changeQuantity(id,-1);
+
+ if(action==="remove"){
+
+ cart = cart.filter(i=>i.id!==id);
+
+ saveCart();
+
+ renderCart();
+
+ }
+
+ if(action==="cancel") cancelOrder(id);
+
+ if(action==="review") reviewOrder(id);
+
+});
+
+$("search").addEventListener("input",()=>{
+
+ if(currentScreen!=="homeScreen"){
+
+ showScreen("homeScreen");
+
+ }
+
+ renderHome();
+
+});
+
+$("city").addEventListener("change",async()=>{
+
+ if(busy) return;
+
+ try{
+
+ selectedCategory = "Ҳама";
+
+ renderCategories();
+
+ showScreen("homeScreen");
+
+ await loadCatalog();
+
+ }catch(error){
+
+ notice(error.message);
+
+ }
+
+});
+
+async function start(){
+
+ try{
+
+ if(!db){
+
+ throw new Error("config.js ёфт нашуд.");
+
+ }
+
+ const savedCity = localStorage.getItem("vayo_city");
+
+ if([...$("city").options].some(
+
+ o=>o.value===savedCity
+
+ )){
+
+ $("city").value = savedCity;
+
+ }
+
+ const {data} = await db.auth.getUser();
+
+ user = data?.user || null;
+
+ readCart();
+
+ renderCategories();
+
+ await loadFavorites();
+
+ await loadCatalog();
+
+ }catch(error){
+
+ notice(error.message);
+
+ }
+
+}
+
+setInterval(()=>{
+
+ if(user && !busy
+
+ && currentScreen==="ordersScreen"
+
+ && document.visibilityState==="visible"){
+
+ loadOrders();
+
+ }
+
+},8000);
+
+start();
 
 </script>
 
