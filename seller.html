@@ -1,0 +1,957 @@
+
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VAYO Seller</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./config.js"></script>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ font-family:Arial,sans-serif;
+ background:#f5f6fa;
+ color:#222;
+}
+header{
+ background:#ff6500;
+ color:white;
+ padding:20px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+}
+header a{
+ color:white;
+ text-decoration:none;
+}
+header strong{font-size:24px}
+main{
+ max-width:1100px;
+ margin:auto;
+ padding:16px;
+}
+.grid{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:12px;
+}
+.card{
+ background:white;
+ padding:18px;
+ border-radius:16px;
+}
+.metric{
+ font-size:27px;
+ font-weight:bold;
+ color:#ff6500;
+ margin-top:12px;
+}
+small{color:#777}
+button,.btn{
+ border:none;
+ border-radius:10px;
+ padding:12px 16px;
+ background:#ff6500;
+ color:white;
+ font-size:14px;
+ font-weight:bold;
+ cursor:pointer;
+ text-decoration:none;
+ display:inline-block;
+}
+button:disabled{opacity:.5}
+.secondary{
+ background:#fff0e5;
+ color:#ff6500;
+}
+.green{background:#16a34a}
+.red{background:#dc2626}
+.tabs{
+ display:flex;
+ gap:8px;
+ overflow:auto;
+ margin:20px 0;
+}
+.tabs button{
+ flex:1;
+ white-space:nowrap;
+}
+.tabs button.active{
+ background:#222;
+ color:white;
+}
+.product{
+ background:white;
+ padding:15px;
+ border-radius:16px;
+ margin-bottom:12px;
+ display:flex;
+ gap:15px;
+ align-items:center;
+}
+.product img{
+ width:100px;
+ height:100px;
+ object-fit:cover;
+ border-radius:12px;
+ background:#eee;
+}
+.info{flex:1;min-width:0;overflow-wrap:anywhere}
+.price{
+ color:#ff6500;
+ font-size:20px;
+ font-weight:bold;
+}
+.actions{
+ display:flex;
+ flex-wrap:wrap;
+ gap:7px;
+ margin-top:10px;
+}
+.order{
+ background:white;
+ border-radius:16px;
+ padding:18px;
+ margin-bottom:12px;
+}
+.order p{
+ margin:8px 0;
+ overflow-wrap:anywhere;
+}
+.badge{
+ display:inline-block;
+ background:#fff0df;
+ color:#b45309;
+ padding:6px 10px;
+ border-radius:20px;
+ font-size:12px;
+}
+.ok{
+ background:#dcfce7;
+ color:#15803d;
+}
+dialog{
+ width:min(94%,480px);
+ border:none;
+ border-radius:20px;
+ padding:22px;
+}
+dialog::backdrop{
+ background:#0008;
+}
+input,textarea,select{
+ width:100%;
+ padding:12px;
+ border:1px solid #ddd;
+ border-radius:10px;
+ font-size:16px;
+ margin:6px 0 14px;
+}
+#notice,#editError{
+ background:#fff0df;
+ padding:14px;
+ border-radius:10px;
+ margin:12px 0;
+ overflow-wrap:anywhere;
+}
+#notice:empty,#editError:empty{display:none}
+.hidden{display:none!important}
+.empty{
+ padding:40px;
+ text-align:center;
+ background:white;
+ border-radius:16px;
+ color:#777;
+}
+@media(max-width:700px){
+ .grid{grid-template-columns:repeat(2,1fr)}
+ .product img{width:80px;height:80px}
+ .metric{font-size:23px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<a href="./index.html">←</a>
+<strong>VAYO Seller</strong>
+<a href="./account.html">👤</a>
+</header>
+
+<main>
+
+<div id="gate" class="card">
+<p id="gateText">Боргирӣ...</p>
+<a class="btn" href="./account.html">
+Ворид шудан
+</a>
+</div>
+
+<div id="app" class="hidden">
+
+<h2 id="welcome">Кабинети фурӯшанда</h2>
+
+<div class="grid">
+
+<div class="card">
+<small>Маҳсулот</small>
+<div class="metric" id="productCount">0</div>
+</div>
+
+<div class="card">
+<small>Фармоишҳои нав</small>
+<div class="metric" id="pendingCount">0</div>
+</div>
+
+<div class="card">
+<small>Фурӯши анҷомшуда</small>
+<div class="metric" id="sales">0</div>
+</div>
+
+<div class="card">
+<small>Комиссияи VAYO</small>
+<div class="metric">0%</div>
+</div>
+
+</div>
+
+<div id="notice" role="status"></div>
+
+<div class="tabs">
+
+<button id="productsTab"
+ onclick="showTab('products')">
+📦 Маҳсулот
+</button>
+
+<button id="ordersTab"
+ onclick="showTab('orders')">
+🛒 Фармоишҳо
+</button>
+
+<button class="secondary"
+ onclick="loadAll()">
+↻
+</button>
+
+</div>
+
+<section id="productsSection">
+
+<a class="btn" href="./marketplace.html">
+＋ Маҳсулоти нав
+</a>
+
+<h3>Маҳсулоти ман</h3>
+
+<div id="productList"></div>
+
+</section>
+
+<section id="ordersSection" class="hidden">
+
+<h3>Фармоишҳои ман</h3>
+
+<select id="orderFilter"
+ onchange="renderOrders()">
+
+<option value="all">Ҳамаи фармоишҳо</option>
+<option value="pending">Нав</option>
+<option value="accepted">Қабулшуда</option>
+<option value="preparing">Омодасозӣ</option>
+<option value="delivering">Дар роҳ</option>
+<option value="completed">Анҷомшуда</option>
+<option value="cancelled">Бекоршуда</option>
+
+</select>
+
+<div id="orderList"></div>
+
+</section>
+
+</div>
+
+</main>
+
+<dialog id="editDialog">
+
+<h2>Тағйири маҳсулот</h2>
+
+<div id="editError"></div>
+
+<form id="editForm">
+
+<input type="hidden" id="editId">
+
+<label>Номи маҳсулот</label>
+<input id="editName" required>
+
+<label>Нарх (сомонӣ)</label>
+<input id="editPrice" type="number"
+ min="0.01" step="0.01" required>
+
+<label>Миқдор дар анбор</label>
+<input id="editStock" type="number"
+ min="0" step="1" required>
+
+<label>Тавсиф</label>
+<textarea id="editDescription" required></textarea>
+
+<label>Тахфиф</label>
+<select id="editSaleEnabled"
+ onchange="toggleSale()">
+<option value="no">Бе тахфиф</option>
+<option value="yes">Бо тахфиф</option>
+</select>
+
+<div id="saleFields" class="hidden">
+
+<label>Нархи тахфифӣ</label>
+<input id="editSalePrice" type="number"
+ min="0.01" step="0.01">
+
+<label>Оғози тахфиф (вақти Душанбе)</label>
+<input id="editSaleStart" type="datetime-local">
+
+<label>Анҷоми тахфиф (вақти Душанбе)</label>
+<input id="editSaleEnd" type="datetime-local">
+
+</div>
+
+<button id="saveButton" type="submit">
+Сабт кардан
+</button>
+
+<button type="button" class="secondary"
+ onclick="document.getElementById('editDialog').close()">
+Бекор кардан
+</button>
+
+</form>
+
+</dialog>
+
+<script>
+
+const db = window.vayo;
+const $ = id => document.getElementById(id);
+
+let user = null;
+let products = [];
+let orders = [];
+let busy = false;
+let loading = false;
+
+const statusNames = {
+ pending:"Фармоиши нав",
+ accepted:"Қабул шуд",
+ preparing:"Омода мешавад",
+ delivering:"Дар роҳ",
+ completed:"Анҷом шуд",
+ cancelled:"Бекор шуд"
+};
+
+function esc(value){
+ return String(value ?? "").replace(
+ /[&<>"']/g,
+ c=>({
+  "&":"&amp;",
+  "<":"&lt;",
+  ">":"&gt;",
+  '"':"&quot;",
+  "'":"&#39;"
+ })[c]);
+}
+
+function money(value){
+ return Number(value || 0).toFixed(2)+" TJS";
+}
+
+function notice(text){
+ $("notice").textContent = text || "";
+}
+
+function date(value){
+ return new Date(value).toLocaleString("ru-RU",{
+  timeZone:"Asia/Dushanbe"
+ });
+}
+
+function localDate(value){
+
+ if(!value) return "";
+
+ const d = new Date(
+  new Date(value).getTime()+5*60*60*1000
+ );
+
+ return d.toISOString().slice(0,16);
+
+}
+
+function showTab(tab){
+
+ $("productsSection").classList.toggle(
+  "hidden",tab!=="products"
+ );
+
+ $("ordersSection").classList.toggle(
+  "hidden",tab!=="orders"
+ );
+
+ $("productsTab").classList.toggle(
+  "active",tab==="products"
+ );
+
+ $("ordersTab").classList.toggle(
+  "active",tab==="orders"
+ );
+
+}
+
+function imageURL(product){
+
+ const images = [...(product.product_images || [])]
+ .sort((a,b)=>a.position-b.position);
+
+ if(!images.length) return "";
+
+ return db.storage
+ .from("product-images")
+ .getPublicUrl(images[0].image_path)
+ .data.publicUrl;
+
+}
+
+async function loadAll(){
+
+ if(loading || !user) return;
+
+ loading = true;
+
+ try{
+
+ const [p,o] = await Promise.all([
+
+  db.from("products")
+  .select("*,product_images(image_path,position)")
+  .eq("seller_id",user.id)
+  .order("created_at",{ascending:false})
+  .limit(500),
+
+  db.from("orders")
+  .select("*,order_items(*)")
+  .eq("seller_id",user.id)
+  .order("created_at",{ascending:false})
+  .limit(500)
+
+ ]);
+
+ if(p.error) throw p.error;
+ if(o.error) throw o.error;
+
+ products = p.data || [];
+ orders = o.data || [];
+
+ $("productCount").textContent = products.length;
+
+ $("pendingCount").textContent =
+ orders.filter(o=>o.status==="pending").length;
+
+ $("sales").textContent = money(
+
+  orders
+  .filter(o=>o.status==="completed")
+  .reduce((sum,o)=>sum+Number(o.total),0)
+
+ );
+
+ renderProducts();
+ renderOrders();
+
+ }catch(error){
+
+ notice(error.message);
+
+ }finally{
+
+ loading = false;
+
+ }
+
+}
+
+function renderProducts(){
+
+ if(!products.length){
+
+  $("productList").innerHTML =
+  '<div class="empty">Ҳоло маҳсулот надоред.</div>';
+
+  return;
+
+ }
+
+ $("productList").innerHTML = products.map(p=>{
+
+ const image = imageURL(p);
+
+ return `
+
+ <div class="product">
+
+ ${image
+ ? `<img src="${esc(image)}" alt="">`
+ : '<div style="font-size:45px">📦</div>'}
+
+ <div class="info">
+
+ <strong>${esc(p.name)}</strong>
+
+ <p class="price">${esc(money(p.price))}</p>
+
+ <small>Дар анбор: ${esc(p.stock)} дона</small>
+
+ <p>
+ <span class="badge ${p.active?"ok":""}">
+ ${p.admin_blocked
+ ? "Аз ҷониби Admin баста шудааст"
+ : p.active?"Фаъол":"Пинҳон"}
+ </span>
+ </p>
+
+ <div class="actions">
+
+ <button data-action="edit"
+ data-id="${esc(p.id)}">
+ ✏️ Тағйир
+ </button>
+
+ ${p.admin_blocked?"":`
+
+ <button class="secondary"
+ data-action="visibility"
+ data-id="${esc(p.id)}">
+ ${p.active?"Пинҳон кардан":"Фаъол кардан"}
+ </button>
+
+ `}
+
+ </div>
+
+ </div>
+
+ </div>
+
+ `;
+
+ }).join("");
+
+}
+
+function orderButton(id,status,label,color="green"){
+
+ return `<button class="${color}"
+ data-action="status"
+ data-id="${esc(id)}"
+ data-status="${esc(status)}">
+ ${esc(label)}
+ </button>`;
+
+}
+
+function orderActions(o){
+
+ if(o.status==="pending"){
+
+  return orderButton(o.id,"accepted","Қабул кардан")
+  +orderButton(o.id,"cancelled","Рад кардан","red");
+
+ }
+
+ if(o.status==="accepted"){
+
+  return orderButton(o.id,"preparing","Омода кардан")
+  +orderButton(o.id,"cancelled","Бекор кардан","red");
+
+ }
+
+ if(o.status==="preparing"){
+
+  return orderButton(o.id,"delivering","Ба роҳ баромад");
+
+ }
+
+ if(o.status==="delivering"){
+
+  return orderButton(o.id,"completed","Расонида шуд");
+
+ }
+
+ return "";
+
+}
+
+function renderOrders(){
+
+ const filter = $("orderFilter").value;
+
+ const list = orders.filter(o=>
+ filter==="all" || o.status===filter
+ );
+
+ if(!list.length){
+
+  $("orderList").innerHTML =
+  '<div class="empty">Фармоиш вуҷуд надорад.</div>';
+
+  return;
+
+ }
+
+ $("orderList").innerHTML = list.map(o=>`
+
+ <div class="order">
+
+ <strong>Фармоиш #${esc(o.id.slice(0,8))}</strong>
+
+ <p>
+ <span class="badge">
+ ${esc(statusNames[o.status] || o.status)}
+ </span>
+ </p>
+
+ <small>${esc(date(o.created_at))}</small>
+
+ <hr>
+
+ <p>👤 ${esc(o.buyer_name)}</p>
+
+ <p>📞 ${esc(o.buyer_phone)}</p>
+
+ <p>📍 ${esc(o.delivery_address)}</p>
+
+ <p>📝 ${esc(o.delivery_note || "—")}</p>
+
+ <p>Занг задан:
+ ${o.call_on_arrival?"Ҳа":"Не"}
+ </p>
+
+ <hr>
+
+ ${(o.order_items || []).map(i=>`
+
+ <p>
+
+ ${esc(i.product_name)}
+ × ${esc(i.quantity)}
+
+ ${i.size?" | Андоза: "+esc(i.size):""}
+ ${i.color?" | Ранг: "+esc(i.color):""}
+
+ — ${esc(money(i.price*i.quantity))}
+
+ </p>
+
+ `).join("")}
+
+ <p class="price">
+ Ҳамагӣ: ${esc(money(o.total))}
+ </p>
+
+ <small>Пардохт: нақдӣ · Комиссия: 0%</small>
+
+ <div class="actions">
+
+ ${orderActions(o)}
+
+ </div>
+
+ </div>
+
+ `).join("");
+
+}
+
+function toggleSale(){
+
+ const enabled = $("editSaleEnabled").value==="yes";
+
+ $("saleFields").classList.toggle("hidden",!enabled);
+
+ ["editSalePrice","editSaleStart","editSaleEnd"]
+ .forEach(id=>$(id).required=enabled);
+
+}
+
+function openEdit(id){
+
+ const p = products.find(p=>p.id===id);
+
+ if(!p) return;
+
+ $("editId").value = p.id;
+ $("editName").value = p.name;
+ $("editPrice").value = p.price;
+ $("editStock").value = p.stock;
+ $("editDescription").value = p.description;
+
+ $("editSaleEnabled").value =
+ p.sale_price!==null?"yes":"no";
+
+ $("editSalePrice").value = p.sale_price ?? "";
+
+ $("editSaleStart").value = localDate(p.sale_start);
+ $("editSaleEnd").value = localDate(p.sale_end);
+
+ $("editError").textContent = "";
+
+ toggleSale();
+
+ $("editDialog").showModal();
+
+}
+
+$("editForm").addEventListener("submit",async event=>{
+
+ event.preventDefault();
+
+ if(busy) return;
+
+ busy = true;
+ $("saveButton").disabled = true;
+ $("editError").textContent = "";
+
+ try{
+
+ const id = $("editId").value;
+
+ const price = Number($("editPrice").value);
+
+ const stock = Number($("editStock").value);
+
+ const name = $("editName").value.trim();
+
+ const description = $("editDescription").value.trim();
+
+ if(!name || !description || price<=0
+ || !Number.isFinite(price)
+ || !Number.isInteger(stock) || stock<0){
+
+  throw new Error("Маълумотро дуруст ворид кунед.");
+
+ }
+
+ const changes = {
+
+  name,
+  price,
+  stock,
+  description,
+
+  sale_price:null,
+  sale_start:null,
+  sale_end:null
+
+ };
+
+ if($("editSaleEnabled").value==="yes"){
+
+  const sale = Number($("editSalePrice").value);
+
+  const start = new Date(
+   $("editSaleStart").value+"+05:00"
+  );
+
+  const end = new Date(
+   $("editSaleEnd").value+"+05:00"
+  );
+
+  if(sale<=0 || sale>=price
+  || !Number.isFinite(sale)
+  || !Number.isFinite(start.getTime())
+  || !Number.isFinite(end.getTime())
+  || end<=start){
+
+   throw new Error("Нарх ё вақти тахфиф нодуруст.");
+
+  }
+
+  changes.sale_price = sale;
+  changes.sale_start = start.toISOString();
+  changes.sale_end = end.toISOString();
+
+ }
+
+ const {data,error} = await db.from("products")
+ .update(changes)
+ .eq("id",id)
+ .eq("seller_id",user.id)
+ .select("id")
+ .single();
+
+ if(error) throw error;
+
+ $("editDialog").close();
+
+ await loadAll();
+
+ notice("Маҳсулот нав карда шуд.");
+
+ }catch(error){
+
+ $("editError").textContent = error.message;
+
+ }finally{
+
+ busy = false;
+ $("saveButton").disabled = false;
+
+ }
+
+});
+
+async function visibility(id){
+
+ if(busy) return;
+
+ const p = products.find(p=>p.id===id);
+
+ if(!p || p.admin_blocked) return;
+
+ busy = true;
+
+ try{
+
+ const {error} = await db.from("products")
+
+ .update({active:!p.active})
+
+ .eq("id",id)
+ .eq("seller_id",user.id)
+
+ .select("id")
+ .single();
+
+ if(error) throw error;
+
+ await loadAll();
+
+ notice("Ҳолати маҳсулот нав шуд.");
+
+ }catch(error){
+
+ notice(error.message);
+
+ }finally{
+
+ busy = false;
+
+ }
+
+}
+
+async function updateOrder(id,status){
+
+ if(busy) return;
+
+ if(!confirm("Тағйири ҳолати фармоишро тасдиқ мекунед?")){
+  return;
+ }
+
+ busy = true;
+
+ try{
+
+ const {error} = await db.rpc(
+ "vayo_update_order_status",{
+
+  p_order_id:id,
+  p_status:status
+
+ });
+
+ if(error) throw error;
+
+ await loadAll();
+
+ notice("Фармоиш нав карда шуд.");
+
+ }catch(error){
+
+ notice(error.message);
+
+ }finally{
+
+ busy = false;
+
+ }
+
+}
+
+document.addEventListener("click",event=>{
+
+ const button = event.target.closest("[data-action]");
+
+ if(!button) return;
+
+ const {action,id,status} = button.dataset;
+
+ if(action==="edit") openEdit(id);
+
+ if(action==="visibility") visibility(id);
+
+ if(action==="status") updateOrder(id,status);
+
+});
+
+async function start(){
+
+ try{
+
+ if(!db){
+
+  throw new Error("config.js ёфт нашуд.");
+
+ }
+
+ const {data,error} = await db.auth.getUser();
+
+ if(error || !data.user){
+
+  throw new Error("Аввал ба аккаунт ворид шавед.");
+
+ }
+
+ user = data.user;
+
+ $("gate").classList.add("hidden");
+ $("app").classList.remove("hidden");
+
+ $("welcome").textContent =
+ "Салом, "+(user.user_metadata?.full_name || "фурӯшанда");
+
+ showTab("products");
+
+ await loadAll();
+
+ }catch(error){
+
+ $("gateText").textContent = error.message;
+
+ }
+
+}
+
+start();
+
+</script>
+
+</body>
+</html>
