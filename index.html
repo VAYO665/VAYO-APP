@@ -3,11 +3,9 @@
 <html lang="tg">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#ff6500">
-
-<meta name="description"
-content="VAYO Тоҷикистон — хариду фурӯш, таксӣ ва расонидани таом.">
+<meta name="description" content="VAYO Тоҷикистон — Marketplace, Taxi ва Food.">
 
 <title>VAYO — Super App Тоҷикистон</title>
 
@@ -19,14 +17,16 @@ content="VAYO Тоҷикистон — хариду фурӯш, таксӣ ва 
 :root{
  --orange:#ff6500;
  --dark:#202124;
- --bg:#f5f6f8;
+ --background:#f5f6f8;
 }
 
-*{box-sizing:border-box}
+*{
+ box-sizing:border-box;
+}
 
 body{
  margin:0;
- background:var(--bg);
+ background:var(--background);
  color:var(--dark);
  font-family:Arial,sans-serif;
 }
@@ -60,14 +60,14 @@ header{
 
 .top{
  display:flex;
- justify-content:space-between;
  align-items:center;
+ justify-content:space-between;
  gap:12px;
 }
 
 .logo{
  font-size:35px;
- font-weight:1000;
+ font-weight:900;
  color:var(--orange);
  letter-spacing:-2px;
 }
@@ -77,23 +77,23 @@ header{
 }
 
 .city{
- background:#f5f5f5;
  border:0;
- padding:10px;
+ background:#f5f5f5;
+ padding:11px;
  border-radius:12px;
  font-size:14px;
  max-width:150px;
 }
 
 .account{
- width:43px;
- height:43px;
+ width:44px;
+ height:44px;
  border-radius:50%;
  background:#fff0df;
  display:flex;
  justify-content:center;
  align-items:center;
- font-size:23px;
+ font-size:24px;
 }
 
 .search{
@@ -101,16 +101,16 @@ header{
  align-items:center;
  background:#f3f4f6;
  border-radius:14px;
- padding:0 13px;
+ padding:0 14px;
  margin-top:15px;
 }
 
 .search input{
  width:100%;
  border:0;
+ outline:none;
  background:transparent;
  padding:14px 10px;
- outline:none;
  font-size:16px;
 }
 
@@ -121,23 +121,22 @@ main{
 }
 
 .hero{
- position:relative;
- overflow:hidden;
  background:linear-gradient(135deg,#ff6500,#ff9d31);
  border-radius:26px;
- color:white;
  padding:28px;
+ color:white;
  display:flex;
  align-items:center;
  justify-content:space-between;
  gap:10px;
  min-height:210px;
+ overflow:hidden;
 }
 
 .hero h1{
- margin:0 0 12px;
  font-size:32px;
  line-height:1.2;
+ margin:0 0 12px;
 }
 
 .hero p{
@@ -146,15 +145,15 @@ main{
 }
 
 .heroArt{
- font-size:80px;
+ font-size:85px;
  transform:rotate(-8deg);
 }
 
 .btn{
  display:inline-block;
  border:0;
- padding:13px 18px;
  border-radius:13px;
+ padding:13px 18px;
  background:var(--orange);
  color:white;
  font-size:15px;
@@ -170,12 +169,13 @@ main{
  display:flex;
  justify-content:space-between;
  align-items:center;
+ gap:10px;
  margin:25px 0 14px;
 }
 
 .sectionTitle h2{
- margin:0;
  font-size:23px;
+ margin:0;
 }
 
 .services{
@@ -189,10 +189,12 @@ main{
  flex-direction:column;
  justify-content:space-between;
  min-height:200px;
- border-radius:23px;
  padding:18px;
+ border-radius:23px;
  overflow:hidden;
- position:relative;
+ border:0;
+ text-align:left;
+ color:#202124;
  transition:transform .2s;
 }
 
@@ -217,8 +219,8 @@ main{
 }
 
 .service h3{
- margin:0;
  font-size:21px;
+ margin:0;
 }
 
 .service p{
@@ -228,8 +230,8 @@ main{
 }
 
 .serviceArt{
- height:90px;
  width:100%;
+ height:95px;
  display:flex;
  align-items:center;
  justify-content:center;
@@ -237,14 +239,14 @@ main{
 
 .serviceArt svg{
  width:100%;
- max-width:145px;
+ max-width:150px;
  height:100px;
 }
 
 .serviceLabel{
  font-size:12px;
  font-weight:bold;
- background:#ffffffb8;
+ background:#ffffffc0;
  padding:7px 10px;
  border-radius:20px;
  align-self:flex-start;
@@ -260,7 +262,7 @@ main{
 
 .bannerImage{
  width:100%;
- height:220px;
+ height:230px;
  object-fit:cover;
  display:block;
 }
@@ -288,11 +290,12 @@ main{
 }
 
 .bannerControls button{
- background:#eee;
  border:0;
- border-radius:50%;
+ background:#eee;
  width:34px;
  height:34px;
+ border-radius:50%;
+ font-size:20px;
 }
 
 .dot{
@@ -342,19 +345,19 @@ main{
 .productName{
  font-size:15px;
  font-weight:bold;
- overflow-wrap:anywhere;
  margin:7px 0;
+ overflow-wrap:anywhere;
 }
 
 .price{
  color:var(--orange);
- font-weight:900;
  font-size:21px;
+ font-weight:900;
 }
 
 .oldPrice{
- font-size:13px;
  color:#999;
+ font-size:13px;
  text-decoration:line-through;
 }
 
@@ -365,7 +368,7 @@ main{
 
 .discount{
  display:inline-block;
- background:#ff6500;
+ background:var(--orange);
  color:white;
  font-size:12px;
  padding:5px 8px;
@@ -375,8 +378,8 @@ main{
 .business{
  background:#202124;
  color:white;
- padding:25px;
  border-radius:24px;
+ padding:25px;
  margin-top:25px;
 }
 
@@ -404,6 +407,10 @@ main{
  font-size:13px;
 }
 
+.businessLink:hover{
+ background:#ffffff25;
+}
+
 .businessLink span{
  display:block;
  font-size:32px;
@@ -419,8 +426,8 @@ main{
 
 .feature{
  background:white;
- padding:18px;
  border-radius:17px;
+ padding:18px;
  text-align:center;
 }
 
@@ -434,20 +441,20 @@ main{
 }
 
 .feature p{
- font-size:12px;
  color:#777;
+ font-size:12px;
  line-height:1.5;
 }
 
 .profileCard{
- display:flex;
- justify-content:space-between;
- align-items:center;
- gap:12px;
  background:white;
- padding:15px;
  border-radius:17px;
+ padding:15px;
  margin-bottom:16px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:12px;
 }
 
 .profileCard strong{
@@ -456,8 +463,8 @@ main{
 
 .notice{
  background:#fff0df;
- padding:14px;
  border-radius:13px;
+ padding:14px;
  margin-bottom:12px;
  overflow-wrap:anywhere;
 }
@@ -489,13 +496,14 @@ nav{
  display:flex;
  justify-content:space-around;
  padding:11px 5px;
+ padding-bottom:max(11px,env(safe-area-inset-bottom));
  z-index:30;
 }
 
 nav a{
  color:#777;
- text-align:center;
  font-size:12px;
+ text-align:center;
 }
 
 nav span{
@@ -590,13 +598,10 @@ dialog::backdrop{
 <div class="top">
 
 <a href="./index.html" class="logo">
-
 VA<span>YO</span>
-
 </a>
 
-<select id="city" class="city"
-aria-label="Шаҳр">
+<select id="city" class="city" aria-label="Шаҳр">
 
 <option>Душанбе</option>
 <option>Хуҷанд</option>
@@ -609,6 +614,7 @@ aria-label="Шаҳр">
 <option>Истаравшан</option>
 <option>Панҷакент</option>
 <option>Хоруғ</option>
+<option>Дигар</option>
 
 </select>
 
@@ -704,6 +710,8 @@ class="bannerControls"></div>
 
 <section id="services" class="services">
 
+<!-- MARKETPLACE -->
+
 <a class="service market"
 href="./marketplace.html"
 data-search="marketplace маркет харид фурӯш маҳсулот бозор">
@@ -720,30 +728,45 @@ data-search="marketplace маркет харид фурӯш маҳсулот б�
 
 <svg viewBox="0 0 160 110">
 
-<rect x="30" y="33" width="67"
-height="68" rx="8" fill="#ff6500"/>
+<rect x="30" y="33"
+width="67" height="68"
+rx="8" fill="#ff6500"/>
 
 <path d="M48 35V23a16 16 0 0 1 32 0v12"
-fill="none" stroke="#fff" stroke-width="5"/>
+fill="none"
+stroke="#fff"
+stroke-width="5"/>
 
-<rect x="90" y="45" width="46"
-height="57" rx="7" fill="#ffac54"/>
+<rect x="90" y="45"
+width="46" height="57"
+rx="7" fill="#ffac54"/>
 
 <path d="M102 46V35a11 11 0 0 1 22 0v11"
-fill="none" stroke="#9b4100" stroke-width="4"/>
+fill="none"
+stroke="#9b4100"
+stroke-width="4"/>
 
-<circle cx="63" cy="65" r="13" fill="white"/>
+<circle cx="63" cy="65"
+r="13" fill="white"/>
 
 <path d="M56 65l5 5 10-12"
-fill="none" stroke="#ff6500" stroke-width="4"/>
+fill="none"
+stroke="#ff6500"
+stroke-width="4"/>
 
 </svg>
 
 </div>
 
-<span class="serviceLabel">0% комиссия</span>
+<span class="serviceLabel">
+
+0% комиссия
+
+</span>
 
 </a>
+
+<!-- TAXI -->
 
 <a class="service taxi"
 href="./taxi.html"
@@ -761,8 +784,9 @@ data-search="taxi таксӣ такси мошин сафар">
 
 <svg viewBox="0 0 160 110">
 
-<ellipse cx="80" cy="94" rx="66"
-ry="8" fill="#000" opacity=".1"/>
+<ellipse cx="80" cy="94"
+rx="66" ry="8"
+fill="#000" opacity=".1"/>
 
 <path d="M28 56L44 31Q48 24 60 24H103
 Q115 24 120 35L135 57"
@@ -771,41 +795,52 @@ fill="#ffc400"/>
 <path d="M49 34H109L121 55H38Z"
 fill="#a8d6e8"/>
 
-<rect x="15" y="53" width="130"
-height="36" rx="12" fill="#ffbf00"/>
+<rect x="15" y="53"
+width="130" height="36"
+rx="12" fill="#ffbf00"/>
 
-<rect x="22" y="61" width="19"
-height="10" rx="4" fill="#fff"/>
+<rect x="22" y="61"
+width="19" height="10"
+rx="4" fill="#fff"/>
 
-<rect x="119" y="61" width="19"
-height="10" rx="4" fill="#fff"/>
+<rect x="119" y="61"
+width="19" height="10"
+rx="4" fill="#fff"/>
 
-<rect x="59" y="16" width="43"
-height="13" rx="4" fill="#222"/>
+<rect x="59" y="16"
+width="43" height="13"
+rx="4" fill="#222"/>
 
 <text x="80" y="25"
-font-size="9" fill="#fff"
+font-size="9"
+fill="#fff"
 text-anchor="middle">TAXI</text>
 
-<circle cx="42" cy="87" r="13"
-fill="#222"/>
+<circle cx="42" cy="87"
+r="13" fill="#222"/>
 
-<circle cx="118" cy="87" r="13"
-fill="#222"/>
+<circle cx="118" cy="87"
+r="13" fill="#222"/>
 
-<circle cx="42" cy="87" r="6"
-fill="#bbb"/>
+<circle cx="42" cy="87"
+r="6" fill="#bbb"/>
 
-<circle cx="118" cy="87" r="6"
-fill="#bbb"/>
+<circle cx="118" cy="87"
+r="6" fill="#bbb"/>
 
 </svg>
 
 </div>
 
-<span class="serviceLabel">0% комиссия</span>
+<span class="serviceLabel">
+
+0% комиссия
+
+</span>
 
 </a>
+
+<!-- FOOD -->
 
 <a class="service food"
 href="./food.html"
@@ -824,45 +859,57 @@ data-search="food таом хӯрок ош тарабхона бургер пи�
 <svg viewBox="0 0 160 110">
 
 <path d="M15 49Q18 10 60 10
-Q102 10 105 49Z" fill="#e9a347"/>
+Q102 10 105 49Z"
+fill="#e9a347"/>
 
-<rect x="14" y="51" width="93"
-height="9" rx="4" fill="#3da94e"/>
+<rect x="14" y="51"
+width="93" height="9"
+rx="4" fill="#3da94e"/>
 
-<rect x="15" y="61" width="90"
-height="12" rx="5" fill="#713c25"/>
+<rect x="15" y="61"
+width="90" height="12"
+rx="5" fill="#713c25"/>
 
 <path d="M15 74H105V82
 Q103 97 88 97H32Q17 97 15 82Z"
 fill="#e9a347"/>
 
-<rect x="115" y="14" width="8"
-height="56" rx="3" fill="#ffcf43"/>
+<rect x="115" y="14"
+width="8" height="56"
+rx="3" fill="#ffcf43"/>
 
-<rect x="128" y="8" width="8"
-height="62" rx="3" fill="#ffd75d"/>
+<rect x="128" y="8"
+width="8" height="62"
+rx="3" fill="#ffd75d"/>
 
-<rect x="141" y="18" width="8"
-height="52" rx="3" fill="#ffcf43"/>
+<rect x="141" y="18"
+width="8" height="52"
+rx="3" fill="#ffcf43"/>
 
 <path d="M110 49H154L147 99H117Z"
 fill="#ff6500"/>
 
 <path d="M39 28l7 3M59 20l6 3M78 32l6 2"
-stroke="#fff2d5" stroke-width="4"
+stroke="#fff2d5"
+stroke-width="4"
 stroke-linecap="round"/>
 
 </svg>
 
 </div>
 
-<span class="serviceLabel">0% комиссия</span>
+<span class="serviceLabel">
+
+0% комиссия
+
+</span>
 
 </a>
 
+<!-- LANGUAGE -->
+
 <button class="service language"
-style="border:0;text-align:left;color:#202124"
-onclick="document.getElementById('soonDialog').showModal()"
+onclick="openLanguage()"
 data-search="language забон англисӣ олмонӣ омӯзиш">
 
 <div>
@@ -877,32 +924,45 @@ data-search="language забон англисӣ олмонӣ омӯзиш">
 
 <svg viewBox="0 0 160 110">
 
-<rect x="22" y="18" width="61"
-height="82" rx="9" fill="#7545ed"/>
+<rect x="22" y="18"
+width="61" height="82"
+rx="9" fill="#7545ed"/>
 
-<rect x="82" y="18" width="56"
-height="82" rx="9" fill="#a37af5"/>
+<rect x="82" y="18"
+width="56" height="82"
+rx="9" fill="#a37af5"/>
 
-<rect x="77" y="18" width="7"
-height="82" fill="#542bc1"/>
+<rect x="77" y="18"
+width="7" height="82"
+fill="#542bc1"/>
 
-<text x="52" y="68" font-size="35"
-font-weight="bold" fill="#fff"
+<text x="52" y="68"
+font-size="35"
+font-weight="bold"
+fill="#fff"
 text-anchor="middle">A</text>
 
-<text x="110" y="68" font-size="32"
-font-weight="bold" fill="#fff"
+<text x="110" y="68"
+font-size="32"
+font-weight="bold"
+fill="#fff"
 text-anchor="middle">Б</text>
 
 </svg>
 
 </div>
 
-<span class="serviceLabel">Ба наздикӣ</span>
+<span class="serviceLabel">
+
+Ба наздикӣ
+
+</span>
 
 </button>
 
 </section>
+
+<!-- PRODUCTS -->
 
 <section id="productSection">
 
@@ -921,11 +981,17 @@ style="color:#ff6500;font-size:14px">
 
 <div id="products" class="products">
 
-<div class="empty">Боргирӣ...</div>
+<div class="empty">
+
+Маҳсулот боргирӣ мешавад...
+
+</div>
 
 </div>
 
 </section>
+
+<!-- BUSINESS -->
 
 <section class="business">
 
@@ -933,7 +999,8 @@ style="color:#ff6500;font-size:14px">
 
 <p>
 
-Маҳсулот фурӯшед, тарабхона илова кунед,
+Маҳсулот фурӯшед,
+тарабхона илова кунед,
 ронанда ё расонанда шавед.
 
 </p>
@@ -1020,11 +1087,18 @@ style="color:#ff6500;font-size:14px">
 
 <strong>VAYO SUPER APP</strong>
 
-<p>© <span id="year"></span> VAYO Тоҷикистон</p>
+<p>
+
+© <span id="year"></span>
+VAYO Тоҷикистон
+
+</p>
 
 </footer>
 
 </main>
+
+<!-- NAVIGATION -->
 
 <nav>
 
@@ -1070,9 +1144,15 @@ style="color:#ff6500;font-size:14px">
 
 </nav>
 
+<!-- LANGUAGE DIALOG -->
+
 <dialog id="soonDialog">
 
-<div style="font-size:65px">📚</div>
+<div style="font-size:65px">
+
+📚
+
+</div>
 
 <h2>VAYO Language</h2>
 
@@ -1095,34 +1175,64 @@ onclick="document.getElementById('soonDialog').close()">
 <script>
 
 const db = window.vayo;
+
 const $ = id => document.getElementById(id);
 
 let products = [];
+
 let banners = [];
+
 let bannerIndex = 0;
+
 let productVersion = 0;
+
+let productsLoading = false;
+
+let productsError = "";
+
+let bannerLoading = false;
+
+let accountVersion = 0;
+
+// ===========================
+// SECURITY
+// ===========================
 
 function esc(value){
 
  return String(value ?? "").replace(
+
  /[&<>"']/g,
+
  c=>({
+
  "&":"&amp;",
+
  "<":"&lt;",
+
  ">":"&gt;",
+
  '"':"&quot;",
+
  "'":"&#39;"
+
  })[c]);
 
 }
 
 function safeURL(value){
 
+ if(!value) return "";
+
  try{
 
  const url = new URL(value,location.href);
 
- if(url.protocol!=="https:") return "";
+ if(url.protocol!=="https:"){
+
+ return "";
+
+ }
 
  return url.href;
 
@@ -1146,15 +1256,35 @@ function money(value){
 
 }
 
+function openLanguage(){
+
+ $("soonDialog").showModal();
+
+}
+
+// ===========================
+// PRODUCT PRICE
+// ===========================
+
 function currentPrice(p){
 
  const now = Date.now();
 
- if(p.sale_price!==null
+ if(
+
+ p.sale_price!==null
+
+ && p.sale_price!==undefined
+
  && p.sale_start
+
  && p.sale_end
+
  && now>=new Date(p.sale_start).getTime()
- && now<new Date(p.sale_end).getTime()){
+
+ && now<new Date(p.sale_end).getTime()
+
+ ){
 
  return Number(p.sale_price);
 
@@ -1164,52 +1294,189 @@ function currentPrice(p){
 
 }
 
+// ===========================
+// PRODUCT IMAGE
+// ===========================
+
 function firstImage(p){
 
- const images = [...(p.product_images || [])]
- .sort((a,b)=>a.position-b.position);
+ const images = [
 
- if(!images.length) return "";
+ ...(p.product_images || [])
+
+ ].sort((a,b)=>a.position-b.position);
+
+ if(!images.length || !db){
+
+ return "";
+
+ }
 
  const {data} = db.storage
+
  .from("product-images")
+
  .getPublicUrl(images[0].image_path);
 
- return safeURL(data.publicUrl);
+ return safeURL(data?.publicUrl);
 
 }
+
+// ===========================
+// LOAD PRODUCTS
+// ===========================
 
 async function loadProducts(){
 
+ if(!db) return;
+
  const version = ++productVersion;
 
- const {data,error} = await db
- .from("products")
- .select("*,product_images(image_path,position)")
- .eq("active",true)
- .gt("stock",0)
- .eq("seller_city",$("city").value)
- .order("created_at",{ascending:false})
- .limit(24);
+ productsLoading = true;
 
- if(version!==productVersion) return;
-
- if(error) throw error;
-
- products = data || [];
+ productsError = "";
 
  renderProducts();
 
+ try{
+
+ const {data,error} = await db
+
+ .from("products")
+
+ .select(`
+
+ id,
+ name,
+ description,
+ category,
+ brand,
+ price,
+ sale_price,
+ sale_start,
+ sale_end,
+ stock,
+ city,
+ created_at,
+ product_images(
+ image_path,
+ position
+ )
+
+ `)
+
+ .eq("active",true)
+
+ .gt("stock",0)
+
+ .eq("city",$("city").value)
+
+ .order("created_at",{ascending:false})
+
+ .limit(24);
+
+ if(version!==productVersion){
+
+ return;
+
+ }
+
+ if(error){
+
+ throw error;
+
+ }
+
+ products = data || [];
+
+ }catch(error){
+
+ if(version!==productVersion){
+
+ return;
+
+ }
+
+ products = [];
+
+ productsError = error.message;
+
+ }finally{
+
+ if(version===productVersion){
+
+ productsLoading = false;
+
+ renderProducts();
+
+ }
+
+ }
+
 }
+
+// ===========================
+// RENDER PRODUCTS
+// ===========================
 
 function renderProducts(){
 
- const q = $("search").value.trim().toLowerCase();
+ if(productsLoading){
+
+ $("products").innerHTML = `
+
+ <div class="empty">
+
+ Маҳсулот боргирӣ мешавад...
+
+ </div>
+
+ `;
+
+ return;
+
+ }
+
+ if(productsError){
+
+ $("products").innerHTML = `
+
+ <div class="empty">
+
+ <p>${esc(productsError)}</p>
+
+ <button class="btn"
+ onclick="loadProducts()">
+
+ Аз нав кӯшиш кунед
+
+ </button>
+
+ </div>
+
+ `;
+
+ return;
+
+ }
+
+ const q = $("search").value
+
+ .trim().toLowerCase();
 
  const list = products.filter(p=>
 
- [p.name,p.description,p.category,p.brand]
- .join(" ").toLowerCase().includes(q)
+ [
+
+ p.name,
+
+ p.description,
+
+ p.category,
+
+ p.brand
+
+ ].join(" ").toLowerCase().includes(q)
 
  ).slice(0,12);
 
@@ -1219,10 +1486,14 @@ function renderProducts(){
 
  const price = currentPrice(p);
 
- const discount = price<Number(p.price)
+ const discount =
+
+ price<Number(p.price)
 
  ? Math.round(
+
  (1-price/Number(p.price))*100
+
  )
 
  : 0;
@@ -1235,17 +1506,30 @@ function renderProducts(){
  ${image
 
  ? `<img src="${esc(image)}"
- loading="lazy" alt="${esc(p.name)}">`
+ loading="lazy"
+ alt="${esc(p.name)}">`
 
- : '<div class="productPlaceholder">📦</div>'}
+ : `<div class="productPlaceholder">
+
+ 📦
+
+ </div>`
+
+ }
 
  <div class="productBody">
 
  ${discount>0
 
- ? `<span class="discount">-${discount}%</span>`
+ ? `<span class="discount">
 
- : ""}
+ -${discount}%
+
+ </span>`
+
+ : ""
+
+ }
 
  <div class="productName">
 
@@ -1267,9 +1551,15 @@ function renderProducts(){
 
  </div>`
 
- : ""}
+ : ""
 
- <p class="small">📍 ${esc(p.seller_city)}</p>
+ }
+
+ <p class="small">
+
+ 📍 ${esc(p.city)}
+
+ </p>
 
  </div>
 
@@ -1279,17 +1569,60 @@ function renderProducts(){
 
  }).join("")
 
- || '<div class="empty">Ҳоло маҳсулот ёфт нашуд.</div>';
+ || `
+
+ <div class="empty">
+
+ <div style="font-size:40px">📦</div>
+
+ <p>Ҳоло маҳсулот ёфт нашуд.</p>
+
+ <a class="btn" href="./marketplace.html">
+
+ Ба Marketplace
+
+ </a>
+
+ </div>
+
+ `;
 
 }
 
+// ===========================
+// LOAD BANNERS
+// ===========================
+
 async function loadBanners(){
+
+ if(!db || bannerLoading){
+
+ return;
+
+ }
+
+ bannerLoading = true;
+
+ try{
 
  const {data,error} = await db
 
  .from("vayo_banners")
 
- .select("*")
+ .select(`
+
+ id,
+ title,
+ description,
+ image_url,
+ link_url,
+ service,
+ active,
+ position,
+ starts_at,
+ ends_at
+
+ `)
 
  .eq("active",true)
 
@@ -1299,18 +1632,24 @@ async function loadBanners(){
 
  .limit(30);
 
- if(error) throw error;
+ if(error){
+
+ throw error;
+
+ }
 
  const now = Date.now();
 
  banners = (data || []).filter(b=>
 
  (!b.starts_at ||
+
  new Date(b.starts_at).getTime()<=now)
 
  &&
 
  (!b.ends_at ||
+
  new Date(b.ends_at).getTime()>now)
 
  );
@@ -1323,9 +1662,39 @@ async function loadBanners(){
 
  renderBanner();
 
+ }catch(error){
+
+ console.error("Banner:",error.message);
+
+ }finally{
+
+ bannerLoading = false;
+
+ }
+
 }
 
+// ===========================
+// RENDER BANNER
+// ===========================
+
 function renderBanner(){
+
+ const now = Date.now();
+
+ banners = banners.filter(b=>
+
+ (!b.starts_at ||
+
+ new Date(b.starts_at).getTime()<=now)
+
+ &&
+
+ (!b.ends_at ||
+
+ new Date(b.ends_at).getTime()>now)
+
+ );
 
  if(!banners.length){
 
@@ -1335,31 +1704,41 @@ function renderBanner(){
 
  }
 
+ if(bannerIndex>=banners.length){
+
+ bannerIndex = 0;
+
+ }
+
  $("bannerSection").classList.remove("hidden");
 
  const b = banners[bannerIndex];
 
- const image = b.image_url
- ? safeURL(b.image_url)
- : "";
+ const image = safeURL(b.image_url);
 
- const link = b.link_url
- ? safeURL(b.link_url)
- : "";
+ const link = safeURL(b.link_url);
 
  $("bannerContent").innerHTML = `
 
  ${image
 
  ? `<img class="bannerImage"
+
  src="${esc(image)}"
+
  alt="${esc(b.title)}">`
 
- : ""}
+ : ""
+
+ }
 
  <div class="bannerBody">
 
- <div class="small">Реклама</div>
+ <div class="small">
+
+ Реклама
+
+ </div>
 
  <h3>${esc(b.title)}</h3>
 
@@ -1368,15 +1747,20 @@ function renderBanner(){
  ${link
 
  ? `<a class="btn"
+
  href="${esc(link)}"
+
  target="_blank"
+
  rel="noopener noreferrer">
 
  Муфассал →
 
  </a>`
 
- : ""}
+ : ""
+
+ }
 
  </div>
 
@@ -1389,17 +1773,30 @@ function renderBanner(){
  ? `
 
  <button onclick="changeBanner(-1)"
- aria-label="Баннери пешина">‹</button>
+
+ aria-label="Баннери пешина">
+
+ ‹
+
+ </button>
 
  ${banners.map((_,i)=>`
 
  <span class="dot
- ${i===bannerIndex?"active":""}"></span>
+
+ ${i===bannerIndex?"active":""}">
+
+ </span>
 
  `).join("")}
 
  <button onclick="changeBanner(1)"
- aria-label="Баннери навбатӣ">›</button>
+
+ aria-label="Баннери навбатӣ">
+
+ ›
+
+ </button>
 
  `
 
@@ -1409,7 +1806,11 @@ function renderBanner(){
 
 function changeBanner(delta){
 
- if(!banners.length) return;
+ if(!banners.length){
+
+ return;
+
+ }
 
  bannerIndex =
 
@@ -1421,11 +1822,25 @@ function changeBanner(delta){
 
 }
 
+// ===========================
+// ACCOUNT
+// ===========================
+
 async function loadAccount(){
+
+ if(!db) return;
+
+ const version = ++accountVersion;
 
  const {data,error} = await db.auth.getUser();
 
- if(error || !data.user){
+ if(version!==accountVersion){
+
+ return;
+
+ }
+
+ if(error || !data?.user){
 
  $("profileCard").classList.add("hidden");
 
@@ -1447,21 +1862,65 @@ async function loadAccount(){
 
  $("profileCard").classList.remove("hidden");
 
+ $("adminLink").classList.add("hidden");
+
+ try{
+
+ const {data:profile} = await db
+
+ .from("profiles")
+
+ .select("full_name")
+
+ .eq("id",user.id)
+
+ .maybeSingle();
+
+ if(version!==accountVersion){
+
+ return;
+
+ }
+
+ if(profile?.full_name){
+
+ $("profileName").textContent =
+
+ profile.full_name;
+
+ }
+
+ }catch{}
+
  const {data:isAdmin,error:adminError} =
 
  await db.rpc("vayo_is_admin");
 
+ if(version!==accountVersion){
+
+ return;
+
+ }
+
  $("adminLink").classList.toggle(
 
- "hidden",!!adminError || isAdmin!==true
+ "hidden",
+
+ !!adminError || isAdmin!==true
 
  );
 
 }
 
+// ===========================
+// SEARCH
+// ===========================
+
 $("search").addEventListener("input",()=>{
 
- const q = $("search").value.trim().toLowerCase();
+ const q = $("search").value
+
+ .trim().toLowerCase();
 
  document.querySelectorAll("[data-search]")
 
@@ -1471,7 +1930,9 @@ $("search").addEventListener("input",()=>{
 
  "hidden",
 
- !item.dataset.search.toLowerCase().includes(q)
+ !item.dataset.search
+
+ .toLowerCase().includes(q)
 
  );
 
@@ -1481,39 +1942,55 @@ $("search").addEventListener("input",()=>{
 
 });
 
+// ===========================
+// CITY
+// ===========================
+
 $("city").addEventListener("change",async()=>{
 
  try{
 
- localStorage.setItem("vayo_city",$("city").value);
+ localStorage.setItem(
+
+ "vayo_city",
+
+ $("city").value
+
+ );
 
  }catch{}
 
- try{
+ products = [];
 
  await loadProducts();
 
- }catch(error){
-
- notice(error.message);
-
- }
-
 });
+
+// ===========================
+// START APPLICATION
+// ===========================
 
 async function start(){
 
- $("year").textContent = new Date().getFullYear();
+ $("year").textContent =
+
+ new Date().getFullYear();
 
  try{
 
- const savedCity = localStorage.getItem("vayo_city");
+ const savedCity = localStorage
 
- if([...$("city").options].some(
+ .getItem("vayo_city");
+
+ if(
+
+ [...$("city").options].some(
 
  o=>o.value===savedCity
 
- )){
+ )
+
+ ){
 
  $("city").value = savedCity;
 
@@ -1523,41 +2000,57 @@ async function start(){
 
  if(!db){
 
- notice("Пайвастшавӣ ба Supabase дастрас нест.");
+ notice(
+
+ "Пайвастшавӣ ба Supabase дастрас нест. config.js-ро санҷед."
+
+ );
+
+ $("products").innerHTML =
+
+ '<div class="empty">База дастрас нест.</div>';
 
  return;
 
  }
 
- const results = await Promise.allSettled([
-
- loadAccount(),
+ await Promise.allSettled([
 
  loadProducts(),
 
- loadBanners()
+ loadBanners(),
+
+ loadAccount()
 
  ]);
 
- const failed = results.find(
+ db.auth.onAuthStateChange(()=>{
 
- r=>r.status==="rejected"
+ setTimeout(()=>{
 
- );
+ loadAccount().catch(console.error);
 
- if(failed){
+ },0);
 
- notice(failed.reason?.message || "Хатои боргирӣ.");
-
- }
+ });
 
 }
 
+// ===========================
+// AUTOMATIC REFRESH
+// ===========================
+
 setInterval(()=>{
 
- if(document.visibilityState==="visible"){
+ if(document.visibilityState!=="visible"){
+
+ return;
+
+ }
 
  changeBanner(1);
+
+ if(!productsLoading && !productsError){
 
  renderProducts();
 
@@ -1565,21 +2058,21 @@ setInterval(()=>{
 
 },6000);
 
-setInterval(async()=>{
+setInterval(()=>{
 
- if(!db || document.visibilityState!=="visible"){
+ if(!db ||
+
+ document.visibilityState!=="visible"){
 
  return;
 
  }
 
- try{
+ loadBanners();
 
- await loadBanners();
+ if(!productsLoading){
 
- }catch(error){
-
- console.error(error);
+ loadProducts();
 
  }
 
