@@ -1,0 +1,498 @@
+
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VAYO — Аккаунт</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./config.js"></script>
+
+<style>
+*{
+ box-sizing:border-box;
+ font-family:Arial,sans-serif;
+}
+body{
+ margin:0;
+ background:#f5f5f5;
+ color:#222;
+}
+header{
+ background:#ff6500;
+ color:white;
+ padding:20px;
+ display:flex;
+ align-items:center;
+ gap:20px;
+}
+header a{
+ color:white;
+ text-decoration:none;
+ font-size:24px;
+}
+header strong{
+ font-size:28px;
+}
+.container{
+ max-width:440px;
+ margin:30px auto;
+ padding:20px;
+}
+.logo{
+ text-align:center;
+ font-size:45px;
+ font-weight:bold;
+ color:#ff6500;
+ margin-bottom:20px;
+}
+.card{
+ background:white;
+ padding:25px;
+ border-radius:24px;
+ box-shadow:0 5px 25px #0000000d;
+}
+h2{
+ margin-top:0;
+}
+input{
+ width:100%;
+ padding:16px;
+ border:1px solid #ddd;
+ border-radius:12px;
+ margin-bottom:12px;
+ font-size:16px;
+}
+button{
+ width:100%;
+ padding:16px;
+ background:#ff6500;
+ color:white;
+ border:none;
+ border-radius:12px;
+ font-size:16px;
+ font-weight:bold;
+ cursor:pointer;
+ margin-top:8px;
+}
+button:disabled{
+ opacity:.6;
+}
+.secondary{
+ background:#fff0e5;
+ color:#ff6500;
+}
+.link{
+ background:transparent;
+ color:#ff6500;
+}
+.hidden{
+ display:none;
+}
+#message{
+ white-space:pre-wrap;
+ padding:12px;
+ border-radius:10px;
+ margin-bottom:15px;
+ background:#fff0e5;
+ overflow-wrap:anywhere;
+}
+#message:empty{
+ display:none;
+}
+footer{
+ text-align:center;
+ color:#888;
+ margin-top:25px;
+ font-size:13px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<a href="./index.html">←</a>
+<strong>VAYO</strong>
+</header>
+
+<div class="container">
+
+<div class="logo">VAYO</div>
+
+<div id="message" role="status"></div>
+
+<!-- LOGIN -->
+
+<section class="card" id="login">
+
+<h2>Хуш омадед!</h2>
+
+<input id="loginEmail"
+ type="email"
+ autocomplete="email"
+ placeholder="Email">
+
+<input id="loginPassword"
+ type="password"
+ autocomplete="current-password"
+ placeholder="Парол">
+
+<button onclick="signIn()">
+Ворид шудан
+</button>
+
+<button class="secondary"
+ onclick="show('register')">
+Бақайдгирӣ
+</button>
+
+<button class="link"
+ onclick="show('forgot')">
+Паролро фаромӯш кардед?
+</button>
+
+</section>
+
+<!-- REGISTER -->
+
+<section class="card hidden" id="register">
+
+<h2>Сохтани аккаунт</h2>
+
+<input id="fullName"
+ placeholder="Ному насаб">
+
+<input id="phone"
+ type="tel"
+ placeholder="+992">
+
+<input id="registerEmail"
+ type="email"
+ autocomplete="email"
+ placeholder="Email">
+
+<input id="registerPassword"
+ type="password"
+ autocomplete="new-password"
+ placeholder="Парол (на камтар аз 8 аломат)">
+
+<button onclick="signUp()">
+Сабти ном
+</button>
+
+<button class="secondary"
+ onclick="show('login')">
+Аллакай аккаунт дорам
+</button>
+
+</section>
+
+<!-- FORGOT PASSWORD -->
+
+<section class="card hidden" id="forgot">
+
+<h2>Барқарор кардани парол</h2>
+
+<input id="forgotEmail"
+ type="email"
+ placeholder="Email">
+
+<button onclick="resetPassword()">
+Фиристодани email
+</button>
+
+<button class="secondary"
+ onclick="show('login')">
+Бозгашт
+</button>
+
+</section>
+
+<!-- NEW PASSWORD -->
+
+<section class="card hidden" id="recovery">
+
+<h2>Пароли нав</h2>
+
+<input id="newPassword"
+ type="password"
+ autocomplete="new-password"
+ placeholder="Пароли нав">
+
+<button onclick="updatePassword()">
+Сабт кардан
+</button>
+
+</section>
+
+<!-- ACCOUNT -->
+
+<section class="card hidden" id="account">
+
+<h2>Аккаунти ман</h2>
+
+<p id="accountName"></p>
+<p id="accountEmail"></p>
+
+<button onclick="location.href='./index.html'">
+Саҳифаи асосӣ
+</button>
+
+<button id="adminButton"
+ class="hidden"
+ onclick="location.href='./admin.html'">
+VAYO Admin
+</button>
+
+<button class="secondary"
+ onclick="signOut()">
+Баромадан
+</button>
+
+</section>
+
+<footer>
+© 2026 VAYO-APP
+</footer>
+
+</div>
+
+<script>
+
+const db = window.vayo;
+
+const redirect =
+"https://vayo665.github.io/VAYO-APP/account.html";
+
+const $ = id => document.getElementById(id);
+
+let busy = false;
+let recovering = false;
+
+function message(text){
+ $("message").textContent = text;
+}
+
+function show(page){
+
+ ["login","register","forgot","recovery","account"]
+ .forEach(id => $(id).classList.add("hidden"));
+
+ $(page).classList.remove("hidden");
+
+ message("");
+
+}
+
+async function run(task){
+
+ if(busy) return;
+
+ if(!db){
+  message("Аввал config.js-ро танзим кунед.");
+  return;
+ }
+
+ busy = true;
+
+ document.querySelectorAll("button")
+ .forEach(b => b.disabled = true);
+
+ try{
+  await task();
+ }catch(error){
+  message(error.message || "Хатогӣ рӯй дод.");
+ }finally{
+  busy = false;
+  document.querySelectorAll("button")
+  .forEach(b => b.disabled = false);
+ }
+
+}
+
+async function signUp(){
+
+ await run(async()=>{
+
+ const fullName = $("fullName").value.trim();
+ const phone = $("phone").value.trim();
+ const email = $("registerEmail").value.trim();
+ const password = $("registerPassword").value;
+
+ if(!fullName || !email || !phone){
+  throw new Error("Ҳамаи маълумотро ворид кунед.");
+ }
+
+ if(password.length < 8){
+  throw new Error("Парол бояд на камтар аз 8 аломат бошад.");
+ }
+
+ const {data,error} = await db.auth.signUp({
+
+  email,
+  password,
+
+  options:{
+   emailRedirectTo:redirect,
+   data:{
+    full_name:fullName,
+    phone:phone
+   }
+  }
+
+ });
+
+ if(error) throw error;
+
+ if(data.session){
+  await loadAccount();
+ }else{
+  show("login");
+  message("Email-и худро санҷед ва аккаунтро тасдиқ кунед.");
+ }
+
+ });
+
+}
+
+async function signIn(){
+
+ await run(async()=>{
+
+ const email = $("loginEmail").value.trim();
+ const password = $("loginPassword").value;
+
+ const {error} =
+ await db.auth.signInWithPassword({
+  email,
+  password
+ });
+
+ if(error) throw error;
+
+ await loadAccount();
+
+ });
+
+}
+
+async function resetPassword(){
+
+ await run(async()=>{
+
+ const email = $("forgotEmail").value.trim();
+
+ const {error} =
+ await db.auth.resetPasswordForEmail(email,{
+  redirectTo:redirect
+ });
+
+ if(error) throw error;
+
+ message("Email-и худро санҷед.");
+
+ });
+
+}
+
+async function updatePassword(){
+
+ await run(async()=>{
+
+ if(!recovering){
+  throw new Error("Истиноди барқарорсозиро кушоед.");
+ }
+
+ const password = $("newPassword").value;
+
+ if(password.length < 8){
+  throw new Error("На камтар аз 8 аломат.");
+ }
+
+ const {error} =
+ await db.auth.updateUser({password});
+
+ if(error) throw error;
+
+ recovering = false;
+
+ await db.auth.signOut();
+
+ show("login");
+ message("Пароли нав сабт шуд.");
+
+ });
+
+}
+
+async function loadAccount(){
+
+ if(!db || recovering) return;
+
+ const {data,error} = await db.auth.getUser();
+
+ if(error || !data.user){
+  show("login");
+  return;
+ }
+
+ const user = data.user;
+
+ show("account");
+
+ $("accountEmail").textContent = user.email || "";
+
+ $("accountName").textContent =
+ user.user_metadata?.full_name || "Корбари VAYO";
+
+ $("adminButton").classList.add("hidden");
+
+ const result = await db.rpc("vayo_is_admin");
+
+ if(!result.error && result.data === true){
+  $("adminButton").classList.remove("hidden");
+ }
+
+}
+
+async function signOut(){
+
+ await run(async()=>{
+
+ const {error} = await db.auth.signOut();
+
+ if(error) throw error;
+
+ show("login");
+
+ });
+
+}
+
+if(db){
+
+ db.auth.onAuthStateChange((event,session)=>{
+
+  if(event === "PASSWORD_RECOVERY"){
+   recovering = true;
+   show("recovery");
+  }
+
+  if(event === "INITIAL_SESSION" && !recovering){
+   setTimeout(loadAccount,0);
+  }
+
+ });
+
+}else{
+
+ message("config.js ёфт нашуд ё нодуруст аст.");
+
+}
+
+</script>
+
+</body>
+</html>
