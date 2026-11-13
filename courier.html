@@ -1,0 +1,1787 @@
+
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VAYO Courier</title>
+
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./config.js"></script>
+
+<style>
+
+*{box-sizing:border-box}
+
+body{
+ margin:0;
+ background:#f4f6f8;
+ color:#202124;
+ font-family:Arial,sans-serif;
+}
+
+header{
+ background:#ff6500;
+ color:white;
+ padding:19px;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+}
+
+header a{
+ color:white;
+ text-decoration:none;
+}
+
+.logo{
+ font-size:24px;
+ font-weight:900;
+}
+
+main{
+ max-width:950px;
+ margin:auto;
+ padding:15px;
+}
+
+.card{
+ background:white;
+ padding:18px;
+ border-radius:18px;
+ margin-bottom:14px;
+}
+
+.grid{
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap:10px;
+}
+
+.metric{
+ font-size:27px;
+ color:#ff6500;
+ font-weight:bold;
+ margin-top:10px;
+}
+
+small{color:#777}
+
+button,.btn{
+ background:#ff6500;
+ color:white;
+ border:0;
+ border-radius:12px;
+ padding:13px 16px;
+ font-size:15px;
+ font-weight:bold;
+ cursor:pointer;
+ text-decoration:none;
+ display:inline-block;
+}
+
+button:disabled{opacity:.5}
+
+.green{background:#16a34a}
+.red{background:#dc2626}
+
+.gray{
+ background:#e5e7eb;
+ color:#222;
+}
+
+.full{width:100%}
+
+input,select{
+ width:100%;
+ padding:13px;
+ border:1px solid #ddd;
+ border-radius:10px;
+ font-size:16px;
+ margin:7px 0 15px;
+ background:white;
+}
+
+label{font-size:14px}
+
+.hidden{display:none!important}
+
+#map{
+ height:300px;
+ border-radius:18px;
+ margin-bottom:15px;
+ z-index:1;
+}
+
+.badge{
+ display:inline-block;
+ background:#fff0df;
+ color:#a84b00;
+ padding:7px 12px;
+ border-radius:20px;
+ font-size:12px;
+}
+
+.ok{
+ background:#dcfce7;
+ color:#15803d;
+}
+
+.notice{
+ background:#fff0df;
+ padding:14px;
+ border-radius:12px;
+ margin-bottom:12px;
+ overflow-wrap:anywhere;
+}
+
+.notice:empty{display:none}
+
+.order{
+ background:white;
+ padding:18px;
+ border-radius:18px;
+ margin-bottom:12px;
+ border-left:5px solid #ff6500;
+}
+
+.price{
+ font-size:27px;
+ font-weight:bold;
+ color:#ff6500;
+}
+
+.actions{
+ display:flex;
+ gap:8px;
+ flex-wrap:wrap;
+ margin-top:12px;
+}
+
+.empty{
+ padding:30px;
+ background:white;
+ border-radius:16px;
+ text-align:center;
+ color:#777;
+}
+
+.tabs{
+ display:flex;
+ gap:8px;
+ margin:15px 0;
+}
+
+.tabs button{flex:1}
+
+.tabs button.active{
+ background:#222;
+ color:white;
+}
+
+p{overflow-wrap:anywhere}
+
+@media(max-width:600px){
+
+ .metric{font-size:23px}
+
+ .card{padding:14px}
+
+ #map{height:260px}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+<a href="./index.html">←</a>
+
+<div class="logo">VAYO COURIER</div>
+
+<a href="./account.html">👤</a>
+
+</header>
+
+<main>
+
+<div id="gate" class="card">
+
+<p id="gateText">Боргирӣ...</p>
+
+<a class="btn" href="./account.html">
+Ворид шудан
+</a>
+
+</div>
+
+<div id="app" class="hidden">
+
+<div id="notice" class="notice" role="status"></div>
+
+<section id="registration" class="hidden">
+
+<div class="card">
+
+<h2>🛵 Расонандаи VAYO шавед</h2>
+
+<p>Комиссияи VAYO — 0%</p>
+
+<form id="courierForm">
+
+<label>Ному насаб</label>
+
+<input id="fullName"
+required maxlength="100">
+
+<label>Рақами телефон</label>
+
+<input id="phone"
+type="tel"
+placeholder="+992900000000"
+required>
+
+<label>Шаҳр</label>
+
+<select id="city">
+
+<option>Душанбе</option>
+<option>Хуҷанд</option>
+<option>Бохтар</option>
+<option>Кӯлоб</option>
+<option>Ҳисор</option>
+<option>Данғара</option>
+<option>Ваҳдат</option>
+
+</select>
+
+<label>Воситаи нақлиёт</label>
+
+<select id="vehicle">
+
+<option value="walking">Пиёда</option>
+<option value="bicycle">Велосипед</option>
+<option value="scooter">Скутер</option>
+<option value="motorcycle">Мотосикл</option>
+<option value="car">Мошин</option>
+
+</select>
+
+<button id="registerButton"
+type="submit" class="full">
+
+Сабти расонанда
+
+</button>
+
+</form>
+
+</div>
+
+</section>
+
+<section id="dashboard" class="hidden">
+
+<div class="card">
+
+<h2 id="courierName"></h2>
+
+<p id="vehicleInfo"></p>
+
+<div id="approvalStatus"></div>
+
+<p id="gpsStatus">GPS ғайрифаъол</p>
+
+<button id="onlineButton"
+class="full green"
+onclick="toggleOnline()">
+
+● Онлайн шудан
+
+</button>
+
+</div>
+
+<div class="grid">
+
+<div class="card">
+
+<small>Даромади имрӯз</small>
+
+<div class="metric" id="todayIncome">0 TJS</div>
+
+</div>
+
+<div class="card">
+
+<small>Расонидани имрӯз</small>
+
+<div class="metric" id="todayDeliveries">0</div>
+
+</div>
+
+<div class="card">
+
+<small>Даромади умумӣ</small>
+
+<div class="metric" id="totalIncome">0 TJS</div>
+
+</div>
+
+<div class="card">
+
+<small>Комиссияи VAYO</small>
+
+<div class="metric">0%</div>
+
+</div>
+
+</div>
+
+<div id="map"></div>
+
+<div id="activeDelivery"></div>
+
+<div class="tabs">
+
+<button id="availableTab"
+onclick="showTab('available')">
+
+Фармоишҳои нав
+
+</button>
+
+<button id="historyTab"
+onclick="showTab('history')">
+
+Таърих
+
+</button>
+
+</div>
+
+<section id="availableSection">
+
+<button onclick="refresh()">↻ Навсозӣ</button>
+
+<h3>Фармоишҳои дастрас</h3>
+
+<div id="availableList"></div>
+
+</section>
+
+<section id="historySection" class="hidden">
+
+<h3>Таърихи расонидан</h3>
+
+<div id="historyList"></div>
+
+</section>
+
+</section>
+
+</div>
+
+</main>
+
+<script>
+
+const db = window.vayo;
+
+const $ = id => document.getElementById(id);
+
+let user = null;
+let courier = null;
+
+let map = null;
+let courierMarker = null;
+let restaurantMarker = null;
+let customerMarker = null;
+let routeLine = null;
+
+let gpsWatch = null;
+let gpsPosition = null;
+let gpsGeneration = 0;
+let gpsQueue = Promise.resolve();
+let lastGpsSent = 0;
+
+let online = false;
+let startingGPS = false;
+let busy = false;
+let refreshing = false;
+
+let activeOrder = null;
+let orders = [];
+
+const vehicles = {
+
+ walking:"Пиёда",
+ bicycle:"Велосипед",
+ scooter:"Скутер",
+ motorcycle:"Мотосикл",
+ car:"Мошин"
+
+};
+
+const statuses = {
+
+ pending:"Фармоиши нав",
+ accepted:"Қабул шуд",
+ preparing:"Омода мешавад",
+ ready:"Барои гирифтан омода",
+ delivering:"Дар роҳ",
+ completed:"Расонида шуд",
+ cancelled:"Бекор шуд"
+
+};
+
+function esc(value){
+
+ return String(value ?? "").replace(
+
+ /[&<>"']/g,
+
+ c=>({
+
+  "&":"&amp;",
+  "<":"&lt;",
+  ">":"&gt;",
+  '"':"&quot;",
+  "'":"&#39;"
+
+ })[c]);
+
+}
+
+function val(id){
+
+ return $(id).value.trim();
+
+}
+
+function money(value){
+
+ return Number(value || 0).toFixed(2)+" TJS";
+
+}
+
+function notice(text){
+
+ $("notice").textContent = text || "";
+
+}
+
+function date(value){
+
+ if(!value) return "—";
+
+ return new Date(value).toLocaleString("ru-RU",{
+
+  timeZone:"Asia/Dushanbe"
+
+ });
+
+}
+
+function normalizePhone(value){
+
+ let p = value.replace(/[\s()-]/g,"");
+
+ if(/^\d{9}$/.test(p)){
+
+  p = "+992"+p;
+
+ }
+
+ if(/^992\d{9}$/.test(p)){
+
+  p = "+"+p;
+
+ }
+
+ if(!/^\+992\d{9}$/.test(p)){
+
+  throw new Error("Рақами телефон нодуруст.");
+
+ }
+
+ return p;
+
+}
+
+async function rpc(name,args={}){
+
+ const {data,error} = await db.rpc(name,args);
+
+ if(error) throw error;
+
+ return data;
+
+}
+
+function initMap(){
+
+ if(map) return;
+
+ map = L.map("map").setView(
+
+ [38.5598,68.7870],13
+
+ );
+
+ L.tileLayer(
+
+ "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+
+ {
+
+  maxZoom:19,
+
+  attribution:"&copy; OpenStreetMap contributors"
+
+ }
+
+ ).addTo(map);
+
+}
+
+function showPosition(lat,lng){
+
+ if(!map) return;
+
+ if(!courierMarker){
+
+  courierMarker = L.marker([lat,lng])
+
+  .addTo(map)
+
+  .bindPopup("Ҷойгиршавии шумо");
+
+  map.setView([lat,lng],15);
+
+ }else{
+
+  courierMarker.setLatLng([lat,lng]);
+
+ }
+
+}
+
+async function loadCourier(){
+
+ const {data,error} = await db
+
+ .from("couriers")
+
+ .select("*")
+
+ .eq("id",user.id)
+
+ .maybeSingle();
+
+ if(error) throw error;
+
+ courier = data;
+
+ if(!courier){
+
+  $("registration").classList.remove("hidden");
+
+  $("dashboard").classList.add("hidden");
+
+  $("fullName").value =
+  user.user_metadata?.full_name || "";
+
+  $("phone").value =
+  user.user_metadata?.phone || "";
+
+  return;
+
+ }
+
+ $("registration").classList.add("hidden");
+
+ $("dashboard").classList.remove("hidden");
+
+ initMap();
+
+ $("courierName").textContent = courier.full_name;
+
+ $("vehicleInfo").textContent =
+
+ (vehicles[courier.vehicle] || courier.vehicle)
+
+ +" · "+courier.city;
+
+ $("approvalStatus").innerHTML = courier.approved
+
+ ? '<span class="badge ok">Тасдиқ шудааст</span>'
+
+ : '<span class="badge">Интизори тасдиқи Admin</span>';
+
+ if(!courier.approved && (online || startingGPS)){
+
+  await goOffline();
+
+ }
+
+ if(courier.latitude!==null
+ && courier.longitude!==null){
+
+  showPosition(
+
+   courier.latitude,
+   courier.longitude
+
+  );
+
+ }
+
+ renderOnline();
+
+ await refresh();
+
+}
+
+$("courierForm").addEventListener("submit",async e=>{
+
+ e.preventDefault();
+
+ if(busy) return;
+
+ busy = true;
+
+ $("registerButton").disabled = true;
+
+ try{
+
+ const row = {
+
+  id:user.id,
+
+  full_name:val("fullName"),
+
+  phone:normalizePhone(val("phone")),
+
+  city:val("city"),
+
+  vehicle:val("vehicle")
+
+ };
+
+ if(!row.full_name){
+
+  throw new Error("Ному насабро ворид кунед.");
+
+ }
+
+ const {error} = await db
+
+ .from("couriers")
+
+ .insert(row);
+
+ if(error) throw error;
+
+ await loadCourier();
+
+ notice(
+
+ "Расонанда сабт шуд. Admin бояд шуморо тасдиқ кунад."
+
+ );
+
+ }catch(error){
+
+  notice(error.message);
+
+ }finally{
+
+  busy = false;
+
+  $("registerButton").disabled = false;
+
+  renderOnline();
+
+ }
+
+});
+
+function renderOnline(){
+
+ if(!courier) return;
+
+ const b = $("onlineButton");
+
+ b.disabled = !courier.approved || busy;
+
+ if(startingGPS){
+
+  b.textContent = "Қатъ кардани GPS";
+
+  b.className = "full red";
+
+ }else if(online){
+
+  b.textContent = "● Офлайн шудан";
+
+  b.className = "full red";
+
+ }else{
+
+  b.textContent = "● Онлайн шудан";
+
+  b.className = "full green";
+
+ }
+
+}
+
+function sendLocation(position,isOnline,generation){
+
+ const task = gpsQueue.catch(()=>{}).then(async()=>{
+
+  if(generation!==gpsGeneration) return false;
+
+  await rpc("vayo_courier_location",{
+
+   p_lat:position.latitude,
+
+   p_lng:position.longitude,
+
+   p_online:isOnline
+
+  });
+
+  return true;
+
+ });
+
+ gpsQueue = task;
+
+ return task;
+
+}
+
+async function goOnline(){
+
+ if(!courier?.approved || online || startingGPS){
+
+  return;
+
+ }
+
+ if(!navigator.geolocation){
+
+  notice("GPS дастрас нест.");
+
+  return;
+
+ }
+
+ startingGPS = true;
+
+ const generation = ++gpsGeneration;
+
+ lastGpsSent = 0;
+
+ renderOnline();
+
+ $("gpsStatus").textContent =
+ "Ҷустуҷӯи ҷойгиршавӣ...";
+
+ gpsWatch = navigator.geolocation.watchPosition(
+
+ async position=>{
+
+ if(generation!==gpsGeneration) return;
+
+ gpsPosition = position.coords;
+
+ showPosition(
+
+  gpsPosition.latitude,
+  gpsPosition.longitude
+
+ );
+
+ if(Date.now()-lastGpsSent<8000) return;
+
+ lastGpsSent = Date.now();
+
+ try{
+
+ const sent = await sendLocation(
+
+  gpsPosition,true,generation
+
+ );
+
+ if(!sent || generation!==gpsGeneration) return;
+
+ const first = !online;
+
+ online = true;
+
+ startingGPS = false;
+
+ $("gpsStatus").textContent =
+
+ "GPS фаъол · Дақиқӣ: "+
+
+ Math.round(gpsPosition.accuracy)+" м";
+
+ renderOnline();
+
+ if(first) await refresh();
+
+ }catch(error){
+
+ if(generation!==gpsGeneration) return;
+
+ await goOffline();
+
+ notice(error.message);
+
+ }
+
+ },
+
+ async error=>{
+
+ if(generation!==gpsGeneration) return;
+
+ await goOffline();
+
+ notice("GPS: "+error.message);
+
+ },
+
+ {
+
+  enableHighAccuracy:true,
+
+  maximumAge:5000,
+
+  timeout:20000
+
+ }
+
+ );
+
+}
+
+async function goOffline(){
+
+ const generation = ++gpsGeneration;
+
+ online = false;
+
+ startingGPS = false;
+
+ if(gpsWatch!==null){
+
+  navigator.geolocation.clearWatch(gpsWatch);
+
+  gpsWatch = null;
+
+ }
+
+ renderOnline();
+
+ $("gpsStatus").textContent = "GPS ғайрифаъол";
+
+ const position = gpsPosition ||
+
+ (
+
+ courier && courier.latitude!==null
+
+ && courier.longitude!==null
+
+ ? {
+
+  latitude:courier.latitude,
+
+  longitude:courier.longitude
+
+ }
+
+ : null
+
+ );
+
+ try{
+
+ if(position && courier?.approved){
+
+  await sendLocation(position,false,generation);
+
+ }
+
+ }catch(error){
+
+  notice("Офлайн дар сервер тасдиқ нашуд: "+error.message);
+
+ }
+
+ renderAvailable([]);
+
+}
+
+async function toggleOnline(){
+
+ if(busy) return;
+
+ if(online || startingGPS){
+
+  if(activeOrder){
+
+   notice("Аввал фармоиши фаъолро анҷом диҳед.");
+
+   return;
+
+  }
+
+  await goOffline();
+
+ }else{
+
+  await goOnline();
+
+ }
+
+}
+
+function showTab(tab){
+
+ $("availableSection").classList.toggle(
+
+  "hidden",tab!=="available"
+
+ );
+
+ $("historySection").classList.toggle(
+
+  "hidden",tab!=="history"
+
+ );
+
+ $("availableTab").classList.toggle(
+
+  "active",tab==="available"
+
+ );
+
+ $("historyTab").classList.toggle(
+
+  "active",tab==="history"
+
+ );
+
+}
+
+async function loadSummary(){
+
+ const result = await rpc("vayo_courier_summary");
+
+ const d = Array.isArray(result)
+
+ ? result[0]
+
+ : result;
+
+ if(!d) return;
+
+ $("todayIncome").textContent =
+
+ money(d.today_earnings);
+
+ $("todayDeliveries").textContent =
+
+ d.today_deliveries || 0;
+
+ $("totalIncome").textContent =
+
+ money(d.total_earnings);
+
+}
+
+async function loadOrders(){
+
+ const {data,error} = await db
+
+ .from("food_orders")
+
+ .select("*,food_order_items(*)")
+
+ .eq("courier_id",user.id)
+
+ .order("created_at",{ascending:false})
+
+ .limit(500);
+
+ if(error) throw error;
+
+ orders = data || [];
+
+ activeOrder = orders.find(o=>
+
+ ["ready","delivering"].includes(o.status)
+
+ ) || null;
+
+ await renderActive();
+
+ renderHistory();
+
+}
+
+async function loadAvailable(){
+
+ if(!online || !courier?.approved || activeOrder){
+
+  renderAvailable([]);
+
+  return;
+
+ }
+
+ const data = await rpc("vayo_available_deliveries");
+
+ renderAvailable(data || []);
+
+}
+
+function renderAvailable(list){
+
+ if(activeOrder){
+
+  $("availableList").innerHTML =
+
+  '<div class="empty">Шумо фармоиши фаъол доред.</div>';
+
+  return;
+
+ }
+
+ if(!online){
+
+  $("availableList").innerHTML =
+
+  '<div class="empty">Барои гирифтани фармоиш онлайн шавед.</div>';
+
+  return;
+
+ }
+
+ if(!list.length){
+
+  $("availableList").innerHTML =
+
+  '<div class="empty">🔍 Фармоиш ҷустуҷӯ мешавад...</div>';
+
+  return;
+
+ }
+
+ $("availableList").innerHTML = list.map(o=>`
+
+ <div class="order">
+
+ <span class="badge">Фармоиши нав</span>
+
+ <h3>🍔 ${esc(o.restaurant_name)}</h3>
+
+ <p>📍 ${esc(o.restaurant_address)}</p>
+
+ <p>${esc(o.city)}</p>
+
+ <small>Даромад аз расонидан</small>
+
+ <div class="price">
+
+ ${esc(money(o.delivery_fee))}
+
+ </div>
+
+ <p><small>Комиссия: 0%</small></p>
+
+ <button class="full green"
+
+ data-action="accept"
+
+ data-id="${esc(o.order_id)}">
+
+ Қабул кардани фармоиш
+
+ </button>
+
+ </div>
+
+ `).join("");
+
+}
+
+function clearMap(){
+
+ [restaurantMarker,customerMarker,routeLine]
+
+ .forEach(layer=>{
+
+  if(layer && map) map.removeLayer(layer);
+
+ });
+
+ restaurantMarker = null;
+
+ customerMarker = null;
+
+ routeLine = null;
+
+}
+
+function validCoords(lat,lng){
+
+ return lat!==null && lat!==undefined
+
+ && lng!==null && lng!==undefined
+
+ && Number.isFinite(Number(lat))
+
+ && Number.isFinite(Number(lng))
+
+ && Math.abs(Number(lat))<=90
+
+ && Math.abs(Number(lng))<=180;
+
+}
+
+function drawDelivery(order,restaurant){
+
+ clearMap();
+
+ if(!map) return;
+
+ const points = [];
+
+ if(restaurant && validCoords(
+
+ restaurant.latitude,restaurant.longitude
+
+ )){
+
+  const from = [
+
+   restaurant.latitude,
+
+   restaurant.longitude
+
+  ];
+
+  restaurantMarker = L.marker(from)
+
+  .addTo(map)
+
+  .bindPopup("Тарабхона");
+
+  points.push(from);
+
+ }
+
+ if(validCoords(order.latitude,order.longitude)){
+
+  const to = [
+
+   order.latitude,
+
+   order.longitude
+
+  ];
+
+  customerMarker = L.marker(to)
+
+  .addTo(map)
+
+  .bindPopup("Харидор");
+
+  points.push(to);
+
+ }
+
+ if(points.length===2){
+
+  routeLine = L.polyline(points,{
+
+   color:"#ff6500",
+
+   weight:4,
+
+   dashArray:"8 8"
+
+  }).addTo(map);
+
+ }
+
+ if(gpsPosition){
+
+  points.push([
+
+   gpsPosition.latitude,
+
+   gpsPosition.longitude
+
+  ]);
+
+ }
+
+ if(points.length){
+
+  map.fitBounds(points,{
+
+   padding:[30,30],
+
+   maxZoom:16
+
+  });
+
+ }
+
+}
+
+function navigationLink(lat,lng,address,label){
+
+ const destination = validCoords(lat,lng)
+
+ ? lat+","+lng
+
+ : address;
+
+ if(!destination) return "";
+
+ return `<a class="btn gray"
+
+ href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}"
+
+ target="_blank" rel="noopener noreferrer">
+
+ ${esc(label)}
+
+ </a>`;
+
+}
+
+function actionButton(id,status,label,color="green"){
+
+ return `<button class="${color}"
+
+ data-action="status"
+
+ data-id="${esc(id)}"
+
+ data-status="${esc(status)}">
+
+ ${esc(label)}
+
+ </button>`;
+
+}
+
+async function renderActive(){
+
+ if(!activeOrder){
+
+  $("activeDelivery").innerHTML = "";
+
+  clearMap();
+
+  return;
+
+ }
+
+ const o = activeOrder;
+
+ const result = await rpc(
+
+ "vayo_delivery_restaurant",{
+
+  p_order_id:o.id
+
+ });
+
+ const r = Array.isArray(result)
+
+ ? result[0]
+
+ : result;
+
+ let actions = "";
+
+ if(o.status==="ready"){
+
+  actions = actionButton(
+
+   o.id,"delivering","Таомро гирифтам"
+
+  )+
+
+  `<button class="red"
+
+   data-action="release"
+
+   data-id="${esc(o.id)}">
+
+   Рад кардани фармоиш
+
+   </button>`;
+
+ }
+
+ if(o.status==="delivering"){
+
+  actions = actionButton(
+
+   o.id,"completed","Ба харидор расонидам"
+
+  );
+
+ }
+
+ const tel = String(o.customer_phone || "")
+
+ .replace(/[^\d+]/g,"");
+
+ $("activeDelivery").innerHTML = `
+
+ <div class="order">
+
+ <h2>🛵 Фармоиши фаъол</h2>
+
+ <span class="badge ok">
+
+ ${esc(statuses[o.status] || o.status)}
+
+ </span>
+
+ <h3>1. Аз тарабхона гиред</h3>
+
+ <p>🍔 ${esc(r?.restaurant_name || "Тарабхона")}</p>
+
+ <p>📍 ${esc(r?.address || "—")}</p>
+
+ <p>📞 ${esc(r?.phone || "—")}</p>
+
+ ${navigationLink(
+
+ r?.latitude,r?.longitude,r?.address,
+
+ "Роҳ ба тарабхона"
+
+ )}
+
+ <hr>
+
+ <h3>2. Ба харидор расонед</h3>
+
+ <p>👤 ${esc(o.customer_name)}</p>
+
+ <p>📞
+
+ <a href="tel:${esc(tel)}">
+
+ ${esc(o.customer_phone)}
+
+ </a>
+
+ </p>
+
+ <p>📍 ${esc(o.delivery_address)}</p>
+
+ <p>📝 ${esc(o.note || "—")}</p>
+
+ <p>Занг задан ҳангоми расидан:
+
+ ${o.call_on_arrival?"Ҳа":"Не"}
+
+ </p>
+
+ ${navigationLink(
+
+ o.latitude,o.longitude,o.delivery_address,
+
+ "Роҳ ба харидор"
+
+ )}
+
+ <hr>
+
+ <h3>Маҳсулоти фармоиш</h3>
+
+ ${(o.food_order_items || []).map(i=>`
+
+ <p>${esc(i.food_name)} × ${esc(i.quantity)}</p>
+
+ `).join("")}
+
+ <hr>
+
+ <p>Нархи таомҳо: ${esc(money(o.subtotal))}</p>
+
+ <p>Расонидан: ${esc(money(o.delivery_fee))}</p>
+
+ <h3>Маблағи умумии фармоиш</h3>
+
+ <div class="price">
+
+ ${esc(money(o.total))}
+
+ </div>
+
+ <p>Пардохт: нақдӣ</p>
+
+ <p>
+
+ Даромади расонанда:
+
+ <strong>${esc(money(o.delivery_fee))}</strong>
+
+ </p>
+
+ <div class="actions">
+
+ ${actions}
+
+ </div>
+
+ </div>
+
+ `;
+
+ drawDelivery(o,r);
+
+}
+
+function renderHistory(){
+
+ if(!orders.length){
+
+  $("historyList").innerHTML =
+
+  '<div class="empty">Ҳоло фармоиш надоред.</div>';
+
+  return;
+
+ }
+
+ $("historyList").innerHTML = orders.map(o=>`
+
+ <div class="order">
+
+ <strong>Фармоиш #${esc(o.id.slice(0,8))}</strong>
+
+ <p>
+
+ <span class="badge ${o.status==="completed"?"ok":""}">
+
+ ${esc(statuses[o.status] || o.status)}
+
+ </span>
+
+ </p>
+
+ <p>${esc(date(o.created_at))}</p>
+
+ <p>📍 ${esc(o.delivery_address)}</p>
+
+ <small>Маблағи расонидан</small>
+
+ <div class="price">
+
+ ${esc(money(o.delivery_fee))}
+
+ </div>
+
+ </div>
+
+ `).join("");
+
+}
+
+async function refresh(){
+
+ if(refreshing || !courier) return;
+
+ refreshing = true;
+
+ try{
+
+  await loadOrders();
+
+  await loadSummary();
+
+  await loadAvailable();
+
+ }catch(error){
+
+  notice(error.message);
+
+ }finally{
+
+  refreshing = false;
+
+ }
+
+}
+
+async function performAction(action,id,status){
+
+ if(busy) return;
+
+ if(action==="accept" && (!online || activeOrder)){
+
+  return;
+
+ }
+
+ if(!confirm("Ин амалро тасдиқ мекунед?")) return;
+
+ busy = true;
+
+ renderOnline();
+
+ try{
+
+ if(action==="accept"){
+
+  await rpc("vayo_accept_delivery",{
+
+   p_order_id:id
+
+  });
+
+ }
+
+ if(action==="status"){
+
+  await rpc("vayo_delivery_status",{
+
+   p_order_id:id,
+
+   p_status:status
+
+  });
+
+ }
+
+ if(action==="release"){
+
+  await rpc("vayo_release_delivery",{
+
+   p_order_id:id
+
+  });
+
+ }
+
+ await refresh();
+
+ notice("Бомуваффақият иҷро шуд.");
+
+ }catch(error){
+
+ notice(error.message);
+
+ await refresh();
+
+ }finally{
+
+ busy = false;
+
+ renderOnline();
+
+ }
+
+}
+
+document.addEventListener("click",e=>{
+
+ const button = e.target.closest("[data-action]");
+
+ if(!button) return;
+
+ const {action,id,status} = button.dataset;
+
+ if(["accept","status","release"].includes(action)){
+
+  performAction(action,id,status);
+
+ }
+
+});
+
+async function start(){
+
+ try{
+
+ if(!db){
+
+  throw new Error("config.js ёфт нашуд.");
+
+ }
+
+ const {data,error} = await db.auth.getUser();
+
+ if(error || !data.user){
+
+  throw new Error("Аввал ба аккаунт ворид шавед.");
+
+ }
+
+ user = data.user;
+
+ $("gate").classList.add("hidden");
+
+ $("app").classList.remove("hidden");
+
+ showTab("available");
+
+ await loadCourier();
+
+ if(courier?.approved && courier.online){
+
+  await goOffline();
+
+ }
+
+ }catch(error){
+
+ $("gateText").textContent = error.message;
+
+ notice(error.message);
+
+ }
+
+}
+
+// GPS heartbeat
+
+setInterval(()=>{
+
+ if(!online || !courier?.approved) return;
+
+ if(Date.now()-lastGpsSent<20000) return;
+
+ if(document.visibilityState!=="visible") return;
+
+ if(!navigator.geolocation) return;
+
+ const generation = gpsGeneration;
+
+ navigator.geolocation.getCurrentPosition(
+
+ async position=>{
+
+ if(generation!==gpsGeneration || !online) return;
+
+ gpsPosition = position.coords;
+
+ lastGpsSent = Date.now();
+
+ showPosition(
+
+  gpsPosition.latitude,
+
+  gpsPosition.longitude
+
+ );
+
+ try{
+
+  await sendLocation(gpsPosition,true,generation);
+
+ }catch(error){
+
+  notice(error.message);
+
+ }
+
+ },
+
+ ()=>{},
+
+ {
+
+  enableHighAccuracy:true,
+
+  maximumAge:5000,
+
+  timeout:15000
+
+ }
+
+ );
+
+},25000);
+
+// Refresh orders and approval status
+
+setInterval(async()=>{
+
+ if(!user || !courier || busy || refreshing
+
+ || document.visibilityState!=="visible"){
+
+  return;
+
+ }
+
+ try{
+
+ const {data,error} = await db
+
+ .from("couriers")
+
+ .select("approved")
+
+ .eq("id",user.id)
+
+ .single();
+
+ if(error) throw error;
+
+ if(data.approved!==courier.approved){
+
+  courier.approved = data.approved;
+
+  if(!data.approved) await goOffline();
+
+  await loadCourier();
+
+ }else{
+
+  await refresh();
+
+ }
+
+ }catch(error){
+
+  notice(error.message);
+
+ }
+
+},12000);
+
+start();
+
+</script>
+
+</body>
+</html>
