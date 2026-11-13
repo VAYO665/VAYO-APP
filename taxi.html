@@ -3,628 +3,655 @@
 <html lang="tg">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#ffcc00">
 <title>VAYO Taxi</title>
 
-<link rel="stylesheet"
-href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <style>
-:root{
- --yellow:#ffcc00;
- --orange:#ff6500;
- --dark:#171717;
- --gray:#777;
- --bg:#f5f6f8;
+*{
+ box-sizing:border-box;
+ -webkit-tap-highlight-color:transparent;
 }
-*{box-sizing:border-box}
+
 body{
  margin:0;
- background:var(--bg);
- color:var(--dark);
  font-family:Arial,sans-serif;
- padding-bottom:90px;
+ color:#191919;
+ background:#e9ece7;
 }
-button,input,textarea{font:inherit}
-button{cursor:pointer;border:0}
-button:disabled{opacity:.5;cursor:not-allowed}
-a{color:inherit;text-decoration:none}
-header{
- display:flex;
- align-items:center;
- justify-content:space-between;
- background:white;
- padding:15px 18px;
+
+button,input,textarea{
+ font:inherit;
 }
-.logo{
- font-size:26px;
- font-weight:900;
- color:var(--orange);
+
+button{
+ border:0;
+ cursor:pointer;
 }
-.icon-btn{
- background:#f1f2f4;
- width:43px;
- height:43px;
- border-radius:14px;
- font-size:21px;
+
+button:disabled{
+ opacity:.5;
+ cursor:not-allowed;
 }
-main{
- max-width:850px;
- margin:auto;
+
+a{
+ text-decoration:none;
+ color:inherit;
 }
-.map-box{
- position:relative;
-}
+
 #map{
- width:100%;
- height:340px;
+ position:fixed;
+ inset:0;
  z-index:1;
- background:#e8e8e8;
+ background:#e5e8df;
 }
-.gps-btn{
- position:absolute;
- bottom:25px;
+
+.topbar{
+ position:fixed;
+ top:16px;
+ left:15px;
  right:15px;
  z-index:500;
- width:48px;
- height:48px;
- background:white;
- border-radius:16px;
- box-shadow:0 3px 15px #0003;
- font-size:25px;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ pointer-events:none;
 }
-.map-status{
- position:absolute;
- top:12px;
- left:50px;
- right:15px;
- z-index:500;
- background:white;
- padding:10px 12px;
- border-radius:12px;
- font-size:12px;
- box-shadow:0 2px 12px #0002;
+
+.topbar>*{
+ pointer-events:auto;
 }
-.panel{
+
+.round{
+ width:49px;
+ height:49px;
+ border-radius:18px;
  background:white;
- border-radius:25px;
- padding:20px;
- margin:12px;
- box-shadow:0 4px 20px #00000008;
+ box-shadow:0 4px 18px #0002;
+ display:grid;
+ place-items:center;
+ font-size:23px;
 }
+
+.logo{
+ background:white;
+ padding:13px 19px;
+ border-radius:18px;
+ font-size:21px;
+ font-weight:900;
+ color:#ff6500;
+ box-shadow:0 4px 18px #0002;
+}
+
+.sheet{
+ position:fixed;
+ bottom:0;
+ left:50%;
+ transform:translateX(-50%);
+ width:100%;
+ max-width:550px;
+ max-height:60dvh;
+ overflow-y:auto;
+ background:white;
+ border-radius:28px 28px 0 0;
+ z-index:600;
+ padding:10px 17px 20px;
+ padding-bottom:max(20px,env(safe-area-inset-bottom));
+ box-shadow:0 -8px 35px #0002;
+ transition:max-height .25s;
+}
+
+.sheet.expanded{
+ max-height:88dvh;
+}
+
+.handle{
+ width:100%;
+ height:20px;
+ background:transparent;
+ display:flex;
+ justify-content:center;
+ align-items:center;
+}
+
+.handle:after{
+ content:"";
+ width:42px;
+ height:5px;
+ background:#d5d5d5;
+ border-radius:20px;
+}
+
 h1{
  font-size:26px;
- margin:0 0 17px;
+ margin:9px 0 16px;
+ letter-spacing:-1px;
 }
+
 h2{
  font-size:19px;
- margin:0 0 15px;
+ margin:15px 0;
 }
-.caption{
- color:var(--gray);
- font-size:12px;
+
+.addresses{
+ background:#f3f3f5;
+ border-radius:19px;
+ padding:6px 14px;
 }
-.address{
- background:#f4f5f7;
- border-radius:16px;
- margin-bottom:12px;
- padding:12px;
-}
-.address label{
- display:block;
- color:#777;
- font-size:12px;
- margin-bottom:5px;
-}
+
 .address-row{
  display:flex;
  align-items:center;
- gap:9px;
+ gap:12px;
+ padding:10px 0;
 }
-.dot{
- width:12px;
- height:12px;
- border-radius:50%;
- flex-shrink:0;
- background:#19a65b;
+
+.address-row+ .address-row{
+ border-top:1px solid #ddd;
 }
-.dot.end{background:var(--orange)}
-.address input{
+
+.address-row input{
+ border:0;
+ outline:0;
+ background:transparent;
  width:100%;
  min-width:0;
- border:0;
- background:transparent;
- outline:none;
- padding:8px 0;
- font-weight:bold;
+ padding:6px 0;
  font-size:15px;
+ font-weight:bold;
 }
+
+.dot{
+ width:13px;
+ height:13px;
+ border-radius:50%;
+ background:#23ae63;
+ flex-shrink:0;
+}
+
+.dot.destination{
+ background:#ff6500;
+}
+
 .search-btn{
  background:white;
- border-radius:10px;
- padding:10px;
- font-size:17px;
+ padding:9px;
+ border-radius:12px;
 }
+
 .results button{
  width:100%;
- background:white;
- padding:12px;
- margin-top:5px;
- border-radius:10px;
  text-align:left;
- line-height:1.5;
+ padding:12px;
+ background:white;
+ margin-top:4px;
+ border-radius:12px;
  font-size:13px;
 }
+
 .map-tools{
  display:flex;
  gap:8px;
+ margin-top:10px;
 }
+
 .map-tools button{
  flex:1;
- background:#f1f2f4;
- padding:12px 8px;
- border-radius:12px;
+ background:#f3f3f5;
+ border-radius:13px;
+ padding:12px 6px;
  font-size:12px;
  font-weight:bold;
 }
-.route-info{
- display:flex;
- justify-content:space-around;
- background:#fff8d9;
- border-radius:15px;
- padding:15px;
- margin-top:15px;
- text-align:center;
-}
-.route-info strong{
- display:block;
- margin-bottom:5px;
- font-size:18px;
-}
-.route-info span{
- font-size:12px;
+
+.gps-status{
  color:#777;
+ font-size:12px;
+ margin:12px 0;
+ line-height:1.5;
 }
+
 .cars{
- display:grid;
- grid-template-columns:repeat(2,1fr);
- gap:10px;
+ display:flex;
+ overflow-x:auto;
+ gap:9px;
+ padding:5px 0 10px;
+ scrollbar-width:none;
 }
+
+.cars::-webkit-scrollbar{
+ display:none;
+}
+
 .car{
- border:2px solid #eeeeee;
- background:white;
- border-radius:18px;
- padding:13px;
+ min-width:122px;
+ flex:1;
+ background:#f5f5f5;
+ border:2px solid transparent;
+ border-radius:19px;
+ padding:10px;
  text-align:left;
 }
+
 .car.selected{
- border-color:var(--yellow);
- background:#fffbea;
+ background:#fff9dd;
+ border-color:#ffcc00;
 }
+
 .car svg{
  width:100%;
- height:65px;
+ height:62px;
 }
+
 .car-name{
- font-size:16px;
  font-weight:bold;
+ font-size:15px;
 }
-.car-desc{
- color:#777;
- font-size:11px;
- margin:6px 0;
-}
+
 .car-price{
- font-size:17px;
  font-weight:900;
- margin-top:8px;
+ font-size:16px;
+ margin-top:7px;
 }
-.field{
- margin-bottom:15px;
+
+.car-desc{
+ font-size:11px;
+ color:#777;
+ margin-top:4px;
 }
-.field label{
- display:block;
- font-size:13px;
- font-weight:bold;
- margin-bottom:7px;
-}
-.field input,.field textarea{
- width:100%;
- padding:14px;
- border:1px solid #e5e5e5;
- border-radius:13px;
- background:#f7f8fa;
- outline:none;
-}
-.field input:focus,.field textarea:focus{
- border-color:var(--orange);
-}
-.check{
- display:flex;
- align-items:center;
- gap:10px;
- padding:12px 0;
- font-size:14px;
-}
-.check input{
- width:20px;
- height:20px;
- accent-color:var(--orange);
-}
-.payment{
- background:#f5f6f8;
- border-radius:14px;
- padding:15px;
- margin-top:12px;
- font-weight:bold;
-}
-.total{
+
+.trip{
  display:flex;
  justify-content:space-between;
- align-items:center;
- margin-bottom:15px;
+ background:#f5f5f5;
+ border-radius:14px;
+ padding:12px;
+ font-size:13px;
+ margin:8px 0;
 }
-.total strong{font-size:26px}
+
 .order-btn{
  width:100%;
- background:var(--yellow);
+ background:#ffcc00;
+ border-radius:19px;
  color:#111;
- padding:17px;
- border-radius:16px;
- font-size:17px;
+ padding:18px;
+ font-size:18px;
  font-weight:900;
+ margin-top:12px;
 }
+
 .commission{
  text-align:center;
  color:#159447;
  font-size:12px;
+ margin:10px 0;
  font-weight:bold;
- margin-top:12px;
 }
-nav{
- position:fixed;
- bottom:0;
- left:0;
- right:0;
- z-index:900;
- background:white;
- border-top:1px solid #eee;
- display:flex;
- justify-content:space-around;
- padding:12px 5px;
- padding-bottom:max(12px,env(safe-area-inset-bottom));
+
+.field{
+ margin-bottom:12px;
 }
-nav button,nav a{
- background:none;
- color:#777;
- display:flex;
- flex-direction:column;
- align-items:center;
- gap:5px;
- font-size:11px;
+
+.field label{
+ display:block;
+ font-size:13px;
+ margin-bottom:6px;
+ font-weight:bold;
 }
-nav span{font-size:24px}
-nav .active{color:var(--orange)}
-dialog{
- width:min(92%,450px);
- max-height:85vh;
- overflow:auto;
- border:0;
- border-radius:24px;
- padding:22px;
-}
-dialog::backdrop{background:#0008}
-.close-btn{
+
+.field input,.field textarea{
  width:100%;
- padding:13px;
- border-radius:12px;
+ padding:15px;
+ background:#f4f4f5;
+ border:1px solid #eee;
+ border-radius:15px;
+ outline:none;
+}
+
+.check{
+ display:flex;
+ align-items:center;
+ gap:10px;
+ font-size:14px;
+ padding:10px 0;
+}
+
+.check input{
+ accent-color:#ff6500;
+ width:19px;
+ height:19px;
+}
+
+.payment{
+ background:#f3f3f5;
+ padding:15px;
+ border-radius:15px;
+ margin:10px 0;
+}
+
+dialog{
+ border:0;
+ border-radius:25px;
+ padding:22px;
+ width:min(94%,450px);
+ max-height:85dvh;
+ overflow:auto;
+}
+
+dialog::backdrop{
+ background:#0008;
+}
+
+.close-btn{
  background:#eee;
+ width:100%;
+ padding:15px;
+ border-radius:15px;
  margin-top:10px;
 }
-.order-card{
- padding:15px;
- background:#f5f6f8;
+
+.menu-btn{
+ width:100%;
+ background:#f4f4f5;
+ text-align:left;
+ padding:16px;
  border-radius:15px;
- margin-bottom:12px;
- font-size:13px;
- line-height:1.7;
+ margin-bottom:8px;
+}
+
+.summary{
+ background:#f4f4f5;
+ padding:15px;
+ border-radius:15px;
+ line-height:1.8;
+ font-size:14px;
  overflow-wrap:anywhere;
 }
+
 .toast{
  position:fixed;
- bottom:95px;
+ top:85px;
  left:50%;
  transform:translateX(-50%);
- z-index:2000;
  background:#222;
  color:white;
- padding:14px 20px;
+ z-index:2000;
+ padding:14px 18px;
  border-radius:15px;
+ font-size:13px;
  width:max-content;
  max-width:90%;
- text-align:center;
- font-size:14px;
 }
-.hidden{display:none!important}
-@media(min-width:700px){
- #map{height:420px}
- .cars{grid-template-columns:repeat(4,1fr)}
+
+.hidden{
+ display:none!important;
+}
+
+@media(min-width:800px){
+ .sheet{
+  left:20px;
+  bottom:20px;
+  transform:none;
+  width:420px;
+  max-height:82dvh;
+  border-radius:25px;
+ }
 }
 </style>
 </head>
 
 <body>
 
-<header>
- <a href="./index.html" class="icon-btn"
- style="display:grid;place-items:center">←</a>
+<div id="map"></div>
+
+<div class="topbar">
+
+ <button class="round"
+ onclick="openMenu()">☰</button>
 
  <div class="logo">VAYO Taxi</div>
 
- <a href="./account.html" class="icon-btn"
- style="display:grid;place-items:center">👤</a>
-</header>
+ <button class="round"
+ onclick="getLocation()">◎</button>
 
-<main>
-
-<!-- LIVE MAP -->
-
-<div class="map-box">
- <div id="map"></div>
-
- <div class="map-status" id="mapStatus">
- Ҷойгиршавӣ муайян шуда истодааст...
- </div>
-
- <button class="gps-btn"
- onclick="getLocation()"
- aria-label="Ҷойгиршавии ман">◎</button>
 </div>
 
-<!-- ADDRESSES -->
+<section class="sheet" id="sheet">
 
-<section class="panel">
+ <button class="handle"
+ aria-label="Калон ё хурд кардани панел"
+ onclick="toggleSheet()"></button>
 
  <h1>Ба куҷо меравем?</h1>
 
- <div class="address">
-  <label for="from">Аз куҷо?</label>
+ <div class="addresses">
 
   <div class="address-row">
    <span class="dot"></span>
 
    <input id="from"
-   placeholder="Ҷойгиршавии шумо">
+   placeholder="Ҷойгиршавии шумо"
+   aria-label="Суроғаи оғоз">
 
    <button class="search-btn"
-   onclick="searchAddress('from')">🔍</button>
+   onclick="searchAddress('from')">⌕</button>
   </div>
 
   <div id="fromResults" class="results"></div>
- </div>
-
- <div class="address">
-  <label for="to">Ба куҷо?</label>
 
   <div class="address-row">
-   <span class="dot end"></span>
+   <span class="dot destination"></span>
 
    <input id="to"
-   placeholder="Суроғаи таъинот">
+   placeholder="Ба куҷо?"
+   aria-label="Суроғаи таъинот">
 
    <button class="search-btn"
-   onclick="searchAddress('to')">🔍</button>
+   onclick="searchAddress('to')">⌕</button>
   </div>
 
   <div id="toResults" class="results"></div>
+
  </div>
 
  <div class="map-tools">
+
   <button onclick="getLocation()">
-   📍 Ҷойгиршавии ман
+   📍 Ҷойи ман
   </button>
 
-  <button onclick="selectOnMap('from')">
+  <button onclick="pickOnMap('from')">
    Аз харита: оғоз
   </button>
 
-  <button onclick="selectOnMap('to')">
-   Аз харита: таъинот
+  <button onclick="pickOnMap('to')">
+   Таъинот
   </button>
+
  </div>
 
- <div class="route-info">
-  <div>
-   <strong id="distance">—</strong>
-   <span>Масофа</span>
-  </div>
-
-  <div>
-   <strong id="duration">—</strong>
-   <span>Вақти сафар</span>
-  </div>
+ <div class="gps-status" id="status">
+  Ҷойгиршавӣ муайян шуда истодааст...
  </div>
 
-</section>
-
-<!-- CARS -->
-
-<section class="panel">
  <h2>Мошинро интихоб кунед</h2>
+
  <div class="cars" id="cars"></div>
-</section>
 
-<!-- CUSTOMER -->
-
-<section class="panel">
-
- <h2>Маълумоти мусофир</h2>
-
- <div class="field">
-  <label for="name">Номи шумо</label>
-  <input id="name"
-  autocomplete="name"
-  placeholder="Ном">
+ <div class="trip">
+  <span id="distance">— км</span>
+  <span id="duration">— дақ</span>
+  <strong id="price">— TJS</strong>
  </div>
 
- <div class="field">
-  <label for="phone">Рақами телефон</label>
-
-  <input id="phone"
-  type="tel"
-  autocomplete="tel"
-  placeholder="+992 90 123 45 67">
- </div>
-
- <div class="field">
-  <label for="note">Шарҳи иловагӣ</label>
-
-  <textarea id="note"
-  rows="2"
-  maxlength="300"
-  placeholder="Дар назди даромадгоҳ..."></textarea>
- </div>
-
- <label class="check">
-  <input id="callOnArrival"
-  type="checkbox" checked>
-
-  Вақте расидед, занг занед
- </label>
-
- <div class="payment">
-  💵 Пардохт бо пули нақд
- </div>
-
-</section>
-
-<!-- ORDER -->
-
-<section class="panel">
-
- <div class="total">
-  <div>
-   <div class="caption">Нархи тахминии сафар</div>
-   <strong id="total">— TJS</strong>
-  </div>
-  <span style="font-size:30px">🚕</span>
- </div>
-
- <button id="orderBtn"
- class="order-btn"
- onclick="prepareOrder()"
+ <button class="order-btn"
+ id="orderBtn"
+ onclick="openBooking()"
  disabled>
   Такси фармоиш додан
  </button>
 
  <div class="commission">
-  Комиссияи VAYO — 0%
+  VAYO · 0% комиссия
  </div>
-
- <p class="caption" style="text-align:center">
-  Версияи озмоишӣ — фармоиш ба ронандаи воқеӣ
-  фиристода намешавад.
- </p>
 
 </section>
 
-</main>
+<!-- BOOKING -->
 
-<nav>
+<dialog id="booking">
 
- <a href="./index.html">
-  <span>⌂</span>
-  Асосӣ
- </a>
+ <h2>Фармоиши такси</h2>
 
- <button class="active"
- onclick="window.scrollTo({top:0,behavior:'smooth'})">
-  <span>🚕</span>
-  Такси
+ <div id="bookingSummary" class="summary"></div>
+
+ <form id="bookingForm">
+
+  <br>
+
+  <div class="field">
+   <label for="name">Номи мусофир</label>
+   <input id="name" required maxlength="100"
+   autocomplete="name"
+   placeholder="Номи шумо">
+  </div>
+
+  <div class="field">
+   <label for="phone">Рақами телефон</label>
+   <input id="phone" required type="tel"
+   autocomplete="tel"
+   placeholder="+992 90 123 45 67">
+  </div>
+
+  <div class="field">
+   <label for="note">Шарҳи иловагӣ</label>
+   <textarea id="note" rows="2" maxlength="300"
+   placeholder="Дар назди даромадгоҳ..."></textarea>
+  </div>
+
+  <label class="check">
+   <input id="callOnArrival" type="checkbox" checked>
+   Вақте расидед, занг занед
+  </label>
+
+  <div class="payment">
+   💵 Пардохт бо пули нақд
+  </div>
+
+  <button class="order-btn" type="submit">
+   Тасдиқи фармоиш
+  </button>
+
+ </form>
+
+ <button class="close-btn"
+ onclick="document.getElementById('booking').close()">
+  Бекор кардан
  </button>
 
- <button onclick="showHistory()">
-  <span>📋</span>
-  Сафарҳо
+</dialog>
+
+<!-- MENU -->
+
+<dialog id="menu">
+
+ <h2>VAYO Taxi</h2>
+
+ <button class="menu-btn"
+ onclick="location.href='./index.html'">
+  🏠 Саҳифаи асосӣ
  </button>
 
- <a href="./account.html">
-  <span>👤</span>
-  Аккаунт
- </a>
+ <button class="menu-btn"
+ onclick="location.href='./account.html'">
+  👤 Аккаунти ман
+ </button>
 
-</nav>
+ <button class="menu-btn"
+ onclick="showHistory()">
+  📋 Таърихи сафарҳо
+ </button>
 
-<!-- CONFIRM ORDER -->
-
-<dialog id="orderDialog">
- <h2>Тасдиқи фармоиш</h2>
- <div id="orderSummary" class="order-card"></div>
-
- <button class="order-btn"
- onclick="confirmOrder()">
-  Тасдиқ кардан
+ <button class="menu-btn"
+ onclick="location.href='./driver.html'">
+  🚕 Барои ронандагон
  </button>
 
  <button class="close-btn"
- onclick="document.getElementById('orderDialog').close()">
-  Бекор кардан
+ onclick="document.getElementById('menu').close()">
+  Пӯшидан
  </button>
+
 </dialog>
 
-<!-- HISTORY -->
-
-<dialog id="historyDialog">
+<dialog id="history">
  <h2>Таърихи сафарҳо</h2>
  <div id="historyList"></div>
 
  <button class="close-btn"
- onclick="document.getElementById('historyDialog').close()">
+ onclick="document.getElementById('history').close()">
   Пӯшидан
  </button>
 </dialog>
 
-<div id="toast" class="toast hidden"></div>
+<dialog id="success">
+
+ <div style="text-align:center;font-size:60px">🚕</div>
+
+ <h2 style="text-align:center">
+  Фармоиши озмоишӣ сабт шуд
+ </h2>
+
+ <p style="color:#777;text-align:center;line-height:1.6">
+  Пайвастшавӣ ба ронандагони воқеӣ
+  ҳанӯз фаъол нест.
+ </p>
+
+ <button class="order-btn"
+ onclick="document.getElementById('success').close()">
+  Фаҳмо
+ </button>
+
+</dialog>
+
+<div class="toast hidden" id="toast"></div>
 
 <script>
-
-// =====================================
-// VAYO TAXI SETTINGS
-// =====================================
 
 const $ = id => document.getElementById(id);
 
 const tariffs = {
  economy:{
   name:"Economy",
-  desc:"Сафари арзон · 4 ҷой",
   base:5,
   km:2.5,
-  color:"#eeeeee"
+  color:"#f4f4f4",
+  desc:"4 ҷой"
  },
  comfort:{
   name:"Comfort",
-  desc:"Сафари бароҳат · 4 ҷой",
   base:8,
   km:3.5,
-  color:"#b7c5d4"
+  color:"#bfc9d3",
+  desc:"4 ҷой"
  },
  business:{
   name:"Business",
-  desc:"Дараҷаи олӣ · 4 ҷой",
   base:12,
   km:5,
-  color:"#292929"
+  color:"#30343b",
+  desc:"4 ҷой"
  },
  minivan:{
   name:"Minivan",
-  desc:"Барои оила · 6 ҷой",
   base:15,
   km:5.5,
-  color:"#e5e7eb"
+  color:"#e4e4e4",
+  desc:"6 ҷой"
  }
 };
 
@@ -640,72 +667,46 @@ let markers = {
  to:null
 };
 
-let addressVersion = {
+let versions = {
  from:0,
  to:0
 };
 
-let routeVersion = 0;
-let routeController = null;
 let routeLine = null;
-let routeReady = false;
-
+let routeVersion = 0;
+let controller = null;
+let ready = false;
 let distanceKm = 0;
 let durationMin = 0;
-
 let mapMode = "to";
-let pendingOrder = null;
-let gpsRequest = 0;
+let pending = null;
 let toastTimer;
-let lastGeoRequest = 0;
+let lastGeo = 0;
 let geoQueue = Promise.resolve();
 
-const ORDER_KEY = "vayo_taxi_orders_v3";
+const HISTORY_KEY = "vayo_taxi_orders_v3";
 
-
-// =====================================
 // MAP
-// =====================================
 
-const map = L.map("map").setView(
- [38.5598,68.7870],13
-);
+const map = L.map("map",{
+ zoomControl:false
+}).setView([38.5598,68.7870],14);
 
 L.tileLayer(
  "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
  {
   maxZoom:19,
-  attribution:"&copy; OpenStreetMap contributors"
+  attribution:"© OpenStreetMap contributors"
  }
 ).addTo(map);
 
-function markerIcon(type){
-
- const color = type === "from"
-  ? "#16a34a"
-  : "#ff6500";
-
- return L.divIcon({
-  className:"",
-  html:`<div style="
-   width:24px;
-   height:24px;
-   border:4px solid white;
-   background:${color};
-   border-radius:50%;
-   box-shadow:0 2px 10px #0005;
-  "></div>`,
-  iconSize:[24,24],
-  iconAnchor:[12,12]
- });
-}
+map.attributionControl.setPosition("topleft");
 
 function status(text){
- $("mapStatus").textContent = text;
+ $("status").textContent = text;
 }
 
 function toast(text){
-
  clearTimeout(toastTimer);
 
  $("toast").textContent = text;
@@ -716,42 +717,55 @@ function toast(text){
  },3500);
 }
 
+function toggleSheet(){
+ $("sheet").classList.toggle("expanded");
+}
 
-// =====================================
+function markerIcon(type){
+
+ const color = type==="from"
+  ? "#3287ff"
+  : "#ff6500";
+
+ return L.divIcon({
+  className:"",
+  html:`<div style="
+  width:26px;
+  height:26px;
+  background:${color};
+  border:4px solid white;
+  border-radius:50%;
+  box-shadow:0 2px 12px #0005;
+  "></div>`,
+  iconSize:[26,26],
+  iconAnchor:[13,13]
+ });
+}
+
 // GEOCODING
-// =====================================
-
-// Public Nominatim:
-// explicit search, no autocomplete,
-// maximum one request per second
-// in this browser.
 
 function geoRequest(url){
 
  const task = geoQueue.then(async()=>{
 
   const wait = Math.max(
-   0,
-   1100-(Date.now()-lastGeoRequest)
+   0,1100-(Date.now()-lastGeo)
   );
 
   await new Promise(resolve=>
    setTimeout(resolve,wait)
   );
 
-  lastGeoRequest = Date.now();
+  lastGeo = Date.now();
 
-  const response = await fetch(url,{
-   headers:{
-    "Accept":"application/json"
-   }
-  });
+  const response = await fetch(url);
 
   if(!response.ok){
-   throw new Error("Geocoding unavailable");
+   throw new Error("Geocoding failed");
   }
 
   return response.json();
+
  });
 
  geoQueue = task.catch(()=>{});
@@ -777,24 +791,16 @@ async function reverseAddress(lat,lng){
   `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
 }
 
-
-// =====================================
-// AUTOMATIC GPS
-// =====================================
+// GPS
 
 function getLocation(){
 
  if(!navigator.geolocation){
-
   status("GPS дастрас нест.");
-
-  toast("Суроғаро дастӣ интихоб кунед.");
-
   return;
  }
 
- const request = ++gpsRequest;
- const version = ++addressVersion.from;
+ const version = ++versions.from;
 
  status("Ҷойгиршавӣ муайян шуда истодааст...");
 
@@ -802,23 +808,24 @@ function getLocation(){
 
   async position=>{
 
-   if(request!==gpsRequest ||
-      version!==addressVersion.from){
-    return;
-   }
+   if(version!==versions.from)return;
 
    const lat = position.coords.latitude;
    const lng = position.coords.longitude;
-
-   map.setView([lat,lng],17);
 
    setPoint(
     "from",lat,lng,
     `${lat.toFixed(5)}, ${lng.toFixed(5)}`
    );
 
+   map.setView([lat,lng],17);
+
+   if(window.innerWidth<800){
+    map.panBy([0,$("sheet").offsetHeight/2]);
+   }
+
    status(
-    "GPS фаъол · дақиқӣ тақрибан "+
+    "GPS фаъол · дақиқӣ "+
     Math.round(position.coords.accuracy)+" м"
    );
 
@@ -826,34 +833,25 @@ function getLocation(){
 
     const address = await reverseAddress(lat,lng);
 
-    if(version===addressVersion.from){
-
+    if(version===versions.from && points.from){
      $("from").value = address;
      points.from.address = address;
-
     }
 
    }catch(error){
-
-    toast("GPS ёфт шуд. Номи суроға дастрас нест.");
-
+    status("GPS ёфт шуд. Номи суроға дастрас нест.");
    }
+
   },
 
   error=>{
 
-   if(request!==gpsRequest ||
-      version!==addressVersion.from){
-    return;
-   }
+   if(version!==versions.from)return;
 
-   status("Суроғаро дастӣ интихоб кунед.");
+   status("GPS дастрас нест. Суроғаро интихоб кунед.");
 
-   if(error.code===1){
-    toast("Барои GPS иҷозат диҳед.");
-   }else{
-    toast("Ҷойгиршавӣ муайян нашуд.");
-   }
+   toast("Барои GPS иҷозат диҳед.");
+
   },
 
   {
@@ -865,20 +863,14 @@ function getLocation(){
  );
 }
 
-
-// =====================================
-// SET PICKUP / DESTINATION
-// =====================================
+// POINTS
 
 function setPoint(type,lat,lng,address){
 
- points[type] = {
-  lat,
-  lng,
-  address
- };
+ points[type] = {lat,lng,address};
 
  $(type).value = address;
+
  $(type+"Results").replaceChildren();
 
  if(markers[type]){
@@ -897,29 +889,26 @@ function invalidateRoute(){
 
  routeVersion++;
 
- if(routeController){
-  routeController.abort();
+ if(controller){
+  controller.abort();
  }
-
- routeReady = false;
- distanceKm = 0;
- durationMin = 0;
 
  if(routeLine){
   map.removeLayer(routeLine);
   routeLine = null;
  }
 
- $("distance").textContent = "—";
- $("duration").textContent = "—";
+ ready = false;
+ distanceKm = 0;
+ durationMin = 0;
 
  renderCars();
- updateTotal();
+ updatePrice();
 }
 
 function clearPoint(type){
 
- addressVersion[type]++;
+ versions[type]++;
 
  points[type] = null;
 
@@ -950,27 +939,24 @@ function clearPoint(type){
 
 });
 
-
-// =====================================
 // ADDRESS SEARCH
-// =====================================
 
 async function searchAddress(type){
 
  const query = $(type).value.trim();
 
  if(query.length<3){
-  toast("Суроғаро пурра нависед.");
+  toast("Суроғаро нависед.");
   return;
  }
 
- const version = ++addressVersion[type];
-
- status("Ҷустуҷӯи суроға...");
+ const version = ++versions[type];
 
  const results = $(type+"Results");
 
  results.replaceChildren();
+
+ status("Ҷустуҷӯи суроға...");
 
  try{
 
@@ -987,16 +973,11 @@ async function searchAddress(type){
    +params
   );
 
-  if(version!==addressVersion[type]){
-   return;
-  }
+  if(version!==versions[type])return;
 
   if(!data.length){
-
    status("Суроға ёфт нашуд.");
-
    toast("Аз харита интихоб кунед.");
-
    return;
   }
 
@@ -1004,23 +985,20 @@ async function searchAddress(type){
 
    const button = document.createElement("button");
 
-   button.type = "button";
    button.textContent = place.display_name;
 
    button.onclick = ()=>{
 
-    addressVersion[type]++;
+    versions[type]++;
 
     const lat = Number(place.lat);
     const lng = Number(place.lon);
 
+    map.setView([lat,lng],16);
+
     setPoint(
      type,lat,lng,place.display_name
     );
-
-    map.setView([lat,lng],16);
-
-    status("Суроға интихоб шуд.");
 
    };
 
@@ -1028,29 +1006,25 @@ async function searchAddress(type){
 
   });
 
-  status("Суроғаро аз натиҷаҳо интихоб кунед.");
+  status("Суроғаро интихоб кунед.");
 
  }catch(error){
 
-  if(version!==addressVersion[type]){
-   return;
-  }
+  if(version!==versions[type])return;
 
   status("Ҷустуҷӯ дастрас нест.");
 
-  toast("Аз харита истифода баред.");
-
  }
+
 }
 
+// MAP SELECTION
 
-// =====================================
-// SELECT ON MAP
-// =====================================
-
-function selectOnMap(type){
+function pickOnMap(type){
 
  mapMode = type;
+
+ $("sheet").classList.remove("expanded");
 
  status(
   type==="from"
@@ -1058,16 +1032,13 @@ function selectOnMap(type){
    : "Ҷойи таъинотро дар харита пахш кунед."
  );
 
- window.scrollTo({
-  top:0,
-  behavior:"smooth"
- });
 }
 
 map.on("click",async event=>{
 
  const type = mapMode;
- const version = ++addressVersion[type];
+
+ const version = ++versions[type];
 
  const lat = event.latlng.lat;
  const lng = event.latlng.lng;
@@ -1077,70 +1048,55 @@ map.on("click",async event=>{
   `${lat.toFixed(5)}, ${lng.toFixed(5)}`
  );
 
- status("Ҷой интихоб шуд.");
-
  try{
 
   const address = await reverseAddress(lat,lng);
 
-  if(version===addressVersion[type]){
-
-   $(type).value = address;
+  if(version===versions[type] && points[type]){
    points[type].address = address;
-
+   $(type).value = address;
   }
 
- }catch(error){
-
-  // Coordinates remain available.
-
- }
+ }catch(error){}
 
 });
 
-
-// =====================================
-// ROUTE AND DISTANCE
-// =====================================
+// ROUTE
 
 async function calculateRoute(){
 
  invalidateRoute();
 
- if(!points.from || !points.to){
-  return;
- }
+ if(!points.from || !points.to)return;
 
  const version = routeVersion;
 
- routeController = new AbortController();
+ controller = new AbortController();
 
- const from = points.from;
- const to = points.to;
-
- status("Ҳисоби масир...");
+ status("Масир ҳисоб шуда истодааст...");
 
  try{
 
+  const a = points.from;
+  const b = points.to;
+
   const url =
    "https://router.project-osrm.org/route/v1/driving/"
-   +from.lng+","+from.lat+";"
-   +to.lng+","+to.lat
+   +a.lng+","+a.lat+";"
+   +b.lng+","+b.lat
    +"?overview=full&geometries=geojson";
 
   const response = await fetch(url,{
-   signal:routeController.signal
+   signal:controller.signal
   });
 
   if(!response.ok){
-   throw new Error("Route unavailable");
+   throw new Error("Route failed");
   }
 
   const data = await response.json();
 
-  if(version!==routeVersion){
-   return;
-  }
+  if(version!==routeVersion)return;
 
   if(data.code!=="Ok" || !data.routes?.length){
    throw new Error("No route");
@@ -1149,127 +1105,100 @@ async function calculateRoute(){
   const route = data.routes[0];
 
   distanceKm = route.distance/1000;
+
   durationMin = Math.max(
    1,Math.ceil(route.duration/60)
   );
 
-  routeLine = L.geoJSON(
-   route.geometry,
-   {
-    style:{
-     color:"#ff6500",
-     weight:6,
-     opacity:.9
-    }
+  routeLine = L.geoJSON(route.geometry,{
+   style:{
+    color:"#ff9d00",
+    weight:7,
+    opacity:1
    }
-  ).addTo(map);
+  }).addTo(map);
+
+  const mobile = window.innerWidth<800;
 
   map.fitBounds(routeLine.getBounds(),{
-   padding:[45,45],
+   paddingTopLeft:mobile?[35,85]:[450,85],
+   paddingBottomRight:mobile
+    ?[35,$("sheet").offsetHeight+20]
+    :[35,35],
    maxZoom:16
   });
 
-  $("distance").textContent =
-   distanceKm.toFixed(1)+" км";
-
-  $("duration").textContent =
-   durationMin+" дақ";
-
-  routeReady = true;
+  ready = true;
 
   renderCars();
-  updateTotal();
+  updatePrice();
 
   status("Масир омода аст.");
 
  }catch(error){
 
   if(error.name==="AbortError" ||
-     version!==routeVersion){
-   return;
-  }
+     version!==routeVersion)return;
 
-  status("Масир ҳисоб нашуд.");
-
-  toast("Суроға ё пайвасти интернетро санҷед.");
+  status("Масир ҳисоб нашуд. Боз кӯшиш кунед.");
 
  }
+
 }
 
-
-// =====================================
-// CAR DESIGN
-// =====================================
+// CAR ILLUSTRATIONS
 
 function carSVG(type){
 
  const color = tariffs[type].color;
+
  const van = type==="minivan";
 
  return `
  <svg viewBox="0 0 180 90">
-  <ellipse cx="90" cy="78"
-   rx="78" ry="6" fill="#00000015"/>
+  <ellipse cx="90" cy="79"
+   rx="80" ry="6" fill="#0002"/>
 
   <path d="${van
-   ? "M22 55L28 15H138L158 55Z"
-   : "M25 55L52 25H116L148 55Z"}"
-   fill="${color}"
-   stroke="#aaa" stroke-width="1"/>
+   ?"M20 55L29 14H138L160 55Z"
+   :"M22 55L55 25H115L150 55Z"}"
+   fill="${color}" stroke="#999"/>
 
   <path d="${van
-   ? "M38 22H130L145 49H35Z"
-   : "M48 50L60 31H111L132 50Z"}"
-   fill="#435269"/>
+   ?"M38 21H130L145 49H33Z"
+   :"M47 50L61 31H111L133 50Z"}"
+   fill="#465569"/>
 
-  <rect x="9" y="49"
-   width="162" height="26"
-   rx="11" fill="${color}"
-   stroke="#aaa"/>
+  <rect x="8" y="48" width="164"
+   height="27" rx="12"
+   fill="${color}" stroke="#999"/>
 
-  <rect x="10" y="56"
-   width="19" height="9"
-   rx="4" fill="#ffdb55"/>
+  <rect x="10" y="54" width="22"
+   height="9" rx="4" fill="#ffda55"/>
 
-  <rect x="151" y="56"
-   width="18" height="9"
-   rx="4" fill="#ff5b45"/>
+  <rect x="150" y="54" width="19"
+   height="9" rx="4" fill="#ef4444"/>
 
-  <circle cx="43" cy="73"
-   r="14" fill="#222"/>
+  <circle cx="43" cy="73" r="14" fill="#222"/>
+  <circle cx="138" cy="73" r="14" fill="#222"/>
 
-  <circle cx="138" cy="73"
-   r="14" fill="#222"/>
+  <circle cx="43" cy="73" r="6" fill="#aaa"/>
+  <circle cx="138" cy="73" r="6" fill="#aaa"/>
 
-  <circle cx="43" cy="73"
-   r="6" fill="#aaa"/>
-
-  <circle cx="138" cy="73"
-   r="6" fill="#aaa"/>
-
-  <text x="90" y="65"
-   text-anchor="middle"
-   font-size="10"
-   font-weight="bold"
+  <text x="90" y="65" text-anchor="middle"
+   font-size="10" font-weight="bold"
    fill="#ff6500">VAYO</text>
  </svg>`;
 }
 
-
-// =====================================
-// PRICES
-// =====================================
-
 function getPrice(type){
 
- if(!routeReady){
-  return null;
- }
+ if(!ready)return null;
 
- const tariff = tariffs[type];
+ const t = tariffs[type];
 
  return Math.round(
-  (tariff.base+distanceKm*tariff.km)*100
+  (t.base+distanceKm*t.km)*100
  )/100;
 }
 
@@ -1281,8 +1210,8 @@ function renderCars(){
 
   const button = document.createElement("button");
 
-  button.className =
-   "car"+(selectedCar===key?" selected":"");
+  button.className = "car"+
+   (key===selectedCar?" selected":"");
 
   const price = getPrice(key);
 
@@ -1300,7 +1229,7 @@ function renderCars(){
    selectedCar = key;
 
    renderCars();
-   updateTotal();
+   updatePrice();
 
   };
 
@@ -1310,20 +1239,69 @@ function renderCars(){
 
 }
 
-function updateTotal(){
+function updatePrice(){
+
+ $("distance").textContent =
+  ready?distanceKm.toFixed(1)+" км":"— км";
+
+ $("duration").textContent =
+  ready?durationMin+" дақ":"— дақ";
 
  const price = getPrice(selectedCar);
 
- $("total").textContent =
+ $("price").textContent =
   price===null?"— TJS":price.toFixed(2)+" TJS";
 
- $("orderBtn").disabled = !routeReady;
+ $("orderBtn").disabled = !ready;
+
+ $("orderBtn").textContent =
+  ready
+  ?"Фармоиш · "+price.toFixed(2)+" TJS"
+  :"Такси фармоиш додан";
 }
 
+// BOOKING
 
-// =====================================
-// PHONE VALIDATION
-// =====================================
+function openBooking(){
+
+ if(!ready || !points.from || !points.to){
+  toast("Аввал суроғаҳоро интихоб кунед.");
+  return;
+ }
+
+ pending = {
+  id:crypto.randomUUID(),
+  from:{...points.from},
+  to:{...points.to},
+  car:tariffs[selectedCar].name,
+  carType:selectedCar,
+  distance:Number(distanceKm.toFixed(2)),
+  duration:durationMin,
+  price:getPrice(selectedCar),
+  commission:0,
+  created:new Date().toISOString()
+ };
+
+ $("bookingSummary").replaceChildren();
+
+ [
+  "Аз: "+pending.from.address,
+  "Ба: "+pending.to.address,
+  "Мошин: "+pending.car,
+  "Масофа: "+pending.distance+" км",
+  "Нарх: "+pending.price.toFixed(2)+" TJS"
+ ].forEach(text=>{
+
+  const div = document.createElement("div");
+
+  div.textContent = text;
+
+  $("bookingSummary").appendChild(div);
+
+ });
+
+ $("booking").showModal();
+}
 
 function normalizePhone(value){
 
@@ -1337,107 +1315,17 @@ function normalizePhone(value){
   digits = "992"+digits;
  }
 
- if(!/^992\d{9}$/.test(digits)){
-  return null;
- }
-
- return "+"+digits;
+ return /^992\d{9}$/.test(digits)
+  ?"+"+digits
+  :null;
 }
 
-
-// =====================================
-// PREPARE ORDER
-// =====================================
-
-function prepareOrder(){
-
- if(!routeReady ||
-    !points.from ||
-    !points.to){
-
-  toast("Аввал суроғаҳоро интихоб кунед.");
-  return;
- }
-
- const name = $("name").value.trim();
-
- const phone = normalizePhone(
-  $("phone").value
- );
-
- if(!name || name.length>100){
-
-  toast("Номи худро дуруст нависед.");
-
-  $("name").focus();
-
-  return;
- }
-
- if(!phone){
-
-  toast("Рақами телефонро дуруст нависед.");
-
-  $("phone").focus();
-
-  return;
- }
-
- pendingOrder = {
-  id:crypto.randomUUID(),
-  name,
-  phone,
-  from:{...points.from},
-  to:{...points.to},
-  car:tariffs[selectedCar].name,
-  carType:selectedCar,
-  distance:Number(distanceKm.toFixed(2)),
-  duration:durationMin,
-  price:getPrice(selectedCar),
-  note:$("note").value.trim(),
-  callOnArrival:$("callOnArrival").checked,
-  commission:0,
-  status:"demo",
-  created:new Date().toISOString()
- };
-
- const summary = [
-  "Мошин: "+pendingOrder.car,
-  "Аз: "+pendingOrder.from.address,
-  "Ба: "+pendingOrder.to.address,
-  "Масофа: "+pendingOrder.distance+" км",
-  "Вақт: "+pendingOrder.duration+" дақ",
-  "Нарх: "+pendingOrder.price.toFixed(2)+" TJS",
-  "Телефон: "+pendingOrder.phone,
-  "Комиссия: 0%"
- ];
-
- $("orderSummary").replaceChildren();
-
- summary.forEach(text=>{
-
-  const line = document.createElement("div");
-
-  line.textContent = text;
-
-  $("orderSummary").appendChild(line);
-
- });
-
- $("orderDialog").showModal();
-}
-
-
-// =====================================
-// CONFIRM DEMO ORDER
-// =====================================
-
-function readOrders(){
+function readHistory(){
 
  try{
 
   const data = JSON.parse(
-   localStorage.getItem(ORDER_KEY)||"[]"
+   localStorage.getItem(HISTORY_KEY)||"[]"
   );
 
   return Array.isArray(data)?data:[];
@@ -1447,66 +1335,85 @@ function readOrders(){
   return [];
 
  }
+
 }
 
-function confirmOrder(){
+$("bookingForm").addEventListener("submit",event=>{
 
- if(!pendingOrder){
+ event.preventDefault();
+
+ if(!pending)return;
+
+ const phone = normalizePhone($("phone").value);
+
+ if(!phone){
+  toast("Рақами телефонро дуруст нависед.");
   return;
  }
 
- // Store only a limited demo summary.
- // Phone and exact addresses are not saved.
+ if(!$("name").value.trim()){
+  toast("Номи худро нависед.");
+  return;
+ }
+
+ // Demo: personal details are not stored.
+ // Real orders require a secure backend.
 
  const saved = {
-  id:pendingOrder.id,
-  car:pendingOrder.car,
-  distance:pendingOrder.distance,
-  duration:pendingOrder.duration,
-  price:pendingOrder.price,
-  status:"demo",
-  created:pendingOrder.created
+  id:pending.id,
+  car:pending.car,
+  distance:pending.distance,
+  duration:pending.duration,
+  price:pending.price,
+  created:pending.created,
+  status:"demo"
  };
 
  try{
 
-  const orders = readOrders();
+  const orders = readHistory();
 
   orders.unshift(saved);
 
   localStorage.setItem(
-   ORDER_KEY,
+   HISTORY_KEY,
    JSON.stringify(orders.slice(0,50))
   );
 
  }catch(error){
 
-  toast("Сабти фармоиш имконнопазир аст.");
-
+  toast("Фармоиш сабт нашуд.");
   return;
+
  }
 
- pendingOrder = null;
+ pending = null;
 
- $("orderDialog").close();
+ $("booking").close();
 
- toast("Фармоиши озмоишӣ сабт шуд!");
+ $("success").showModal();
 
- showHistory();
+});
+
+$("booking").addEventListener("close",()=>{
+ pending = null;
+});
+
+// MENU AND HISTORY
+
+function openMenu(){
+ $("menu").showModal();
 }
 
-
-// =====================================
-// ORDER HISTORY
-// =====================================
-
 function showHistory(){
+
+ $("menu").close();
 
  const list = $("historyList");
 
  list.replaceChildren();
 
- const orders = readOrders();
+ const orders = readHistory();
 
  if(!orders.length){
 
@@ -1518,17 +1425,16 @@ function showHistory(){
 
    const card = document.createElement("div");
 
-   card.className = "order-card";
+   card.className = "summary";
+   card.style.marginBottom = "10px";
 
-   const lines = [
+   [
     "🚕 "+order.car,
-    "Масофа: "+order.distance+" км",
-    "Нарх: "+order.price+" TJS",
+    order.distance+" км",
+    order.price+" TJS",
     "Ҳолат: Озмоишӣ",
     new Date(order.created).toLocaleString("ru-RU")
-   ];
-
-   lines.forEach(text=>{
+   ].forEach(text=>{
 
     const line = document.createElement("div");
 
@@ -1542,53 +1448,19 @@ function showHistory(){
 
   });
 
-  const clear = document.createElement("button");
-
-  clear.className = "close-btn";
-  clear.textContent = "Тоза кардани таърих";
-
-  clear.onclick = ()=>{
-
-   if(confirm("Таърихи сафарҳо тоза шавад?")){
-
-    try{
-     localStorage.removeItem(ORDER_KEY);
-     list.textContent = "Ҳоло сафарҳо нестанд.";
-    }catch(error){
-     toast("Тоза кардан имконнопазир аст.");
-    }
-
-   }
-
-  };
-
-  list.appendChild(clear);
-
  }
 
- if(!$("historyDialog").open){
-  $("historyDialog").showModal();
- }
+ $("history").showModal();
+
 }
 
-$("orderDialog").addEventListener("close",()=>{
- pendingOrder = null;
-});
-
-
-// =====================================
-// START VAYO TAXI
-// =====================================
+// START
 
 renderCars();
-updateTotal();
-
-// Automatically request GPS on opening.
+updatePrice();
 
 window.addEventListener("load",()=>{
-
  getLocation();
-
 });
 
 </script>
