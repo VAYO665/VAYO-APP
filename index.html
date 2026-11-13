@@ -3,827 +3,1591 @@
 <html lang="tg">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#ff6500">
-<title>VAYO — Super App</title>
+
+<meta name="description"
+content="VAYO Тоҷикистон — хариду фурӯш, таксӣ ва расонидани таом.">
+
+<title>VAYO — Super App Тоҷикистон</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./config.js"></script>
 
 <style>
-:root {
-  --orange:#ff6500;
-  --dark:#171717;
-  --gray:#777;
-  --bg:#f6f7f9;
+
+:root{
+ --orange:#ff6500;
+ --dark:#202124;
+ --bg:#f5f6f8;
 }
 
-* {
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
+*{box-sizing:border-box}
+
+body{
+ margin:0;
+ background:var(--bg);
+ color:var(--dark);
+ font-family:Arial,sans-serif;
 }
 
-body {
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:var(--bg);
-  color:var(--dark);
-  padding-bottom:95px;
+a{
+ color:inherit;
+ text-decoration:none;
 }
 
-button,input,select {
-  font:inherit;
+button,input,select{
+ font-family:inherit;
 }
 
-button,a {
-  cursor:pointer;
+button{
+ cursor:pointer;
 }
 
-button {
-  border:0;
+header{
+ background:white;
+ padding:16px;
+ position:sticky;
+ top:0;
+ z-index:20;
+ border-bottom:1px solid #eee;
 }
 
-a {
-  text-decoration:none;
-  color:inherit;
+.headerContent{
+ max-width:1150px;
+ margin:auto;
 }
 
-header {
-  background:white;
-  position:sticky;
-  top:0;
-  z-index:100;
-  box-shadow:0 2px 15px #00000008;
+.top{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:12px;
 }
 
-.header-inner {
-  max-width:1100px;
-  margin:auto;
-  padding:16px 20px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
+.logo{
+ font-size:35px;
+ font-weight:1000;
+ color:var(--orange);
+ letter-spacing:-2px;
 }
 
-.logo {
-  font-size:34px;
-  font-weight:900;
-  letter-spacing:-2px;
-  color:var(--orange);
+.logo span{
+ color:#202124;
 }
 
-.header-actions {
-  display:flex;
-  gap:12px;
+.city{
+ background:#f5f5f5;
+ border:0;
+ padding:10px;
+ border-radius:12px;
+ font-size:14px;
+ max-width:150px;
 }
 
-.icon-btn {
-  width:44px;
-  height:44px;
-  border-radius:15px;
-  background:#f4f4f4;
-  font-size:21px;
+.account{
+ width:43px;
+ height:43px;
+ border-radius:50%;
+ background:#fff0df;
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ font-size:23px;
 }
 
-main {
-  max-width:1100px;
-  margin:auto;
-  padding:20px;
+.search{
+ display:flex;
+ align-items:center;
+ background:#f3f4f6;
+ border-radius:14px;
+ padding:0 13px;
+ margin-top:15px;
 }
 
-.location {
-  display:flex;
-  align-items:center;
-  gap:8px;
-  margin-bottom:18px;
+.search input{
+ width:100%;
+ border:0;
+ background:transparent;
+ padding:14px 10px;
+ outline:none;
+ font-size:16px;
 }
 
-.location select {
-  background:transparent;
-  border:0;
-  font-weight:bold;
-  outline:none;
-  max-width:90%;
+main{
+ max-width:1150px;
+ margin:auto;
+ padding:16px 16px 110px;
 }
 
-.search {
-  display:flex;
-  align-items:center;
-  background:white;
-  border-radius:18px;
+.hero{
+ position:relative;
+ overflow:hidden;
+ background:linear-gradient(135deg,#ff6500,#ff9d31);
+ border-radius:26px;
+ color:white;
+ padding:28px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:10px;
+ min-height:210px;
+}
+
+.hero h1{
+ margin:0 0 12px;
+ font-size:32px;
+ line-height:1.2;
+}
+
+.hero p{
+ line-height:1.6;
+ margin:0 0 18px;
+}
+
+.heroArt{
+ font-size:80px;
+ transform:rotate(-8deg);
+}
+
+.btn{
+ display:inline-block;
+ border:0;
+ padding:13px 18px;
+ border-radius:13px;
+ background:var(--orange);
+ color:white;
+ font-size:15px;
+ font-weight:bold;
+}
+
+.white{
+ background:white;
+ color:var(--orange);
+}
+
+.sectionTitle{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ margin:25px 0 14px;
+}
+
+.sectionTitle h2{
+ margin:0;
+ font-size:23px;
+}
+
+.services{
+ display:grid;
+ grid-template-columns:repeat(4,minmax(0,1fr));
+ gap:13px;
+}
+
+.service{
+ display:flex;
+ flex-direction:column;
+ justify-content:space-between;
+ min-height:200px;
+ border-radius:23px;
+ padding:18px;
+ overflow:hidden;
+ position:relative;
+ transition:transform .2s;
+}
+
+.service:hover{
+ transform:translateY(-3px);
+}
+
+.market{
+ background:#ffe4cd;
+}
+
+.taxi{
+ background:#fff0a8;
+}
+
+.food{
+ background:#dcf6df;
+}
+
+.language{
+ background:#eee4ff;
+}
+
+.service h3{
+ margin:0;
+ font-size:21px;
+}
+
+.service p{
+ font-size:13px;
+ line-height:1.4;
+ color:#555;
+}
+
+.serviceArt{
+ height:90px;
+ width:100%;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+}
+
+.serviceArt svg{
+ width:100%;
+ max-width:145px;
+ height:100px;
+}
+
+.serviceLabel{
+ font-size:12px;
+ font-weight:bold;
+ background:#ffffffb8;
+ padding:7px 10px;
+ border-radius:20px;
+ align-self:flex-start;
+}
+
+.banner{
+ background:white;
+ border-radius:22px;
+ overflow:hidden;
+ border:1px solid #eee;
+ margin-top:18px;
+}
+
+.bannerImage{
+ width:100%;
+ height:220px;
+ object-fit:cover;
+ display:block;
+}
+
+.bannerBody{
+ padding:18px;
+ overflow-wrap:anywhere;
+}
+
+.bannerBody h3{
+ margin:0 0 10px;
+}
+
+.bannerBody p{
+ color:#666;
+ line-height:1.5;
+}
+
+.bannerControls{
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ gap:10px;
+ padding:0 15px 15px;
+}
+
+.bannerControls button{
+ background:#eee;
+ border:0;
+ border-radius:50%;
+ width:34px;
+ height:34px;
+}
+
+.dot{
+ width:8px;
+ height:8px;
+ border-radius:50%;
+ background:#ddd;
+}
+
+.dot.active{
+ background:var(--orange);
+}
+
+.products{
+ display:grid;
+ grid-template-columns:repeat(4,minmax(0,1fr));
+ gap:12px;
+}
+
+.product{
+ background:white;
+ border-radius:17px;
+ overflow:hidden;
+ border:1px solid #eee;
+}
+
+.product img{
+ width:100%;
+ height:180px;
+ object-fit:cover;
+ display:block;
+}
+
+.productPlaceholder{
+ height:180px;
+ background:#fff0df;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-size:55px;
+}
+
+.productBody{
+ padding:13px;
+}
+
+.productName{
+ font-size:15px;
+ font-weight:bold;
+ overflow-wrap:anywhere;
+ margin:7px 0;
+}
+
+.price{
+ color:var(--orange);
+ font-weight:900;
+ font-size:21px;
+}
+
+.oldPrice{
+ font-size:13px;
+ color:#999;
+ text-decoration:line-through;
+}
+
+.small{
+ font-size:12px;
+ color:#777;
+}
+
+.discount{
+ display:inline-block;
+ background:#ff6500;
+ color:white;
+ font-size:12px;
+ padding:5px 8px;
+ border-radius:7px;
+}
+
+.business{
+ background:#202124;
+ color:white;
+ padding:25px;
+ border-radius:24px;
+ margin-top:25px;
+}
+
+.business h2{
+ margin-top:0;
+}
+
+.business p{
+ color:#ddd;
+ line-height:1.6;
+}
+
+.businessGrid{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:10px;
+ margin-top:18px;
+}
+
+.businessLink{
+ background:#ffffff14;
+ padding:17px 10px;
+ border-radius:16px;
+ text-align:center;
+ font-size:13px;
+}
+
+.businessLink span{
+ display:block;
+ font-size:32px;
+ margin-bottom:10px;
+}
+
+.features{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:12px;
+ margin-top:20px;
+}
+
+.feature{
+ background:white;
+ padding:18px;
+ border-radius:17px;
+ text-align:center;
+}
+
+.feature span{
+ font-size:30px;
+}
+
+.feature h3{
+ font-size:15px;
+ margin-bottom:8px;
+}
+
+.feature p{
+ font-size:12px;
+ color:#777;
+ line-height:1.5;
+}
+
+.profileCard{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:12px;
+ background:white;
+ padding:15px;
+ border-radius:17px;
+ margin-bottom:16px;
+}
+
+.profileCard strong{
+ overflow-wrap:anywhere;
+}
+
+.notice{
+ background:#fff0df;
+ padding:14px;
+ border-radius:13px;
+ margin-bottom:12px;
+ overflow-wrap:anywhere;
+}
+
+.notice:empty{
+ display:none;
+}
+
+.empty{
+ grid-column:1/-1;
+ background:white;
+ border-radius:16px;
+ padding:25px;
+ text-align:center;
+ color:#777;
+}
+
+.hidden{
+ display:none!important;
+}
+
+nav{
+ position:fixed;
+ bottom:0;
+ left:0;
+ right:0;
+ background:white;
+ border-top:1px solid #ddd;
+ display:flex;
+ justify-content:space-around;
+ padding:11px 5px;
+ z-index:30;
+}
+
+nav a{
+ color:#777;
+ text-align:center;
+ font-size:12px;
+}
+
+nav span{
+ display:block;
+ font-size:25px;
+ margin-bottom:5px;
+}
+
+nav .active{
+ color:var(--orange);
+ font-weight:bold;
+}
+
+footer{
+ text-align:center;
+ color:#999;
+ font-size:12px;
+ padding:25px 0;
+}
+
+dialog{
+ border:0;
+ border-radius:23px;
+ width:min(92%,420px);
+ padding:25px;
+ text-align:center;
+}
+
+dialog::backdrop{
+ background:#0008;
+}
+
+@media(max-width:700px){
+
+ .services,.products{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+ }
+
+ .businessGrid{
+  grid-template-columns:repeat(2,1fr);
+ }
+
+ .hero{
+  padding:22px;
+  min-height:180px;
+ }
+
+ .hero h1{
+  font-size:26px;
+ }
+
+ .heroArt{
+  font-size:55px;
+ }
+
+ .service{
+  min-height:185px;
   padding:15px;
-  gap:12px;
-  border:1px solid #eeeeee;
-  margin-bottom:20px;
-}
+ }
 
-.search input {
-  width:100%;
-  border:0;
-  background:transparent;
-  outline:none;
-}
-
-.hero {
-  background:linear-gradient(125deg,#ff8500,#ff4800);
-  color:white;
-  padding:30px;
-  border-radius:28px;
-  position:relative;
-  overflow:hidden;
-}
-
-.hero::after {
-  content:"V";
-  position:absolute;
-  font-size:250px;
-  font-weight:900;
-  right:-20px;
-  top:-50px;
-  color:#ffffff18;
-  pointer-events:none;
-}
-
-.hero h1 {
-  font-size:clamp(27px,5vw,43px);
-  margin:12px 0;
-  position:relative;
-  z-index:1;
-}
-
-.hero p {
-  line-height:1.6;
-  position:relative;
-  z-index:1;
-}
-
-.hero-label {
-  display:inline-block;
-  background:#ffffff25;
-  padding:8px 14px;
-  border-radius:30px;
-  font-size:12px;
-  font-weight:bold;
-}
-
-.hero-btn {
-  background:white;
-  color:var(--orange);
-  padding:13px 22px;
-  border-radius:15px;
-  font-weight:bold;
-  margin-top:10px;
-  position:relative;
-  z-index:2;
-}
-
-.section-title {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin:27px 0 15px;
-}
-
-.section-title h2 {
-  font-size:22px;
-  margin:0;
-}
-
-.services {
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:15px;
-}
-
-.service {
-  border-radius:25px;
-  padding:18px;
-  min-height:235px;
-  position:relative;
-  overflow:hidden;
-  transition:transform .2s;
-  display:block;
-}
-
-.service:hover {
-  transform:translateY(-4px);
-}
-
-.market {
-  background:#ffeadb;
-}
-
-.taxi {
-  background:#fff0b7;
-}
-
-.food {
-  background:#dcf5df;
-}
-
-.language {
-  background:#eae2ff;
-}
-
-.service-art {
-  height:115px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.service-art svg {
-  width:130px;
-  height:110px;
-}
-
-.service h3 {
-  margin:12px 0 5px;
+ .service h3{
   font-size:19px;
+ }
+
+ .product img,.productPlaceholder{
+  height:155px;
+ }
+
+ .features{
+  gap:7px;
+ }
+
+ .feature{
+  padding:12px 7px;
+ }
+
+ .bannerImage{
+  height:170px;
+ }
+
 }
 
-.service p {
-  color:#555;
-  font-size:13px;
-  line-height:1.4;
-  margin:0 0 12px;
-}
-
-.zero {
-  display:inline-block;
-  padding:5px 10px;
-  background:white;
-  color:#168542;
-  font-size:11px;
-  font-weight:bold;
-  border-radius:20px;
-}
-
-.arrow {
-  position:absolute;
-  bottom:15px;
-  right:15px;
-  width:30px;
-  height:30px;
-  background:#ffffffa0;
-  border-radius:50%;
-  display:grid;
-  place-items:center;
-  font-size:20px;
-}
-
-.business {
-  background:#202124;
-  color:white;
-  border-radius:24px;
-  padding:24px;
-  margin-top:25px;
-}
-
-.business h2 {
-  margin-top:0;
-  font-size:23px;
-}
-
-.business p {
-  color:#ccc;
-  line-height:1.6;
-  font-size:14px;
-}
-
-.business button {
-  background:var(--orange);
-  color:white;
-  padding:13px 20px;
-  border-radius:13px;
-  font-weight:bold;
-}
-
-.features {
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
-  margin-top:20px;
-}
-
-.feature {
-  background:white;
-  padding:18px 8px;
-  border-radius:18px;
-  text-align:center;
-  font-size:13px;
-  font-weight:bold;
-}
-
-.feature span {
-  display:block;
-  font-size:27px;
-  margin-bottom:9px;
-}
-
-footer {
-  text-align:center;
-  color:#888;
-  font-size:12px;
-  padding:25px 0;
-}
-
-.bottom-nav {
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  background:white;
-  z-index:200;
-  border-top:1px solid #eee;
-  padding:10px 12px;
-  padding-bottom:max(10px,env(safe-area-inset-bottom));
-  display:flex;
-  justify-content:space-around;
-}
-
-.nav-item {
-  border:0;
-  background:none;
-  color:#777;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:5px;
-  font-size:11px;
-}
-
-.nav-item span {
-  font-size:24px;
-}
-
-.nav-item.active {
-  color:var(--orange);
-  font-weight:bold;
-}
-
-dialog {
-  width:min(92%,420px);
-  border:0;
-  border-radius:25px;
-  padding:25px;
-  box-shadow:0 20px 60px #0003;
-}
-
-dialog::backdrop {
-  background:#0007;
-}
-
-dialog p {
-  color:#666;
-  line-height:1.6;
-}
-
-.close-btn {
-  width:100%;
-  background:var(--orange);
-  color:white;
-  padding:14px;
-  border-radius:13px;
-  font-weight:bold;
-}
-
-.hidden {
-  display:none!important;
-}
-
-@media(max-width:750px) {
-  main {
-    padding:15px;
-  }
-
-  .services {
-    grid-template-columns:repeat(2,1fr);
-    gap:11px;
-  }
-
-  .service {
-    min-height:215px;
-    padding:14px;
-  }
-
-  .service h3 {
-    font-size:17px;
-  }
-
-  .hero {
-    padding:23px;
-  }
-
-  .service-art {
-    height:100px;
-  }
-
-  .service-art svg {
-    height:95px;
-    width:115px;
-  }
-}
 </style>
 </head>
 
 <body>
 
 <header>
-  <div class="header-inner">
-    <a class="logo" href="./index.html">VAYO</a>
 
-    <div class="header-actions">
-      <button class="icon-btn"
-        aria-label="Огоҳиномаҳо"
-        onclick="showMessage('Огоҳиномаҳо','Ҳоло огоҳиномаи нав нест.')">
-        🔔
-      </button>
+<div class="headerContent">
 
-      <button class="icon-btn"
-        aria-label="Аккаунт"
-        onclick="openPage('account.html')">
-        👤
-      </button>
-    </div>
-  </div>
+<div class="top">
+
+<a href="./index.html" class="logo">
+
+VA<span>YO</span>
+
+</a>
+
+<select id="city" class="city"
+aria-label="Шаҳр">
+
+<option>Душанбе</option>
+<option>Хуҷанд</option>
+<option>Бохтар</option>
+<option>Кӯлоб</option>
+<option>Ҳисор</option>
+<option>Данғара</option>
+<option>Ваҳдат</option>
+<option>Турсунзода</option>
+<option>Истаравшан</option>
+<option>Панҷакент</option>
+<option>Хоруғ</option>
+
+</select>
+
+<a href="./account.html"
+class="account"
+aria-label="Аккаунт">
+
+👤
+
+</a>
+
+</div>
+
+<div class="search">
+
+<span>🔍</span>
+
+<input id="search"
+placeholder="Хизматрасонӣ ё маҳсулот..."
+autocomplete="off">
+
+</div>
+
+</div>
+
 </header>
 
 <main>
 
-  <div class="location">
-    📍
-    <select id="city" aria-label="Шаҳр">
-      <option>Душанбе</option>
-      <option>Хуҷанд</option>
-      <option>Бохтар</option>
-      <option>Кӯлоб</option>
-      <option>Ҳисор</option>
-      <option>Данғара</option>
-      <option>Ваҳдат</option>
-      <option>Турсунзода</option>
-      <option>Панҷакент</option>
-      <option>Хоруғ</option>
-    </select>
-  </div>
+<div id="notice" class="notice" role="status"></div>
 
-  <div class="search">
-    🔍
-    <input id="searchInput"
-      type="search"
-      placeholder="Чиро ҷустуҷӯ мекунед?"
-      aria-label="Ҷустуҷӯи хизматрасонӣ">
-  </div>
+<div id="profileCard" class="profileCard hidden">
 
-  <section class="hero">
-    <div class="hero-label">
-      VAYO SUPER APP
-    </div>
+<div>
 
-    <h1>Ҳама чиз дар VAYO!</h1>
+<div class="small">Хуш омадед!</div>
 
-    <p>
-      Харид, такси, хӯрок ва омӯзиши забонҳо.
-      Ҳама дар як барнома.
-    </p>
+<strong id="profileName"></strong>
 
-    <button class="hero-btn"
-      onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">
-      Оғоз кунед →
-    </button>
-  </section>
+</div>
 
-  <div class="section-title">
-    <h2>Хизматрасониҳо</h2>
-    <span style="color:#ff6500;font-size:13px">
-      4 хизматрасонӣ
-    </span>
-  </div>
+<a id="adminLink"
+class="btn hidden"
+href="./admin.html">
 
-  <div class="services" id="services">
+Admin
 
-    <!-- MARKETPLACE -->
+</a>
 
-    <a href="./marketplace.html"
-       class="service market"
-       data-search="marketplace маркетплейс харид мол мағоза тахфиф либос телефон">
+</div>
 
-      <div class="service-art">
-        <svg viewBox="0 0 160 130">
-          <rect x="19" y="44" width="79" height="76"
-            rx="12" fill="#ff6500"/>
-          <path d="M40 47V32a19 19 0 0 1 38 0v15"
-            fill="none" stroke="#b94000"
-            stroke-width="8" stroke-linecap="round"/>
-          <rect x="87" y="20" width="54" height="100"
-            rx="12" fill="#222"/>
-          <rect x="92" y="27" width="44" height="83"
-            rx="7" fill="#fff"/>
-          <rect x="98" y="40" width="32" height="24"
-            rx="5" fill="#ffb36a"/>
-          <rect x="98" y="72" width="14" height="20"
-            rx="3" fill="#ff6500"/>
-          <rect x="116" y="72" width="14" height="20"
-            rx="3" fill="#ffd2a4"/>
-          <path d="M42 81l11 11 23-25"
-            fill="none" stroke="white"
-            stroke-width="7" stroke-linecap="round"/>
-        </svg>
-      </div>
+<section class="hero">
 
-      <h3>Marketplace</h3>
-      <p>Хариду фурӯши маҳсулот</p>
-      <span class="zero">0% комиссия</span>
-      <span class="arrow">→</span>
-    </a>
+<div>
 
-    <!-- TAXI -->
+<h1>Ҳама чиз дар<br>як барнома!</h1>
 
-    <a href="./taxi.html"
-       class="service taxi"
-       data-search="taxi такси мошин сафар ронанда">
+<p>
+Харид, таксӣ ва таом.<br>
+VAYO барои Тоҷикистон.
+</p>
 
-      <div class="service-art">
-        <svg viewBox="0 0 160 130">
-          <ellipse cx="80" cy="111" rx="69" ry="8"
-            fill="#dfc76e"/>
-          <rect x="10" y="60" width="140" height="40"
-            rx="16" fill="#ffc400"/>
-          <path d="M31 60l18-33h62l19 33"
-            fill="#ffce00"/>
-          <path d="M46 56l13-23h43l14 23z"
-            fill="#334155"/>
-          <rect x="65" y="15" width="31" height="14"
-            rx="4" fill="#222"/>
-          <text x="80" y="25" text-anchor="middle"
-            font-size="8" fill="white">TAXI</text>
-          <circle cx="39" cy="99" r="17" fill="#222"/>
-          <circle cx="123" cy="99" r="17" fill="#222"/>
-          <circle cx="39" cy="99" r="7" fill="#bbb"/>
-          <circle cx="123" cy="99" r="7" fill="#bbb"/>
-          <rect x="14" y="70" width="20" height="10"
-            rx="4" fill="#fff"/>
-          <rect x="130" y="70" width="17" height="10"
-            rx="4" fill="#fff"/>
-          <text x="80" y="85" text-anchor="middle"
-            font-size="16" font-weight="bold">VAYO</text>
-        </svg>
-      </div>
+<a href="#services" class="btn white">
 
-      <h3>VAYO Taxi</h3>
-      <p>Такси фармоиш диҳед</p>
-      <span class="zero">0% комиссия</span>
-      <span class="arrow">→</span>
-    </a>
+Оғоз кардан →
 
-    <!-- FOOD -->
+</a>
 
-    <a href="./food.html"
-       class="service food"
-       data-search="food хӯрок таом ресторан тарабхона доставка бургер пицца">
+</div>
 
-      <div class="service-art">
-        <svg viewBox="0 0 160 130">
-          <rect x="107" y="15" width="9" height="63"
-            rx="4" fill="#ffce37"/>
-          <rect x="121" y="8" width="9" height="70"
-            rx="4" fill="#ffdb58"/>
-          <rect x="135" y="20" width="9" height="60"
-            rx="4" fill="#ffce37"/>
-          <path d="M98 49h55l-10 68h-35z"
-            fill="#ff4c38"/>
-          <path d="M8 53q0-37 47-37t47 37z"
-            fill="#e9a13e"/>
-          <rect x="8" y="54" width="94" height="12"
-            rx="6" fill="#45a747"/>
-          <rect x="10" y="66" width="90" height="13"
-            rx="6" fill="#e34b32"/>
-          <rect x="7" y="79" width="96" height="17"
-            rx="8" fill="#713b1d"/>
-          <path d="M13 97h84q-3 22-42 22t-42-22"
-            fill="#e9a13e"/>
-          <g fill="#fff0c2">
-            <ellipse cx="32" cy="33" rx="4" ry="2"/>
-            <ellipse cx="56" cy="27" rx="4" ry="2"/>
-            <ellipse cx="79" cy="36" rx="4" ry="2"/>
-          </g>
-        </svg>
-      </div>
+<div class="heroArt">🛍️</div>
 
-      <h3>VAYO Food</h3>
-      <p>Расонидани хӯрок</p>
-      <span class="zero">0% комиссия</span>
-      <span class="arrow">→</span>
-    </a>
+</section>
 
-    <!-- LANGUAGE -->
+<section id="bannerSection" class="hidden">
 
-    <a href="./language.html"
-       class="service language"
-       data-search="language забон омӯзиш англисӣ олмонӣ русӣ таълим">
+<div class="banner">
 
-      <div class="service-art">
-        <svg viewBox="0 0 160 130">
-          <rect x="15" y="45" width="66" height="77"
-            rx="8" fill="#7952ce"/>
-          <rect x="25" y="38" width="66" height="77"
-            rx="8" fill="#9d76ec"/>
-          <rect x="35" y="30" width="66" height="77"
-            rx="8" fill="#b79af5"/>
-          <rect x="44" y="42" width="48" height="53"
-            rx="5" fill="white"/>
-          <text x="68" y="64" text-anchor="middle"
-            font-size="15" font-weight="bold"
-            fill="#7952ce">ABC</text>
-          <text x="68" y="82" text-anchor="middle"
-            font-size="12" fill="#7952ce">Hello!</text>
-          <rect x="99" y="10" width="57" height="34"
-            rx="13" fill="#7952ce"/>
-          <path d="M110 40l-8 15 23-15"
-            fill="#7952ce"/>
-          <text x="127" y="31" text-anchor="middle"
-            font-size="12" fill="white">Hallo</text>
-        </svg>
-      </div>
+<div id="bannerContent"></div>
 
-      <h3>VAYO Language</h3>
-      <p>Забонҳои хориҷиро омӯзед</p>
-      <span class="zero">Ройгон</span>
-      <span class="arrow">→</span>
-    </a>
+<div id="bannerControls"
+class="bannerControls"></div>
 
-  </div>
+</div>
 
-  <p id="noResults" class="hidden"
-    style="text-align:center;color:#888;padding:25px">
-    Хизматрасонӣ ёфт нашуд.
-  </p>
+</section>
 
-  <section class="business">
-    <h2>Бизнеси худро бо VAYO оғоз кунед</h2>
+<div class="sectionTitle">
 
-    <p>
-      Фурӯшанда, ронанда ё соҳиби тарабхона ҳастед?
-      Ба VAYO ҳамроҳ шавед. Комиссия 0%.
-    </p>
+<h2>Хизматрасониҳо</h2>
 
-    <button onclick="openPage('account.html')">
-      Ҳамроҳ шудан →
-    </button>
-  </section>
+</div>
 
-  <div class="features">
+<section id="services" class="services">
 
-    <div class="feature">
-      <span>🛡️</span>
-      Амният
-    </div>
+<a class="service market"
+href="./marketplace.html"
+data-search="marketplace маркет харид фурӯш маҳсулот бозор">
 
-    <div class="feature">
-      <span>⚡</span>
-      Осон ва зуд
-    </div>
+<div>
 
-    <div class="feature">
-      <span>🇹🇯</span>
-      Барои Тоҷикистон
-    </div>
+<h3>Marketplace</h3>
 
-  </div>
+<p>Хариду фурӯши маҳсулот</p>
 
-  <footer>
-    © 2026 VAYO — Super App Tajikistan
-  </footer>
+</div>
+
+<div class="serviceArt">
+
+<svg viewBox="0 0 160 110">
+
+<rect x="30" y="33" width="67"
+height="68" rx="8" fill="#ff6500"/>
+
+<path d="M48 35V23a16 16 0 0 1 32 0v12"
+fill="none" stroke="#fff" stroke-width="5"/>
+
+<rect x="90" y="45" width="46"
+height="57" rx="7" fill="#ffac54"/>
+
+<path d="M102 46V35a11 11 0 0 1 22 0v11"
+fill="none" stroke="#9b4100" stroke-width="4"/>
+
+<circle cx="63" cy="65" r="13" fill="white"/>
+
+<path d="M56 65l5 5 10-12"
+fill="none" stroke="#ff6500" stroke-width="4"/>
+
+</svg>
+
+</div>
+
+<span class="serviceLabel">0% комиссия</span>
+
+</a>
+
+<a class="service taxi"
+href="./taxi.html"
+data-search="taxi таксӣ такси мошин сафар">
+
+<div>
+
+<h3>Taxi</h3>
+
+<p>Таксӣ дар шаҳри шумо</p>
+
+</div>
+
+<div class="serviceArt">
+
+<svg viewBox="0 0 160 110">
+
+<ellipse cx="80" cy="94" rx="66"
+ry="8" fill="#000" opacity=".1"/>
+
+<path d="M28 56L44 31Q48 24 60 24H103
+Q115 24 120 35L135 57"
+fill="#ffc400"/>
+
+<path d="M49 34H109L121 55H38Z"
+fill="#a8d6e8"/>
+
+<rect x="15" y="53" width="130"
+height="36" rx="12" fill="#ffbf00"/>
+
+<rect x="22" y="61" width="19"
+height="10" rx="4" fill="#fff"/>
+
+<rect x="119" y="61" width="19"
+height="10" rx="4" fill="#fff"/>
+
+<rect x="59" y="16" width="43"
+height="13" rx="4" fill="#222"/>
+
+<text x="80" y="25"
+font-size="9" fill="#fff"
+text-anchor="middle">TAXI</text>
+
+<circle cx="42" cy="87" r="13"
+fill="#222"/>
+
+<circle cx="118" cy="87" r="13"
+fill="#222"/>
+
+<circle cx="42" cy="87" r="6"
+fill="#bbb"/>
+
+<circle cx="118" cy="87" r="6"
+fill="#bbb"/>
+
+</svg>
+
+</div>
+
+<span class="serviceLabel">0% комиссия</span>
+
+</a>
+
+<a class="service food"
+href="./food.html"
+data-search="food таом хӯрок ош тарабхона бургер пицца">
+
+<div>
+
+<h3>Food</h3>
+
+<p>Расонидани таом</p>
+
+</div>
+
+<div class="serviceArt">
+
+<svg viewBox="0 0 160 110">
+
+<path d="M15 49Q18 10 60 10
+Q102 10 105 49Z" fill="#e9a347"/>
+
+<rect x="14" y="51" width="93"
+height="9" rx="4" fill="#3da94e"/>
+
+<rect x="15" y="61" width="90"
+height="12" rx="5" fill="#713c25"/>
+
+<path d="M15 74H105V82
+Q103 97 88 97H32Q17 97 15 82Z"
+fill="#e9a347"/>
+
+<rect x="115" y="14" width="8"
+height="56" rx="3" fill="#ffcf43"/>
+
+<rect x="128" y="8" width="8"
+height="62" rx="3" fill="#ffd75d"/>
+
+<rect x="141" y="18" width="8"
+height="52" rx="3" fill="#ffcf43"/>
+
+<path d="M110 49H154L147 99H117Z"
+fill="#ff6500"/>
+
+<path d="M39 28l7 3M59 20l6 3M78 32l6 2"
+stroke="#fff2d5" stroke-width="4"
+stroke-linecap="round"/>
+
+</svg>
+
+</div>
+
+<span class="serviceLabel">0% комиссия</span>
+
+</a>
+
+<button class="service language"
+style="border:0;text-align:left;color:#202124"
+onclick="document.getElementById('soonDialog').showModal()"
+data-search="language забон англисӣ олмонӣ омӯзиш">
+
+<div>
+
+<h3>Language</h3>
+
+<p>Омӯзиши забонҳо</p>
+
+</div>
+
+<div class="serviceArt">
+
+<svg viewBox="0 0 160 110">
+
+<rect x="22" y="18" width="61"
+height="82" rx="9" fill="#7545ed"/>
+
+<rect x="82" y="18" width="56"
+height="82" rx="9" fill="#a37af5"/>
+
+<rect x="77" y="18" width="7"
+height="82" fill="#542bc1"/>
+
+<text x="52" y="68" font-size="35"
+font-weight="bold" fill="#fff"
+text-anchor="middle">A</text>
+
+<text x="110" y="68" font-size="32"
+font-weight="bold" fill="#fff"
+text-anchor="middle">Б</text>
+
+</svg>
+
+</div>
+
+<span class="serviceLabel">Ба наздикӣ</span>
+
+</button>
+
+</section>
+
+<section id="productSection">
+
+<div class="sectionTitle">
+
+<h2>Маҳсулоти нав</h2>
+
+<a href="./marketplace.html"
+style="color:#ff6500;font-size:14px">
+
+Ҳама →
+
+</a>
+
+</div>
+
+<div id="products" class="products">
+
+<div class="empty">Боргирӣ...</div>
+
+</div>
+
+</section>
+
+<section class="business">
+
+<h2>Бо VAYO кор кунед!</h2>
+
+<p>
+
+Маҳсулот фурӯшед, тарабхона илова кунед,
+ронанда ё расонанда шавед.
+
+</p>
+
+<strong style="color:#ff9d31">
+
+Комиссияи платформа — 0%
+
+</strong>
+
+<div class="businessGrid">
+
+<a href="./seller.html" class="businessLink">
+
+<span>🛍️</span>
+
+Фурӯшанда
+
+</a>
+
+<a href="./driver.html" class="businessLink">
+
+<span>🚕</span>
+
+Ронанда
+
+</a>
+
+<a href="./restaurant.html" class="businessLink">
+
+<span>🍽️</span>
+
+Тарабхона
+
+</a>
+
+<a href="./courier.html" class="businessLink">
+
+<span>🛵</span>
+
+Расонанда
+
+</a>
+
+</div>
+
+</section>
+
+<div class="features">
+
+<div class="feature">
+
+<span>🆓</span>
+
+<h3>0% комиссия</h3>
+
+<p>Барои хизматрасониҳои VAYO</p>
+
+</div>
+
+<div class="feature">
+
+<span>👤</span>
+
+<h3>Як аккаунт</h3>
+
+<p>Барои ҳамаи хизматрасониҳо</p>
+
+</div>
+
+<div class="feature">
+
+<span>🇹🇯</span>
+
+<h3>Тоҷикистон</h3>
+
+<p>Платформа барои Тоҷикистон</p>
+
+</div>
+
+</div>
+
+<footer>
+
+<strong>VAYO SUPER APP</strong>
+
+<p>© <span id="year"></span> VAYO Тоҷикистон</p>
+
+</footer>
 
 </main>
 
-<nav class="bottom-nav">
+<nav>
 
-  <a class="nav-item active" href="./index.html">
-    <span>⌂</span>
-    Асосӣ
-  </a>
+<a class="active" href="./index.html">
 
-  <button class="nav-item" onclick="focusSearch()">
-    <span>⌕</span>
-    Ҷустуҷӯ
-  </button>
+<span>🏠</span>
 
-  <button class="nav-item"
-    onclick="openPage('marketplace.html')">
-    <span>🛒</span>
-    Маркет
-  </button>
+Асосӣ
 
-  <button class="nav-item"
-    onclick="openPage('account.html')">
-    <span>👤</span>
-    Аккаунт
-  </button>
+</a>
+
+<a href="./marketplace.html">
+
+<span>🛍️</span>
+
+Бозор
+
+</a>
+
+<a href="./taxi.html">
+
+<span>🚕</span>
+
+Таксӣ
+
+</a>
+
+<a href="./food.html">
+
+<span>🍔</span>
+
+Таом
+
+</a>
+
+<a href="./account.html">
+
+<span>👤</span>
+
+Аккаунт
+
+</a>
 
 </nav>
 
-<dialog id="messageDialog">
-  <h2 id="messageTitle"></h2>
-  <p id="messageText"></p>
-  <button class="close-btn"
-    onclick="document.getElementById('messageDialog').close()">
-    Фаҳмо
-  </button>
+<dialog id="soonDialog">
+
+<div style="font-size:65px">📚</div>
+
+<h2>VAYO Language</h2>
+
+<p>
+
+Хизматрасонии омӯзиши забонҳо
+ба наздикӣ фаъол мешавад.
+
+</p>
+
+<button class="btn"
+onclick="document.getElementById('soonDialog').close()">
+
+Фаҳмо
+
+</button>
+
 </dialog>
 
 <script>
 
-const city = document.getElementById("city");
-const searchInput = document.getElementById("searchInput");
+const db = window.vayo;
+const $ = id => document.getElementById(id);
 
-try {
-  const savedCity = localStorage.getItem("vayo_city");
+let products = [];
+let banners = [];
+let bannerIndex = 0;
+let productVersion = 0;
 
-  if (savedCity &&
-      [...city.options].some(o => o.value === savedCity)) {
-    city.value = savedCity;
-  }
-} catch (error) {
-  console.log(error);
+function esc(value){
+
+ return String(value ?? "").replace(
+ /[&<>"']/g,
+ c=>({
+ "&":"&amp;",
+ "<":"&lt;",
+ ">":"&gt;",
+ '"':"&quot;",
+ "'":"&#39;"
+ })[c]);
+
 }
 
-city.addEventListener("change", () => {
-  try {
-    localStorage.setItem("vayo_city", city.value);
-  } catch (error) {
-    console.log(error);
-  }
+function safeURL(value){
+
+ try{
+
+ const url = new URL(value,location.href);
+
+ if(url.protocol!=="https:") return "";
+
+ return url.href;
+
+ }catch{
+
+ return "";
+
+ }
+
+}
+
+function notice(text){
+
+ $("notice").textContent = text || "";
+
+}
+
+function money(value){
+
+ return Number(value || 0).toFixed(2)+" TJS";
+
+}
+
+function currentPrice(p){
+
+ const now = Date.now();
+
+ if(p.sale_price!==null
+ && p.sale_start
+ && p.sale_end
+ && now>=new Date(p.sale_start).getTime()
+ && now<new Date(p.sale_end).getTime()){
+
+ return Number(p.sale_price);
+
+ }
+
+ return Number(p.price);
+
+}
+
+function firstImage(p){
+
+ const images = [...(p.product_images || [])]
+ .sort((a,b)=>a.position-b.position);
+
+ if(!images.length) return "";
+
+ const {data} = db.storage
+ .from("product-images")
+ .getPublicUrl(images[0].image_path);
+
+ return safeURL(data.publicUrl);
+
+}
+
+async function loadProducts(){
+
+ const version = ++productVersion;
+
+ const {data,error} = await db
+ .from("products")
+ .select("*,product_images(image_path,position)")
+ .eq("active",true)
+ .gt("stock",0)
+ .eq("seller_city",$("city").value)
+ .order("created_at",{ascending:false})
+ .limit(24);
+
+ if(version!==productVersion) return;
+
+ if(error) throw error;
+
+ products = data || [];
+
+ renderProducts();
+
+}
+
+function renderProducts(){
+
+ const q = $("search").value.trim().toLowerCase();
+
+ const list = products.filter(p=>
+
+ [p.name,p.description,p.category,p.brand]
+ .join(" ").toLowerCase().includes(q)
+
+ ).slice(0,12);
+
+ $("products").innerHTML = list.map(p=>{
+
+ const image = firstImage(p);
+
+ const price = currentPrice(p);
+
+ const discount = price<Number(p.price)
+
+ ? Math.round(
+ (1-price/Number(p.price))*100
+ )
+
+ : 0;
+
+ return `
+
+ <a class="product"
+ href="./marketplace.html">
+
+ ${image
+
+ ? `<img src="${esc(image)}"
+ loading="lazy" alt="${esc(p.name)}">`
+
+ : '<div class="productPlaceholder">📦</div>'}
+
+ <div class="productBody">
+
+ ${discount>0
+
+ ? `<span class="discount">-${discount}%</span>`
+
+ : ""}
+
+ <div class="productName">
+
+ ${esc(p.name)}
+
+ </div>
+
+ <div class="price">
+
+ ${esc(money(price))}
+
+ </div>
+
+ ${discount>0
+
+ ? `<div class="oldPrice">
+
+ ${esc(money(p.price))}
+
+ </div>`
+
+ : ""}
+
+ <p class="small">📍 ${esc(p.seller_city)}</p>
+
+ </div>
+
+ </a>
+
+ `;
+
+ }).join("")
+
+ || '<div class="empty">Ҳоло маҳсулот ёфт нашуд.</div>';
+
+}
+
+async function loadBanners(){
+
+ const {data,error} = await db
+
+ .from("vayo_banners")
+
+ .select("*")
+
+ .eq("active",true)
+
+ .eq("service","home")
+
+ .order("position",{ascending:true})
+
+ .limit(30);
+
+ if(error) throw error;
+
+ const now = Date.now();
+
+ banners = (data || []).filter(b=>
+
+ (!b.starts_at ||
+ new Date(b.starts_at).getTime()<=now)
+
+ &&
+
+ (!b.ends_at ||
+ new Date(b.ends_at).getTime()>now)
+
+ );
+
+ if(bannerIndex>=banners.length){
+
+ bannerIndex = 0;
+
+ }
+
+ renderBanner();
+
+}
+
+function renderBanner(){
+
+ if(!banners.length){
+
+ $("bannerSection").classList.add("hidden");
+
+ return;
+
+ }
+
+ $("bannerSection").classList.remove("hidden");
+
+ const b = banners[bannerIndex];
+
+ const image = b.image_url
+ ? safeURL(b.image_url)
+ : "";
+
+ const link = b.link_url
+ ? safeURL(b.link_url)
+ : "";
+
+ $("bannerContent").innerHTML = `
+
+ ${image
+
+ ? `<img class="bannerImage"
+ src="${esc(image)}"
+ alt="${esc(b.title)}">`
+
+ : ""}
+
+ <div class="bannerBody">
+
+ <div class="small">Реклама</div>
+
+ <h3>${esc(b.title)}</h3>
+
+ <p>${esc(b.description || "")}</p>
+
+ ${link
+
+ ? `<a class="btn"
+ href="${esc(link)}"
+ target="_blank"
+ rel="noopener noreferrer">
+
+ Муфассал →
+
+ </a>`
+
+ : ""}
+
+ </div>
+
+ `;
+
+ $("bannerControls").innerHTML =
+
+ banners.length>1
+
+ ? `
+
+ <button onclick="changeBanner(-1)"
+ aria-label="Баннери пешина">‹</button>
+
+ ${banners.map((_,i)=>`
+
+ <span class="dot
+ ${i===bannerIndex?"active":""}"></span>
+
+ `).join("")}
+
+ <button onclick="changeBanner(1)"
+ aria-label="Баннери навбатӣ">›</button>
+
+ `
+
+ : "";
+
+}
+
+function changeBanner(delta){
+
+ if(!banners.length) return;
+
+ bannerIndex =
+
+ (bannerIndex+delta+banners.length)
+
+ %banners.length;
+
+ renderBanner();
+
+}
+
+async function loadAccount(){
+
+ const {data,error} = await db.auth.getUser();
+
+ if(error || !data.user){
+
+ $("profileCard").classList.add("hidden");
+
+ $("adminLink").classList.add("hidden");
+
+ return;
+
+ }
+
+ const user = data.user;
+
+ $("profileName").textContent =
+
+ user.user_metadata?.full_name
+
+ || user.email
+
+ || "Корбари VAYO";
+
+ $("profileCard").classList.remove("hidden");
+
+ const {data:isAdmin,error:adminError} =
+
+ await db.rpc("vayo_is_admin");
+
+ $("adminLink").classList.toggle(
+
+ "hidden",!!adminError || isAdmin!==true
+
+ );
+
+}
+
+$("search").addEventListener("input",()=>{
+
+ const q = $("search").value.trim().toLowerCase();
+
+ document.querySelectorAll("[data-search]")
+
+ .forEach(item=>{
+
+ item.classList.toggle(
+
+ "hidden",
+
+ !item.dataset.search.toLowerCase().includes(q)
+
+ );
+
+ });
+
+ renderProducts();
+
 });
 
-searchInput.addEventListener("input", () => {
+$("city").addEventListener("change",async()=>{
 
-  const query = searchInput.value.trim().toLowerCase();
-  let count = 0;
+ try{
 
-  document.querySelectorAll(".service").forEach(card => {
+ localStorage.setItem("vayo_city",$("city").value);
 
-    const match = card.dataset.search.includes(query);
+ }catch{}
 
-    card.classList.toggle("hidden", !match);
+ try{
 
-    if (match) count++;
+ await loadProducts();
 
-  });
+ }catch(error){
 
-  document.getElementById("noResults")
-    .classList.toggle("hidden", count !== 0);
+ notice(error.message);
 
-});
-
-function focusSearch() {
-  window.scrollTo({top:0,behavior:"smooth"});
-  searchInput.focus();
-}
-
-function showMessage(title, text) {
-  document.getElementById("messageTitle").textContent = title;
-  document.getElementById("messageText").textContent = text;
-  document.getElementById("messageDialog").showModal();
-}
-
-async function openPage(page) {
-
-  try {
-
-    const url = new URL(page, location.href);
-
-    const response = await fetch(url, {
-      method:"HEAD",
-      cache:"no-cache"
-    });
-
-    if (response.ok) {
-      location.href = url.href;
-    } else {
-      showMessage(
-        "VAYO",
-        "Ин хизматрасонӣ ҳоло дар ҳоли омодасозӣ аст."
-      );
-    }
-
-  } catch (error) {
-    showMessage(
-      "Хатои пайвастшавӣ",
-      "Пайвасти интернетро санҷед."
-    );
-  }
-
-}
-
-document.querySelectorAll(".service").forEach(card => {
-
-  card.addEventListener("click", event => {
-    event.preventDefault();
-    openPage(card.getAttribute("href"));
-  });
+ }
 
 });
+
+async function start(){
+
+ $("year").textContent = new Date().getFullYear();
+
+ try{
+
+ const savedCity = localStorage.getItem("vayo_city");
+
+ if([...$("city").options].some(
+
+ o=>o.value===savedCity
+
+ )){
+
+ $("city").value = savedCity;
+
+ }
+
+ }catch{}
+
+ if(!db){
+
+ notice("Пайвастшавӣ ба Supabase дастрас нест.");
+
+ return;
+
+ }
+
+ const results = await Promise.allSettled([
+
+ loadAccount(),
+
+ loadProducts(),
+
+ loadBanners()
+
+ ]);
+
+ const failed = results.find(
+
+ r=>r.status==="rejected"
+
+ );
+
+ if(failed){
+
+ notice(failed.reason?.message || "Хатои боргирӣ.");
+
+ }
+
+}
+
+setInterval(()=>{
+
+ if(document.visibilityState==="visible"){
+
+ changeBanner(1);
+
+ renderProducts();
+
+ }
+
+},6000);
+
+setInterval(async()=>{
+
+ if(!db || document.visibilityState!=="visible"){
+
+ return;
+
+ }
+
+ try{
+
+ await loadBanners();
+
+ }catch(error){
+
+ console.error(error);
+
+ }
+
+},60000);
+
+start();
 
 </script>
 
 </body>
 </html>
-# VAYO-APP
