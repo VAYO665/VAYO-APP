@@ -1,0 +1,1249 @@
+
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VAYO — Super Admin</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./config.js"></script>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ background:#f5f6fa;
+ color:#182230;
+ font-family:Arial,sans-serif;
+}
+.sidebar{
+ width:250px;
+ background:#17202e;
+ color:white;
+ position:fixed;
+ top:0;
+ bottom:0;
+ overflow:auto;
+ padding:20px 12px;
+}
+.logo{
+ font-size:32px;
+ font-weight:900;
+ color:#ff6500;
+ padding:12px;
+}
+.subtitle{
+ font-size:12px;
+ color:#aab4c2;
+ padding:0 12px 24px;
+}
+.nav{
+ display:block;
+ width:100%;
+ text-align:left;
+ border:0;
+ padding:15px;
+ background:transparent;
+ color:#dce2ea;
+ border-radius:10px;
+ cursor:pointer;
+ font-size:14px;
+ margin:3px 0;
+}
+.nav:hover,.nav.active{
+ background:#ff6500;
+ color:white;
+}
+.main{
+ margin-left:250px;
+ padding:25px;
+}
+header{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:12px;
+ margin-bottom:24px;
+}
+h1{font-size:26px;margin:0}
+h2{font-size:20px}
+button{
+ cursor:pointer;
+ font-family:inherit;
+}
+.btn{
+ border:0;
+ border-radius:9px;
+ background:#ff6500;
+ color:white;
+ padding:11px 15px;
+ font-weight:bold;
+}
+.btn:disabled{opacity:.5}
+.green{background:#16a34a}
+.red{background:#dc2626}
+.gray{background:#64748b}
+.grid{
+ display:grid;
+ grid-template-columns:repeat(4,minmax(0,1fr));
+ gap:15px;
+}
+.card{
+ background:white;
+ padding:20px;
+ border-radius:16px;
+ box-shadow:0 3px 14px #00000008;
+}
+.metric{
+ font-size:30px;
+ font-weight:bold;
+ margin-top:12px;
+ color:#ff6500;
+ overflow-wrap:anywhere;
+}
+.label{
+ color:#64748b;
+ font-size:14px;
+}
+.panel{
+ background:white;
+ padding:20px;
+ border-radius:16px;
+ margin-top:20px;
+}
+.table-wrap{overflow:auto}
+table{
+ border-collapse:collapse;
+ width:100%;
+ min-width:650px;
+}
+th,td{
+ padding:14px 10px;
+ border-bottom:1px solid #eee;
+ text-align:left;
+ font-size:13px;
+}
+th{
+ background:#f8fafc;
+ color:#64748b;
+}
+td{overflow-wrap:anywhere}
+input,select,textarea{
+ width:100%;
+ border:1px solid #ddd;
+ border-radius:10px;
+ padding:12px;
+ font-size:15px;
+ margin:6px 0 12px;
+}
+label{font-size:14px}
+.badge{
+ display:inline-block;
+ padding:6px 10px;
+ border-radius:20px;
+ background:#fff0df;
+ color:#a84b00;
+}
+.ok{
+ background:#dcfce7;
+ color:#15803d;
+}
+#notice{
+ background:#fff0df;
+ padding:14px;
+ border-radius:10px;
+ margin-bottom:15px;
+ white-space:pre-wrap;
+}
+#notice:empty{display:none}
+#menuButton{display:none}
+.hidden{display:none!important}
+.actions{
+ display:flex;
+ gap:6px;
+ flex-wrap:wrap;
+}
+.form-grid{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:12px;
+}
+#gate{
+ max-width:450px;
+ margin:70px auto;
+ padding:25px;
+ text-align:center;
+ background:white;
+ border-radius:18px;
+}
+@media(max-width:1000px){
+ .grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:700px){
+ .sidebar{
+  transform:translateX(-100%);
+  transition:.2s;
+  z-index:100;
+ }
+ .sidebar.open{transform:translateX(0)}
+ .main{margin-left:0;padding:14px}
+ #menuButton{display:inline-block}
+ .grid{gap:9px}
+ .card{padding:14px}
+ .metric{font-size:24px}
+ .form-grid{grid-template-columns:1fr}
+ h1{font-size:19px}
+}
+</style>
+</head>
+
+<body>
+
+<div id="gate">
+ <h1 style="color:#ff6500">VAYO ADMIN</h1>
+ <p id="gateMessage">Санҷиши ҳуқуқи Admin...</p>
+ <a href="./account.html">Ба аккаунт гузаштан</a>
+</div>
+
+<div id="app" class="hidden">
+
+<aside class="sidebar" id="sidebar">
+
+<div class="logo">VAYO</div>
+<div class="subtitle">SUPER ADMIN PANEL</div>
+
+<button class="nav" data-page="dashboard">📊 Панели асосӣ</button>
+<button class="nav" data-page="users">👥 Корбарон</button>
+<button class="nav" data-page="products">🛍 Маҳсулот</button>
+<button class="nav" data-page="orders">📦 Фармоишҳои Market</button>
+<button class="nav" data-page="drivers">🚕 Ронандагон</button>
+<button class="nav" data-page="taxi">🗺 Фармоишҳои Taxi</button>
+<button class="nav" data-page="restaurants">🍔 Тарабхонаҳо</button>
+<button class="nav" data-page="food">🍕 Фармоишҳои Food</button>
+<button class="nav" data-page="couriers">🛵 Расонандагон</button>
+<button class="nav" data-page="earnings">💰 Даромади расонандагон</button>
+<button class="nav" data-page="tariffs">⚙️ Тарифҳои Taxi</button>
+<button class="nav" data-page="banners">📢 Реклама</button>
+<button class="nav" data-page="language">📚 Забонҳо</button>
+<button class="nav" data-page="logs">📝 Таърихи амалиёт</button>
+
+<button class="nav" onclick="location.href='./index.html'">
+ 🏠 VAYO-APP
+</button>
+
+<button class="nav" onclick="logout()">
+ 🚪 Баромадан
+</button>
+
+</aside>
+
+<main class="main">
+
+<header>
+ <div style="display:flex;gap:10px;align-items:center">
+  <button id="menuButton" class="btn"
+   onclick="document.getElementById('sidebar').classList.toggle('open')">
+   ☰
+  </button>
+  <h1 id="pageTitle">Панели асосӣ</h1>
+ </div>
+ <button class="btn" onclick="openPage(currentPage)">
+  ↻ Навсозӣ
+ </button>
+</header>
+
+<div id="notice" role="status"></div>
+<div id="content"></div>
+
+</main>
+</div>
+
+<script>
+
+const db = window.vayo;
+const $ = id => document.getElementById(id);
+
+let currentPage = "dashboard";
+let pageVersion = 0;
+let busy = false;
+
+const titles = {
+ dashboard:"Панели асосӣ",
+ users:"Корбарон",
+ products:"Маҳсулот",
+ orders:"Фармоишҳои Marketplace",
+ drivers:"Ронандагон",
+ taxi:"Фармоишҳои Taxi",
+ restaurants:"Тарабхонаҳо",
+ food:"Фармоишҳои Food",
+ couriers:"Расонандагон",
+ earnings:"Даромади расонандагон",
+ tariffs:"Тарифҳои Taxi",
+ banners:"Баннерҳои рекламавӣ",
+ language:"Омӯзиши забонҳо",
+ logs:"Таърихи амалиёт"
+};
+
+function esc(value){
+ return String(value ?? "").replace(
+  /[&<>"']/g,
+  c => ({
+   "&":"&amp;",
+   "<":"&lt;",
+   ">":"&gt;",
+   '"':"&quot;",
+   "'":"&#39;"
+  })[c]
+ );
+}
+
+function money(value){
+ return Number(value || 0).toFixed(2) + " TJS";
+}
+
+function date(value){
+ if(!value) return "—";
+ return new Date(value).toLocaleString("ru-RU",{
+  timeZone:"Asia/Dushanbe"
+ });
+}
+
+function notice(text){
+ $("notice").textContent = text || "";
+}
+
+function badge(value){
+ return value
+ ? '<span class="badge ok">Фаъол</span>'
+ : '<span class="badge">Ғайрифаъол</span>';
+}
+
+function button(label,action,id,value,color="green"){
+
+ return `<button
+ class="btn ${color}"
+ data-action="${esc(action)}"
+ data-id="${esc(id)}"
+ data-value="${esc(value)}"
+ >${esc(label)}</button>`;
+
+}
+
+function table(headers,rows){
+
+ if(!rows.length){
+  return '<div class="panel">Маълумот ҳоло нест.</div>';
+ }
+
+ return `
+ <div class="panel table-wrap">
+ <table>
+ <thead><tr>
+ ${headers.map(h=>`<th>${esc(h)}</th>`).join("")}
+ </tr></thead>
+ <tbody>
+ ${rows.map(row=>`
+ <tr>${row.map(c=>`<td>${c}</td>`).join("")}</tr>
+ `).join("")}
+ </tbody>
+ </table>
+ </div>`;
+
+}
+
+async function query(name,columns="*"){
+
+ const {data,error} = await db
+ .from(name)
+ .select(columns)
+ .limit(200);
+
+ if(error) throw error;
+
+ return data || [];
+
+}
+
+async function rpc(name,args={}){
+
+ const {data,error} = await db.rpc(name,args);
+
+ if(error) throw error;
+
+ return data;
+
+}
+
+async function dashboard(){
+
+ const d = await rpc("vayo_admin_dashboard");
+
+ const metrics = [
+  ["👥 Корбарон",d.users],
+  ["🛍 Маҳсулот",d.products],
+  ["📦 Фармоишҳои Market",d.marketplace_orders],
+  ["💰 Фурӯши Market",money(d.marketplace_sales)],
+  ["🚕 Ронандагон",d.taxi_drivers],
+  ["⏳ Ронандагони нав",d.pending_drivers],
+  ["🗺 Сафарҳои Taxi",d.taxi_orders],
+  ["💰 Фурӯши Taxi",money(d.taxi_sales)],
+  ["🍔 Тарабхонаҳо",d.restaurants],
+  ["⏳ Тарабхонаҳои нав",d.pending_restaurants],
+  ["🍕 Фармоишҳои Food",d.food_orders],
+  ["💰 Фурӯши Food",money(d.food_sales)],
+  ["🛵 Расонандагон",d.couriers],
+  ["⏳ Расонандагони нав",d.pending_couriers],
+  ["💵 Даромади расонандагон",money(d.courier_earnings)],
+  ["🏦 Комиссияи VAYO","0%"]
+ ];
+
+ return `
+ <div class="grid">
+ ${metrics.map(([name,value])=>`
+  <div class="card">
+   <div class="label">${esc(name)}</div>
+   <div class="metric">${esc(value)}</div>
+  </div>
+ `).join("")}
+ </div>
+
+ <div class="panel">
+  <h2>VAYO-APP</h2>
+  <p>Панели марказии идоракунии хизматрасониҳо.</p>
+  <p>Marketplace · Taxi · Food · Language</p>
+ </div>`;
+
+}
+
+async function users(){
+
+ const data = await rpc("vayo_admin_users",{
+  p_limit:200,
+  p_offset:0
+ });
+
+ return table(
+ ["Ном","Email","Телефон","Сана"],
+ data.map(u=>[
+  esc(u.full_name),
+  esc(u.email),
+  esc(u.phone),
+  esc(date(u.created_at))
+ ])
+ );
+
+}
+
+async function products(){
+
+ const data = await query("products");
+
+ return table(
+ ["Маҳсулот","Фурӯшанда","Нарх","Захира","Ҳолат","Идоракунӣ"],
+ data.map(p=>[
+  esc(p.name),
+  esc(p.seller_name),
+  esc(money(p.price)),
+  esc(p.stock),
+  badge(p.active),
+  button(
+   p.active?"Пинҳон кардан":"Фаъол кардан",
+   "product",p.id,!p.active,
+   p.active?"red":"green"
+  )
+ ])
+ );
+
+}
+
+async function drivers(){
+
+ const data = await query("taxi_drivers");
+
+ return table(
+ ["Ном","Телефон","Мошин","Рақам","Шаҳр","Ҳолат","Тасдиқ"],
+ data.map(d=>[
+  esc(d.full_name),
+  esc(d.phone),
+  esc(d.car_brand+" "+d.car_model),
+  esc(d.car_number),
+  esc(d.city),
+  badge(d.approved),
+  button(
+   d.approved?"Бастан":"Тасдиқ",
+   "driver",d.id,!d.approved,
+   d.approved?"red":"green"
+  )
+ ])
+ );
+
+}
+
+async function restaurants(){
+
+ const data = await query("restaurants");
+
+ return table(
+ ["Тарабхона","Телефон","Шаҳр","Суроға","Расонидан","Ҳолат","Тасдиқ"],
+ data.map(r=>[
+  esc(r.name),
+  esc(r.phone),
+  esc(r.city),
+  esc(r.address),
+  esc(money(r.delivery_fee)),
+  badge(r.approved),
+  button(
+   r.approved?"Бастан":"Тасдиқ",
+   "restaurant",r.id,!r.approved,
+   r.approved?"red":"green"
+  )
+ ])
+ );
+
+}
+
+async function couriers(){
+
+ const data = await query("couriers");
+
+ return table(
+ ["Ном","Телефон","Шаҳр","Нақлиёт","Онлайн","Ҳолат","Тасдиқ"],
+ data.map(c=>[
+  esc(c.full_name),
+  esc(c.phone),
+  esc(c.city),
+  esc(c.vehicle),
+  badge(c.online),
+  badge(c.approved),
+  button(
+   c.approved?"Бастан":"Тасдиқ",
+   "courier",c.id,!c.approved,
+   c.approved?"red":"green"
+  )
+ ])
+ );
+
+}
+
+async function orders(){
+
+ const data = await query("orders");
+
+ return table(
+ ["ID","Харидор","Телефон","Маблағ","Ҳолат","Сана"],
+ data.map(o=>[
+  esc(o.id.slice(0,8)),
+  esc(o.buyer_name),
+  esc(o.buyer_phone),
+  esc(money(o.total)),
+  esc(o.status),
+  esc(date(o.created_at))
+ ])
+ );
+
+}
+
+async function taxi(){
+
+ const data = await query("taxi_orders");
+
+ return table(
+ ["Харидор","Аз куҷо","Ба куҷо","Нарх","Ҳолат","Сана"],
+ data.map(o=>[
+  esc(o.customer_name),
+  esc(o.pickup_address),
+  esc(o.destination_address),
+  esc(money(o.price)),
+  esc(o.status),
+  esc(date(o.created_at))
+ ])
+ );
+
+}
+
+async function food(){
+
+ const data = await query("food_orders");
+
+ return table(
+ ["Харидор","Телефон","Суроға","Маблағ","Ҳолат","Сана"],
+ data.map(o=>[
+  esc(o.customer_name),
+  esc(o.customer_phone),
+  esc(o.delivery_address),
+  esc(money(o.total)),
+  esc(o.status),
+  esc(date(o.created_at))
+ ])
+ );
+
+}
+
+async function earnings(){
+
+ const data = await query("courier_earnings");
+
+ return table(
+ ["Расонанда ID","Фармоиш ID","Даромад","Комиссия","Сана"],
+ data.map(e=>[
+  esc(e.courier_id),
+  esc(e.order_id),
+  esc(money(e.amount)),
+  esc(money(e.commission)),
+  esc(date(e.created_at))
+ ])
+ );
+
+}
+
+async function tariffs(){
+
+ const data = await query("taxi_tariffs");
+
+ return `<div class="grid">
+ ${data.map(t=>`
+ <form class="card" data-form="tariff"
+ data-id="${esc(t.car_class)}">
+
+ <h2>${esc(t.name)}</h2>
+
+ <label>Нархи оғоз (TJS)</label>
+ <input name="base" type="number"
+ min="0" max="1000" step="0.01"
+ value="${esc(t.base_price)}" required>
+
+ <label>Нарх барои 1 км</label>
+ <input name="km" type="number"
+ min="0" max="100" step="0.01"
+ value="${esc(t.price_per_km)}" required>
+
+ <button class="btn" type="submit">
+  Сабт кардан
+ </button>
+
+ </form>`).join("")}
+ </div>`;
+
+}
+
+async function banners(){
+
+ const data = await query("vayo_banners");
+
+ return `
+ <form class="panel" data-form="banner">
+
+ <h2>Рекламаи нав</h2>
+
+ <label>Сарлавҳа</label>
+ <input name="title" required maxlength="150">
+
+ <label>Тавсиф</label>
+ <textarea name="description" maxlength="500"></textarea>
+
+ <label>Хизматрасонӣ</label>
+ <select name="service">
+  <option value="home">Саҳифаи асосӣ</option>
+  <option value="marketplace">Marketplace</option>
+  <option value="taxi">Taxi</option>
+  <option value="food">Food</option>
+  <option value="language">Language</option>
+ </select>
+
+ <label>Акси реклама</label>
+ <input type="file" name="image"
+ accept="image/jpeg,image/png,image/webp" required>
+
+ <label>Истинод (ихтиёрӣ)</label>
+ <input name="link" type="url"
+ placeholder="https://...">
+
+ <button class="btn" type="submit">
+  Нашр кардани реклама
+ </button>
+
+ </form>
+
+ ${table(
+ ["Сарлавҳа","Хизматрасонӣ","Ҳолат","Идоракунӣ"],
+ data.map(b=>[
+  esc(b.title),
+  esc(b.service),
+  badge(b.active),
+  `<div class="actions">
+  ${button(
+   b.active?"Пинҳон":"Фаъол",
+   "banner",b.id,!b.active,"gray"
+  )}
+  ${button("Нест кардан","deleteBanner",b.id,"","red")}
+  </div>`
+ ])
+ )}
+ `;
+
+}
+
+async function language(){
+
+ const data = await query("languages");
+ const courses = await query("language_courses");
+ const lessons = await query("language_lessons");
+
+ return `
+ <div class="grid">
+ ${data.map(l=>`
+ <div class="card">
+  <div style="font-size:36px">${esc(l.flag)}</div>
+  <h2>${esc(l.name)}</h2>
+  ${badge(l.active)}
+  <br><br>
+  ${button(
+   l.active?"Пинҳон":"Фаъол",
+   "language",l.id,!l.active,"gray"
+  )}
+ </div>
+ `).join("")}
+ </div>
+
+ <form class="panel" data-form="course">
+
+ <h2>Курси нав</h2>
+
+ <label>Забон</label>
+ <select name="language_id" required>
+ ${data.map(l=>`
+ <option value="${esc(l.id)}">${esc(l.name)}</option>
+ `).join("")}
+ </select>
+
+ <label>Номи курс</label>
+ <input name="title" required>
+
+ <label>Сатҳ</label>
+ <select name="level">
+ ${["A1","A2","B1","B2","C1","C2"].map(l=>
+ `<option>${l}</option>`).join("")}
+ </select>
+
+ <label>Тавсиф</label>
+ <textarea name="description"></textarea>
+
+ <button class="btn">Сохтани курс</button>
+ </form>
+
+ <form class="panel" data-form="lesson">
+
+ <h2>Дарси нав</h2>
+
+ <label>Курс</label>
+ <select name="course_id" required>
+ ${courses.map(c=>`
+ <option value="${esc(c.id)}">${esc(c.title)}</option>
+ `).join("")}
+ </select>
+
+ <label>Номи дарс</label>
+ <input name="title" required>
+
+ <label>Тавсиф</label>
+ <textarea name="description"></textarea>
+
+ <label>Рақами дарс</label>
+ <input name="position" type="number"
+ min="1" value="1" required>
+
+ <label>XP</label>
+ <input name="xp" type="number"
+ min="1" max="100" value="10" required>
+
+ <button class="btn">Сохтани дарс</button>
+ </form>
+
+ <form class="panel" data-form="word">
+
+ <h2>Калимаи нав</h2>
+
+ <label>Дарс</label>
+ <select name="lesson_id" required>
+ ${lessons.map(l=>`
+ <option value="${esc(l.id)}">${esc(l.title)}</option>
+ `).join("")}
+ </select>
+
+ <label>Калима</label>
+ <input name="word" required>
+
+ <label>Тарҷума</label>
+ <input name="translation" required>
+
+ <label>Талаффуз</label>
+ <input name="pronunciation">
+
+ <button class="btn">Илова кардан</button>
+ </form>
+
+ <form class="panel" data-form="exercise">
+
+ <h2>Саволи нав</h2>
+
+ <label>Дарс</label>
+ <select name="lesson_id" required>
+ ${lessons.map(l=>`
+ <option value="${esc(l.id)}">${esc(l.title)}</option>
+ `).join("")}
+ </select>
+
+ <label>Савол</label>
+ <input name="question" required>
+
+ <label>Ҷавоби 1</label>
+ <input name="a" required>
+
+ <label>Ҷавоби 2</label>
+ <input name="b" required>
+
+ <label>Ҷавоби 3</label>
+ <input name="c" required>
+
+ <label>Ҷавоби дуруст</label>
+ <select name="correct">
+ <option value="a">Ҷавоби 1</option>
+ <option value="b">Ҷавоби 2</option>
+ <option value="c">Ҷавоби 3</option>
+ </select>
+
+ <button class="btn">Сабти савол</button>
+ </form>
+
+ ${table(
+ ["Курс","Сатҳ","Ҳолат"],
+ courses.map(c=>[
+  esc(c.title),
+  esc(c.level),
+  badge(c.active)
+ ])
+ )}
+
+ ${table(
+ ["Дарс","XP","Рақам"],
+ lessons.map(l=>[
+  esc(l.title),
+  esc(l.xp),
+  esc(l.position)
+ ])
+ )}
+ `;
+
+}
+
+async function logs(){
+
+ const {data,error} = await db
+ .from("admin_logs")
+ .select("*")
+ .order("created_at",{ascending:false})
+ .limit(200);
+
+ if(error) throw error;
+
+ return table(
+ ["Амалиёт","Объект","Маълумот","Сана"],
+ (data || []).map(l=>[
+  esc(l.action),
+  esc(l.target_id),
+  esc(JSON.stringify(l.details)),
+  esc(date(l.created_at))
+ ])
+ );
+
+}
+
+const pages = {
+ dashboard,users,products,orders,
+ drivers,taxi,restaurants,food,
+ couriers,earnings,tariffs,
+ banners,language,logs
+};
+
+async function openPage(page){
+
+ if(!pages[page]) return;
+
+ const version = ++pageVersion;
+
+ currentPage = page;
+
+ $("pageTitle").textContent = titles[page];
+ $("sidebar").classList.remove("open");
+
+ document.querySelectorAll(".nav[data-page]")
+ .forEach(b=>b.classList.toggle(
+  "active",b.dataset.page===page
+ ));
+
+ notice("");
+
+ $("content").innerHTML =
+ '<div class="panel">Боргирӣ...</div>';
+
+ try{
+
+  const html = await pages[page]();
+
+  if(version === pageVersion){
+   $("content").innerHTML = html;
+  }
+
+ }catch(error){
+
+  if(version === pageVersion){
+   $("content").innerHTML = "";
+   notice(error.message);
+  }
+
+ }
+
+}
+
+async function change(action,id,value){
+
+ if(busy) return;
+
+ if(!confirm("Ин амалро тасдиқ мекунед?")) return;
+
+ busy = true;
+
+ try{
+
+ const enabled = value === "true";
+
+ if(action==="driver"){
+  await rpc("vayo_admin_approve_driver",{
+   p_driver_id:id,
+   p_approved:enabled
+  });
+ }
+
+ if(action==="restaurant"){
+  await rpc("vayo_admin_approve_restaurant",{
+   p_restaurant_id:id,
+   p_approved:enabled
+  });
+ }
+
+ if(action==="courier"){
+  await rpc("vayo_admin_approve_courier",{
+   p_courier_id:id,
+   p_approved:enabled
+  });
+ }
+
+ if(action==="product"){
+  await rpc("vayo_admin_product_status",{
+   p_product_id:id,
+   p_active:enabled
+  });
+ }
+
+ if(action==="banner"){
+
+  const {error} = await db
+  .from("vayo_banners")
+  .update({active:enabled})
+  .eq("id",id);
+
+  if(error) throw error;
+
+ }
+
+ if(action==="deleteBanner"){
+
+  const {error} = await db
+  .from("vayo_banners")
+  .delete()
+  .eq("id",id);
+
+  if(error) throw error;
+
+ }
+
+ if(action==="language"){
+
+  const {error} = await db
+  .from("languages")
+  .update({active:enabled})
+  .eq("id",id);
+
+  if(error) throw error;
+
+ }
+
+ await openPage(currentPage);
+
+ notice("Бомуваффақият иҷро шуд.");
+
+ }catch(error){
+
+  notice(error.message);
+
+ }finally{
+
+  busy = false;
+
+ }
+
+}
+
+async function insertRow(table,row){
+
+ const {error} = await db.from(table).insert(row);
+
+ if(error) throw error;
+
+}
+
+async function saveForm(form){
+
+ if(busy) return;
+
+ busy = true;
+
+ const submit = form.querySelector("button[type=submit],button");
+
+ if(submit) submit.disabled = true;
+
+ const f = new FormData(form);
+
+ const get = key => String(f.get(key) || "").trim();
+
+ try{
+
+ if(form.dataset.form==="tariff"){
+
+  await rpc("vayo_admin_taxi_tariff",{
+   p_car_class:form.dataset.id,
+   p_base_price:Number(get("base")),
+   p_price_per_km:Number(get("km"))
+  });
+
+ }
+
+ if(form.dataset.form==="banner"){
+
+  const file = f.get("image");
+
+  if(!file || !file.size || file.size>5242880){
+   throw new Error("Акс бояд то 5 MB бошад.");
+  }
+
+  const types = {
+   "image/jpeg":"jpg",
+   "image/png":"png",
+   "image/webp":"webp"
+  };
+
+  const ext = types[file.type];
+
+  if(!ext) throw new Error("Формати акс нодуруст.");
+
+  const link = get("link");
+
+  if(link && new URL(link).protocol!=="https:"){
+   throw new Error("Истинод бояд HTTPS бошад.");
+  }
+
+  const path = crypto.randomUUID()+"."+ext;
+
+  const {error} = await db.storage
+  .from("vayo-banners")
+  .upload(path,file);
+
+  if(error) throw error;
+
+  const {data} = db.storage
+  .from("vayo-banners")
+  .getPublicUrl(path);
+
+  try{
+
+   await insertRow("vayo_banners",{
+    title:get("title"),
+    description:get("description"),
+    service:get("service"),
+    image_url:data.publicUrl,
+    link_url:link || null,
+    active:true
+   });
+
+  }catch(error){
+
+   await db.storage.from("vayo-banners")
+   .remove([path]);
+
+   throw error;
+
+  }
+
+ }
+
+ if(form.dataset.form==="course"){
+
+  await insertRow("language_courses",{
+   language_id:get("language_id"),
+   title:get("title"),
+   level:get("level"),
+   description:get("description"),
+   active:true
+  });
+
+ }
+
+ if(form.dataset.form==="lesson"){
+
+  await insertRow("language_lessons",{
+   course_id:get("course_id"),
+   title:get("title"),
+   description:get("description"),
+   position:Number(get("position")),
+   xp:Number(get("xp")),
+   active:true
+  });
+
+ }
+
+ if(form.dataset.form==="word"){
+
+  await insertRow("language_words",{
+   lesson_id:get("lesson_id"),
+   word:get("word"),
+   translation:get("translation"),
+   pronunciation:get("pronunciation")
+  });
+
+ }
+
+ if(form.dataset.form==="exercise"){
+
+  const options = [
+   get("a"),get("b"),get("c")
+  ];
+
+  if(new Set(options).size!==3){
+   throw new Error("Ҷавобҳо бояд гуногун бошанд.");
+  }
+
+  await insertRow("language_exercises",{
+   lesson_id:get("lesson_id"),
+   exercise_type:"choice",
+   question:get("question"),
+   options,
+   correct_answer:get(get("correct"))
+  });
+
+ }
+
+ await openPage(currentPage);
+
+ notice("Маълумот сабт шуд.");
+
+ }catch(error){
+
+  notice(error.message);
+
+ }finally{
+
+  busy = false;
+
+  if(submit) submit.disabled = false;
+
+ }
+
+}
+
+document.addEventListener("click",event=>{
+
+ const page = event.target.closest("[data-page]");
+
+ if(page){
+  openPage(page.dataset.page);
+  return;
+ }
+
+ const action = event.target.closest("[data-action]");
+
+ if(action){
+
+  change(
+   action.dataset.action,
+   action.dataset.id,
+   action.dataset.value
+  );
+
+ }
+
+});
+
+document.addEventListener("submit",event=>{
+
+ const form = event.target;
+
+ if(form.matches("[data-form]")){
+  event.preventDefault();
+  saveForm(form);
+ }
+
+});
+
+async function logout(){
+
+ const {error} = await db.auth.signOut();
+
+ if(error){
+  notice(error.message);
+  return;
+ }
+
+ location.href="./account.html";
+
+}
+
+async function start(){
+
+ try{
+
+  if(!db){
+   throw new Error("config.js нодуруст аст.");
+  }
+
+  const {data,error} = await db.auth.getUser();
+
+  if(error || !data.user){
+   throw new Error("Аввал ба аккаунт ворид шавед.");
+  }
+
+  const admin = await rpc("vayo_is_admin");
+
+  if(admin !== true){
+   throw new Error("Шумо ҳуқуқи Super Admin надоред.");
+  }
+
+  $("gate").classList.add("hidden");
+  $("app").classList.remove("hidden");
+
+  await openPage("dashboard");
+
+ }catch(error){
+
+  $("gateMessage").textContent = error.message;
+
+ }
+
+}
+
+start();
+
+</script>
+
+</body>
+</html>
