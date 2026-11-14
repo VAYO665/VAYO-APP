@@ -1,0 +1,1121 @@
+
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VAYO — Огоҳиномаҳо</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./config.js"></script>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ background:#f5f6f8;
+ color:#202124;
+ font-family:Arial,sans-serif;
+}
+a{
+ color:inherit;
+ text-decoration:none;
+}
+header{
+ position:sticky;
+ top:0;
+ z-index:20;
+ background:white;
+ padding:18px;
+ border-bottom:1px solid #eee;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:10px;
+}
+.logo{
+ color:#ff6500;
+ font-size:25px;
+ font-weight:900;
+}
+main{
+ max-width:750px;
+ margin:auto;
+ padding:16px 16px 100px;
+}
+.hero{
+ background:linear-gradient(135deg,#ff6500,#ff9d31);
+ color:white;
+ border-radius:24px;
+ padding:25px;
+ margin-bottom:18px;
+}
+.hero h1{
+ margin:10px 0;
+ font-size:27px;
+}
+.hero p{
+ margin-bottom:0;
+}
+.counter{
+ font-size:42px;
+ font-weight:900;
+}
+button,.btn{
+ border:0;
+ border-radius:12px;
+ background:#ff6500;
+ color:white;
+ padding:12px 15px;
+ font-size:14px;
+ font-weight:bold;
+ cursor:pointer;
+}
+button:disabled{
+ opacity:.5;
+ cursor:default;
+}
+.white{
+ background:white;
+ color:#ff6500;
+}
+.gray{
+ background:#eee;
+ color:#333;
+}
+.toolbar{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:8px;
+ margin:18px 0;
+}
+.filters{
+ display:flex;
+ overflow:auto;
+ gap:8px;
+ margin-bottom:18px;
+ scrollbar-width:none;
+}
+.filter{
+ white-space:nowrap;
+ background:white;
+ color:#555;
+}
+.filter.active{
+ background:#ff6500;
+ color:white;
+}
+.notification{
+ background:white;
+ border:1px solid #eee;
+ border-radius:18px;
+ padding:15px;
+ display:flex;
+ align-items:flex-start;
+ gap:13px;
+ margin-bottom:11px;
+}
+.notification.unread{
+ background:#fff9f2;
+ border-color:#ffd5b4;
+}
+.serviceIcon{
+ width:48px;
+ height:48px;
+ min-width:48px;
+ background:#fff0df;
+ border-radius:14px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-size:26px;
+}
+.content{
+ flex:1;
+ min-width:0;
+ overflow-wrap:anywhere;
+}
+.content h3{
+ margin:2px 0 8px;
+ font-size:16px;
+}
+.content p{
+ font-size:14px;
+ line-height:1.5;
+ color:#555;
+ margin:0 0 9px;
+}
+.time{
+ color:#999;
+ font-size:12px;
+}
+.dot{
+ width:9px;
+ height:9px;
+ min-width:9px;
+ border-radius:50%;
+ background:#ff6500;
+ margin-top:8px;
+}
+.actions{
+ display:flex;
+ flex-wrap:wrap;
+ gap:8px;
+ margin-top:12px;
+}
+.actions button{
+ font-size:12px;
+ padding:9px 12px;
+}
+.empty{
+ background:white;
+ border-radius:20px;
+ padding:35px 20px;
+ text-align:center;
+ color:#777;
+}
+.emptyIcon{
+ font-size:60px;
+}
+.notice{
+ padding:13px;
+ background:#fff0df;
+ border-radius:12px;
+ margin-bottom:14px;
+ overflow-wrap:anywhere;
+}
+.notice:empty{
+ display:none;
+}
+.hidden{
+ display:none!important;
+}
+.more{
+ width:100%;
+ margin-top:12px;
+}
+nav{
+ position:fixed;
+ bottom:0;
+ left:0;
+ right:0;
+ background:white;
+ border-top:1px solid #ddd;
+ display:flex;
+ justify-content:space-around;
+ padding:12px 5px;
+ z-index:20;
+}
+nav a{
+ font-size:12px;
+ color:#777;
+ text-align:center;
+}
+nav span{
+ display:block;
+ font-size:24px;
+ margin-bottom:5px;
+}
+nav .active{
+ color:#ff6500;
+ font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+<a href="./index.html">←</a>
+
+<div class="logo">VAYO 🔔</div>
+
+<a href="./account.html">👤</a>
+
+</header>
+
+<main>
+
+<div id="message" class="notice" role="status"></div>
+
+<section id="loginRequired" class="empty hidden">
+
+<div class="emptyIcon">🔐</div>
+
+<h2>Ба аккаунт ворид шавед</h2>
+
+<p>Барои дидани огоҳиномаҳо аккаунт лозим аст.</p>
+
+<a class="btn" href="./account.html">
+
+Ворид шудан
+
+</a>
+
+</section>
+
+<section id="app" class="hidden">
+
+<div class="hero">
+
+<div>Огоҳиномаҳои хонданашуда</div>
+
+<div id="unreadCount" class="counter">0</div>
+
+<h1>Огоҳиномаҳои VAYO</h1>
+
+<p>Ҳамаи хабарҳои муҳим дар як ҷой.</p>
+
+</div>
+
+<div class="toolbar">
+
+<strong>Хабарҳои ман</strong>
+
+<button id="readAll" class="gray">
+
+✓ Ҳамаро хондам
+
+</button>
+
+</div>
+
+<div class="filters">
+
+<button class="filter active" data-filter="all">
+
+Ҳама
+
+</button>
+
+<button class="filter" data-filter="unread">
+
+🔴 Нав
+
+</button>
+
+<button class="filter" data-filter="marketplace">
+
+🛍️ Бозор
+
+</button>
+
+<button class="filter" data-filter="taxi">
+
+🚕 Taxi
+
+</button>
+
+<button class="filter" data-filter="food">
+
+🍔 Food
+
+</button>
+
+<button class="filter" data-filter="courier">
+
+🛵 Расонанда
+
+</button>
+
+<button class="filter" data-filter="system">
+
+⚙️ Система
+
+</button>
+
+</div>
+
+<div id="notifications">
+
+<div class="empty">Боргирӣ...</div>
+
+</div>
+
+<button id="moreButton"
+class="more gray hidden">
+
+Нишон додани бештар
+
+</button>
+
+</section>
+
+</main>
+
+<nav>
+
+<a href="./index.html">
+
+<span>🏠</span>
+
+Асосӣ
+
+</a>
+
+<a href="./marketplace.html">
+
+<span>🛍️</span>
+
+Бозор
+
+</a>
+
+<a href="./taxi.html">
+
+<span>🚕</span>
+
+Таксӣ
+
+</a>
+
+<a href="./food.html">
+
+<span>🍔</span>
+
+Таом
+
+</a>
+
+<a class="active" href="./notifications.html">
+
+<span>🔔</span>
+
+Хабарҳо
+
+</a>
+
+</nav>
+
+<script>
+
+const db = window.vayo;
+
+const $ = id => document.getElementById(id);
+
+let user = null;
+
+let notifications = [];
+
+let filter = "all";
+
+let channel = null;
+
+let limit = 50;
+
+let requestVersion = 0;
+
+let sessionVersion = 0;
+
+let busy = false;
+
+const icons = {
+
+ marketplace:"🛍️",
+
+ taxi:"🚕",
+
+ food:"🍔",
+
+ courier:"🛵",
+
+ system:"⚙️"
+
+};
+
+const allowedPages = [
+
+ "index.html",
+
+ "account.html",
+
+ "marketplace.html",
+
+ "seller.html",
+
+ "taxi.html",
+
+ "driver.html",
+
+ "food.html",
+
+ "restaurant.html",
+
+ "courier.html"
+
+];
+
+// =======================
+// SECURITY
+// =======================
+
+function esc(value){
+
+ return String(value ?? "").replace(
+
+ /[&<>"']/g,
+
+ c=>({
+
+ "&":"&amp;",
+
+ "<":"&lt;",
+
+ ">":"&gt;",
+
+ '"':"&quot;",
+
+ "'":"&#39;"
+
+ })[c]);
+
+}
+
+function safeLink(value){
+
+ return allowedPages.includes(value)
+
+ ? "./"+value
+
+ : "";
+
+}
+
+function message(text){
+
+ $("message").textContent = text || "";
+
+}
+
+// =======================
+// TIME
+// =======================
+
+function timeAgo(value){
+
+ const seconds = Math.max(
+
+ 0,
+
+ Math.floor(
+
+ (Date.now()-new Date(value).getTime())/1000
+
+ )
+
+ );
+
+ if(seconds<60){
+
+ return "Ҳозир";
+
+ }
+
+ if(seconds<3600){
+
+ return Math.floor(seconds/60)+" дақиқа пеш";
+
+ }
+
+ if(seconds<86400){
+
+ return Math.floor(seconds/3600)+" соат пеш";
+
+ }
+
+ if(seconds<604800){
+
+ return Math.floor(seconds/86400)+" рӯз пеш";
+
+ }
+
+ return new Date(value).toLocaleString(
+
+ "ru-RU",
+
+ {timeZone:"Asia/Dushanbe"}
+
+ );
+
+}
+
+// =======================
+// LOAD NOTIFICATIONS
+// =======================
+
+async function loadNotifications(){
+
+ if(!user || !db) return;
+
+ const version = ++requestVersion;
+
+ const userId = user.id;
+
+ try{
+
+ let query = db
+
+ .from("notifications")
+
+ .select("*")
+
+ .eq("user_id",userId);
+
+ if(filter==="unread"){
+
+ query = query.eq("is_read",false);
+
+ }else if(filter!=="all"){
+
+ query = query.eq("service",filter);
+
+ }
+
+ const {data,error} = await query
+
+ .order("created_at",{ascending:false})
+
+ .order("id",{ascending:false})
+
+ .limit(limit+1);
+
+ if(version!==requestVersion ||
+
+ user?.id!==userId){
+
+ return;
+
+ }
+
+ if(error) throw error;
+
+ notifications = (data || []).slice(0,limit);
+
+ $("moreButton").classList.toggle(
+
+ "hidden",
+
+ (data || []).length<=limit || limit>=500
+
+ );
+
+ renderNotifications();
+
+ const countResult = await db.rpc(
+
+ "vayo_unread_notifications"
+
+ );
+
+ if(version!==requestVersion ||
+
+ user?.id!==userId){
+
+ return;
+
+ }
+
+ if(countResult.error){
+
+ throw countResult.error;
+
+ }
+
+ $("unreadCount").textContent =
+
+ countResult.data ?? 0;
+
+ $("readAll").disabled =
+
+ busy || Number(countResult.data)===0;
+
+ message("");
+
+ }catch(error){
+
+ if(version===requestVersion){
+
+ message(error.message);
+
+ }
+
+ }
+
+}
+
+// =======================
+// RENDER
+// =======================
+
+function renderNotifications(){
+
+ if(!notifications.length){
+
+ $("notifications").innerHTML = `
+
+ <div class="empty">
+
+ <div class="emptyIcon">🔔</div>
+
+ <h3>Огоҳинома нест</h3>
+
+ <p>Хабарҳои нав дар ин ҷо пайдо мешаванд.</p>
+
+ </div>
+
+ `;
+
+ return;
+
+ }
+
+ $("notifications").innerHTML =
+
+ notifications.map(n=>{
+
+ const icon = icons[n.service] || "🔔";
+
+ const link = safeLink(n.link_url);
+
+ return `
+
+ <article class="notification
+
+ ${n.is_read?"":"unread"}">
+
+ <div class="serviceIcon">
+
+ ${icon}
+
+ </div>
+
+ <div class="content">
+
+ <h3>${esc(n.title)}</h3>
+
+ <p>${esc(n.message)}</p>
+
+ <div class="time">
+
+ ${esc(timeAgo(n.created_at))}
+
+ </div>
+
+ <div class="actions">
+
+ ${link ? `
+
+ <button
+
+ data-action="open"
+
+ data-id="${esc(n.id)}">
+
+ Кушодан →
+
+ </button>
+
+ `:""}
+
+ ${!n.is_read ? `
+
+ <button class="gray"
+
+ data-action="read"
+
+ data-id="${esc(n.id)}">
+
+ ✓ Хондам
+
+ </button>
+
+ `:""}
+
+ </div>
+
+ </div>
+
+ ${!n.is_read?
+
+ '<div class="dot"></div>':""}
+
+ </article>
+
+ `;
+
+ }).join("");
+
+}
+
+// =======================
+// READ ONE
+// =======================
+
+async function markRead(id){
+
+ if(!user || busy) return false;
+
+ busy = true;
+
+ try{
+
+ const {error} = await db.rpc(
+
+ "vayo_notification_read",
+
+ {p_notification_id:id}
+
+ );
+
+ if(error) throw error;
+
+ await loadNotifications();
+
+ return true;
+
+ }catch(error){
+
+ message(error.message);
+
+ return false;
+
+ }finally{
+
+ busy = false;
+
+ $("readAll").disabled =
+
+ Number($("unreadCount").textContent)===0;
+
+ }
+
+}
+
+// =======================
+// READ ALL
+// =======================
+
+$("readAll").addEventListener(
+
+ "click",async()=>{
+
+ if(!user || busy) return;
+
+ busy = true;
+
+ $("readAll").disabled = true;
+
+ try{
+
+ const {error} = await db.rpc(
+
+ "vayo_notifications_read_all"
+
+ );
+
+ if(error) throw error;
+
+ await loadNotifications();
+
+ }catch(error){
+
+ message(error.message);
+
+ }finally{
+
+ busy = false;
+
+ $("readAll").disabled =
+
+ Number($("unreadCount").textContent)===0;
+
+ }
+
+ });
+
+// =======================
+// OPEN NOTIFICATION
+// =======================
+
+$("notifications").addEventListener(
+
+ "click",async event=>{
+
+ const button = event.target.closest(
+
+ "button[data-action]"
+
+ );
+
+ if(!button || busy || !user) return;
+
+ const n = notifications.find(
+
+ item=>item.id===button.dataset.id
+
+ );
+
+ if(!n) return;
+
+ button.disabled = true;
+
+ try{
+
+ if(button.dataset.action==="read"){
+
+ await markRead(n.id);
+
+ }else if(button.dataset.action==="open"){
+
+ const link = safeLink(n.link_url);
+
+ if(!link) return;
+
+ if(!n.is_read){
+
+ const success = await markRead(n.id);
+
+ if(!success) return;
+
+ }
+
+ location.href = link;
+
+ }
+
+ }finally{
+
+ button.disabled = false;
+
+ }
+
+ });
+
+// =======================
+// FILTERS
+// =======================
+
+document.querySelectorAll("[data-filter]")
+
+.forEach(button=>{
+
+ button.addEventListener("click",()=>{
+
+ filter = button.dataset.filter;
+
+ limit = 50;
+
+ document.querySelectorAll("[data-filter]")
+
+ .forEach(b=>{
+
+ b.classList.toggle(
+
+ "active",
+
+ b===button
+
+ );
+
+ });
+
+ $("notifications").textContent = "Боргирӣ...";
+
+ loadNotifications();
+
+ });
+
+});
+
+$("moreButton").addEventListener(
+
+ "click",()=>{
+
+ limit = Math.min(limit+50,500);
+
+ loadNotifications();
+
+ });
+
+// =======================
+// REALTIME
+// =======================
+
+async function connectRealtime(){
+
+ if(channel){
+
+ await db.removeChannel(channel);
+
+ channel = null;
+
+ }
+
+ if(!user) return;
+
+ const userId = user.id;
+
+ channel = db.channel(
+
+ "vayo-notifications-"+userId
+
+ )
+
+ .on(
+
+ "postgres_changes",
+
+ {
+
+ event:"*",
+
+ schema:"public",
+
+ table:"notifications",
+
+ filter:"user_id=eq."+userId
+
+ },
+
+ ()=>{
+
+ loadNotifications();
+
+ }
+
+ )
+
+ .subscribe();
+
+}
+
+// =======================
+// AUTHENTICATION
+// =======================
+
+async function loadSession(){
+
+ const version = ++sessionVersion;
+
+ requestVersion++;
+
+ try{
+
+ const {data,error} = await db.auth.getUser();
+
+ if(version!==sessionVersion) return;
+
+ if(error || !data?.user){
+
+ user = null;
+
+ notifications = [];
+
+ $("notifications").textContent = "";
+
+ $("unreadCount").textContent = "0";
+
+ $("app").classList.add("hidden");
+
+ $("loginRequired").classList.remove("hidden");
+
+ if(channel){
+
+ await db.removeChannel(channel);
+
+ channel = null;
+
+ }
+
+ return;
+
+ }
+
+ user = data.user;
+
+ $("loginRequired").classList.add("hidden");
+
+ $("app").classList.remove("hidden");
+
+ await loadNotifications();
+
+ if(version!==sessionVersion) return;
+
+ await connectRealtime();
+
+ }catch(error){
+
+ message(error.message);
+
+ }
+
+}
+
+// =======================
+// START
+// =======================
+
+async function start(){
+
+ if(!db){
+
+ message("Supabase дастрас нест. config.js-ро санҷед.");
+
+ return;
+
+ }
+
+ db.auth.onAuthStateChange((event)=>{
+
+ if([
+
+ "INITIAL_SESSION",
+
+ "SIGNED_IN",
+
+ "SIGNED_OUT"
+
+ ].includes(event)){
+
+ setTimeout(loadSession,0);
+
+ }
+
+ });
+
+}
+
+setInterval(()=>{
+
+ if(user &&
+
+ document.visibilityState==="visible"){
+
+ loadNotifications();
+
+ }
+
+},15000);
+
+document.addEventListener(
+
+ "visibilitychange",()=>{
+
+ if(document.visibilityState==="visible"
+
+ && user){
+
+ loadNotifications();
+
+ }
+
+ });
+
+start();
+
+</script>
+
+</body>
+</html>
