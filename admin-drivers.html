@@ -1,0 +1,1307 @@
+
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VAYO Admin — Drivers</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./config.js"></script>
+
+<style>
+
+*{box-sizing:border-box}
+
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#f5f6f8;
+color:#222;
+}
+
+header{
+background:#18212f;
+color:white;
+padding:18px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:12px;
+}
+
+a{
+text-decoration:none;
+color:inherit;
+}
+
+main{
+max-width:1200px;
+margin:auto;
+padding:20px;
+}
+
+.logo{
+font-size:24px;
+font-weight:900;
+color:#ff6500;
+}
+
+.card{
+background:white;
+padding:20px;
+border-radius:18px;
+margin-bottom:15px;
+}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:12px;
+margin-bottom:20px;
+}
+
+.stat{
+background:white;
+padding:20px;
+border-radius:15px;
+}
+
+.stat strong{
+display:block;
+font-size:30px;
+margin-top:10px;
+color:#ff6500;
+}
+
+.small{
+font-size:12px;
+color:#777;
+}
+
+.row{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:10px;
+flex-wrap:wrap;
+}
+
+.btn{
+display:inline-block;
+background:#ff6500;
+color:white;
+border:0;
+border-radius:10px;
+padding:12px 17px;
+font-weight:bold;
+cursor:pointer;
+text-align:center;
+}
+
+.btn:disabled{
+opacity:.5;
+cursor:not-allowed;
+}
+
+.green{background:#16a34a}
+.red{background:#dc2626}
+.gray{background:#eee;color:#222}
+.full{width:100%}
+
+input,select{
+padding:13px;
+border:1px solid #ddd;
+border-radius:10px;
+font:inherit;
+background:white;
+}
+
+.search{
+display:flex;
+gap:10px;
+margin-bottom:20px;
+}
+
+.search input{
+flex:1;
+min-width:0;
+}
+
+.driver{
+background:white;
+border-radius:16px;
+padding:18px;
+margin-bottom:12px;
+overflow-wrap:anywhere;
+}
+
+.status{
+display:inline-block;
+padding:7px 12px;
+border-radius:20px;
+font-size:12px;
+font-weight:bold;
+background:#fff0df;
+color:#c2410c;
+}
+
+.approved{
+background:#dcfce7;
+color:#15803d;
+}
+
+.incomplete{
+background:#fee2e2;
+color:#b91c1c;
+}
+
+.photoGrid{
+display:grid;
+grid-template-columns:repeat(3,minmax(0,1fr));
+gap:12px;
+}
+
+.photo{
+background:#f5f6f8;
+padding:12px;
+border-radius:13px;
+text-align:center;
+}
+
+.photo img{
+width:100%;
+height:200px;
+object-fit:contain;
+background:#eee;
+border-radius:10px;
+cursor:zoom-in;
+}
+
+.photo h4{
+font-size:14px;
+}
+
+.placeholder{
+height:200px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:40px;
+background:#eee;
+border-radius:10px;
+}
+
+dialog{
+border:0;
+border-radius:20px;
+padding:22px;
+width:min(95%,1000px);
+max-height:94dvh;
+overflow:auto;
+}
+
+dialog::backdrop{
+background:#000a;
+}
+
+.close{
+background:#eee;
+border:0;
+border-radius:50%;
+width:38px;
+height:38px;
+font-size:24px;
+cursor:pointer;
+}
+
+.notice{
+padding:14px;
+background:#fff0df;
+border-radius:10px;
+margin:12px 0;
+overflow-wrap:anywhere;
+}
+
+.notice:empty{
+display:none;
+}
+
+.hidden{
+display:none!important;
+}
+
+.actions{
+display:flex;
+gap:10px;
+margin-top:20px;
+}
+
+.actions>*{
+flex:1;
+}
+
+#largeImage{
+max-width:100%;
+max-height:78vh;
+object-fit:contain;
+display:block;
+margin:auto;
+}
+
+@media(max-width:650px){
+
+main{padding:12px}
+
+.stats{
+grid-template-columns:repeat(2,1fr);
+}
+
+.photoGrid{
+grid-template-columns:repeat(2,minmax(0,1fr));
+}
+
+.photo img,.placeholder{
+height:145px;
+}
+
+.search{
+flex-direction:column;
+}
+
+.logo{
+font-size:19px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+<a href="./admin.html">← Admin</a>
+
+<div class="logo">VAYO ADMIN</div>
+
+<a href="./account.html">👤</a>
+
+</header>
+
+<main>
+
+<h1>🚕 Идоракунии ронандагон</h1>
+
+<div id="notice" class="notice"></div>
+
+<div id="access" class="card">
+
+Дастрасӣ санҷида мешавад...
+
+</div>
+
+<div id="panel" class="hidden">
+
+<div class="stats">
+
+<div class="stat">
+
+<span class="small">Ҳамаи ронандагон</span>
+
+<strong id="totalDrivers">0</strong>
+
+</div>
+
+<div class="stat">
+
+<span class="small">Тасдиқшуда</span>
+
+<strong id="approvedDrivers">0</strong>
+
+</div>
+
+<div class="stat">
+
+<span class="small">Интизори тасдиқ</span>
+
+<strong id="pendingDrivers">0</strong>
+
+</div>
+
+<div class="stat">
+
+<span class="small">Онлайн</span>
+
+<strong id="onlineDrivers">0</strong>
+
+</div>
+
+</div>
+
+<div class="search">
+
+<input id="search"
+placeholder="Ном, телефон, рақами мошин...">
+
+<select id="filter">
+
+<option value="all">Ҳама</option>
+
+<option value="pending">Интизори тасдиқ</option>
+
+<option value="approved">Тасдиқшуда</option>
+
+<option value="incomplete">Ҳуҷҷатҳо нопурра</option>
+
+<option value="online">Онлайн</option>
+
+</select>
+
+<button id="refresh" class="btn">
+
+🔄 Навсозӣ
+
+</button>
+
+</div>
+
+<div id="drivers"></div>
+
+</div>
+
+</main>
+
+<!-- DRIVER DOCUMENTS -->
+
+<dialog id="driverDialog">
+
+<div class="row">
+
+<h2>Маълумоти ронанда</h2>
+
+<button id="closeDriver" class="close">×</button>
+
+</div>
+
+<div id="driverInfo"></div>
+
+<h3>📷 Аксҳо ва ҳуҷҷатҳо</h3>
+
+<div id="photoNotice" class="notice"></div>
+
+<div id="photos" class="photoGrid"></div>
+
+<div class="card">
+
+<label>
+
+<input id="verified" type="checkbox">
+
+Ман ҳамаи шаш акс ва ҳуҷҷатро санҷидам.
+
+</label>
+
+</div>
+
+<div class="actions">
+
+<button id="approve" class="btn green" disabled>
+
+✓ Тасдиқ кардан
+
+</button>
+
+<button id="reject" class="btn red">
+
+Бекор кардани тасдиқ
+
+</button>
+
+</div>
+
+</dialog>
+
+<!-- LARGE PHOTO -->
+
+<dialog id="imageDialog">
+
+<div class="row">
+
+<strong>Намоиши акс</strong>
+
+<button id="closeImage" class="close">×</button>
+
+</div>
+
+<br>
+
+<img id="largeImage" alt="Ҳуҷҷати ронанда">
+
+</dialog>
+
+<script>
+
+const db=window.vayo;
+
+const $=id=>document.getElementById(id);
+
+let admin=false;
+
+let drivers=[];
+
+let selected=null;
+
+let documents=[];
+
+let busy=false;
+
+let loading=false;
+
+let photoVersion=0;
+
+let photoURLs=new Map();
+
+const types=[
+
+["driver_photo","Акси ронанда","👤"],
+
+["car_front","Мошин аз пеш","🚘"],
+
+["car_back","Мошин аз қафо","🚗"],
+
+["car_inside","Дохили мошин","💺"],
+
+["driver_license","Шаҳодатномаи ронандагӣ","🪪"],
+
+["car_document","Ҳуҷҷати мошин","📄"]
+
+];
+
+function esc(value){
+
+return String(value??"").replace(
+
+/[&<>"']/g,
+
+c=>({
+
+"&":"&amp;",
+
+"<":"&lt;",
+
+">":"&gt;",
+
+'"':"&quot;",
+
+"'":"&#39;"
+
+})[c]);
+
+}
+
+function notice(text){
+
+$("notice").textContent=text||"";
+
+}
+
+function freshOnline(driver){
+
+return driver.approved&&
+
+driver.online&&
+
+Date.now()-new Date(
+
+driver.location_updated_at||0
+
+).getTime()<300000;
+
+}
+
+function status(driver){
+
+if(driver.approved){
+
+return '<span class="status approved">Тасдиқшуда</span>';
+
+}
+
+if(driver.documents_submitted){
+
+return '<span class="status">Интизори тасдиқ</span>';
+
+}
+
+return '<span class="status incomplete">Ҳуҷҷатҳо нопурра</span>';
+
+}
+
+// ==========================
+// ADMIN ACCESS
+// ==========================
+
+async function checkAdmin(){
+
+const {data:userData}=await db.auth.getUser();
+
+if(!userData?.user){
+
+throw new Error("Аввал ба аккаунт ворид шавед.");
+
+}
+
+const {data,error}=await db.rpc(
+
+"vayo_is_admin"
+
+);
+
+if(error)throw error;
+
+if(data!==true){
+
+throw new Error("Дастрасӣ танҳо барои Admin.");
+
+}
+
+admin=true;
+
+$("access").classList.add("hidden");
+
+$("panel").classList.remove("hidden");
+
+}
+
+// ==========================
+// LOAD DRIVERS
+// ==========================
+
+async function loadDrivers(){
+
+if(!admin||loading)return;
+
+loading=true;
+
+$("refresh").disabled=true;
+
+try{
+
+let all=[];
+
+for(let offset=0;;offset+=500){
+
+const {data,error}=await db
+
+.from("taxi_drivers")
+
+.select("*")
+
+.order("created_at",{ascending:false})
+
+.order("id")
+
+.range(offset,offset+499);
+
+if(error)throw error;
+
+all.push(...(data||[]));
+
+if((data||[]).length<500)break;
+
+}
+
+drivers=all;
+
+renderDrivers();
+
+}catch(error){
+
+notice(error.message);
+
+}finally{
+
+loading=false;
+
+$("refresh").disabled=false;
+
+}
+
+}
+
+// ==========================
+// RENDER DRIVERS
+// ==========================
+
+function renderDrivers(){
+
+$("totalDrivers").textContent=
+
+drivers.length;
+
+$("approvedDrivers").textContent=
+
+drivers.filter(d=>d.approved).length;
+
+$("pendingDrivers").textContent=
+
+drivers.filter(d=>
+
+!d.approved&&d.documents_submitted
+
+).length;
+
+$("onlineDrivers").textContent=
+
+drivers.filter(freshOnline).length;
+
+const q=$("search").value.trim().toLowerCase();
+
+const filter=$("filter").value;
+
+const list=drivers.filter(d=>{
+
+const text=[
+
+d.full_name,
+
+d.phone,
+
+d.car_brand,
+
+d.car_model,
+
+d.car_number,
+
+d.city
+
+].join(" ").toLowerCase();
+
+if(!text.includes(q))return false;
+
+if(filter==="approved")return d.approved;
+
+if(filter==="pending"){
+
+return !d.approved&&d.documents_submitted;
+
+}
+
+if(filter==="incomplete"){
+
+return !d.approved&&!d.documents_submitted;
+
+}
+
+if(filter==="online")return freshOnline(d);
+
+return true;
+
+});
+
+$("drivers").innerHTML=list.map(d=>`
+
+<div class="driver">
+
+<div class="row">
+
+<h3>👤 ${esc(d.full_name)}</h3>
+
+${status(d)}
+
+</div>
+
+<p>📞 ${esc(d.phone)}</p>
+
+<p>📍 ${esc(d.city)}</p>
+
+<p>🚕 ${esc(d.car_brand)} ${esc(d.car_model)}</p>
+
+<p>Рақам: <strong>${esc(d.car_number)}</strong></p>
+
+<p>Ранг: ${esc(d.car_color)}</p>
+
+<p>Навъ: ${esc(d.car_class)}</p>
+
+<p class="small">
+
+${freshOnline(d)?"🟢 Онлайн":"⚪ Офлайн"}
+
+</p>
+
+<button class="btn full"
+
+data-driver="${esc(d.id)}">
+
+📷 Дидани аксҳо ва ҳуҷҷатҳо
+
+</button>
+
+</div>
+
+`).join("")||
+
+'<div class="card">Ронанда ёфт нашуд.</div>';
+
+}
+
+// ==========================
+// PRIVATE PHOTO URL
+// ==========================
+
+async function signedPhoto(path){
+
+const {data,error}=await db.storage
+
+.from("driver-documents")
+
+.createSignedUrl(path,120);
+
+if(error)throw error;
+
+return data.signedUrl;
+
+}
+
+// ==========================
+// OPEN DRIVER
+// ==========================
+
+async function openDriver(id){
+
+if(!admin||busy)return;
+
+selected=drivers.find(d=>d.id===id);
+
+if(!selected)return;
+
+const version=++photoVersion;
+
+documents=[];
+
+photoURLs.clear();
+
+$("verified").checked=false;
+
+$("approve").disabled=true;
+
+$("reject").disabled=true;
+
+$("photoNotice").textContent="";
+
+$("driverInfo").innerHTML=`
+
+<div class="card">
+
+<h2>${esc(selected.full_name)}</h2>
+
+${status(selected)}
+
+<p>Телефон: ${esc(selected.phone)}</p>
+
+<p>Шаҳр: ${esc(selected.city)}</p>
+
+<p>Мошин: ${esc(selected.car_brand)}
+
+${esc(selected.car_model)}</p>
+
+<p>Рақами давлатӣ:
+
+<strong>${esc(selected.car_number)}</strong>
+
+</p>
+
+<p>Ранг: ${esc(selected.car_color)}</p>
+
+<p>Навъи мошин: ${esc(selected.car_class)}</p>
+
+<p>Ҳуҷҷатҳо фиристода шудаанд:
+
+${selected.documents_submitted?"Ҳа":"Не"}
+
+</p>
+
+</div>
+
+`;
+
+$("photos").innerHTML="Аксҳо боргирӣ мешаванд...";
+
+$("driverDialog").showModal();
+
+try{
+
+const {data,error}=await db.rpc(
+
+"vayo_admin_driver_documents",
+
+{
+
+p_driver_id:id
+
+}
+
+);
+
+if(error)throw error;
+
+if(version!==photoVersion)return;
+
+documents=data||[];
+
+await renderPhotos(version);
+
+if(version!==photoVersion)return;
+
+$("reject").disabled=!selected.approved;
+
+updateApprove();
+
+}catch(error){
+
+if(version===photoVersion){
+
+$("photoNotice").textContent=error.message;
+
+}
+
+}
+
+}
+
+// ==========================
+// RENDER SIX PHOTOS
+// ==========================
+
+async function renderPhotos(version){
+
+$("photos").innerHTML=types.map(type=>{
+
+const doc=documents.find(
+
+d=>d.document_type===type[0]
+
+);
+
+return `
+
+<div class="photo">
+
+<div id="photo-${type[0]}">
+
+<div class="placeholder">${type[2]}</div>
+
+</div>
+
+<h4>${esc(type[1])}</h4>
+
+<p class="small">
+
+${doc?"Сабт шудааст":"❌ Бор нашудааст"}
+
+</p>
+
+</div>
+
+`;
+
+}).join("");
+
+await Promise.all(documents.map(async doc=>{
+
+try{
+
+const url=await signedPhoto(doc.file_path);
+
+if(version!==photoVersion)return;
+
+const box=$("photo-"+doc.document_type);
+
+if(!box)return;
+
+photoURLs.set(doc.document_type,url);
+
+const image=document.createElement("img");
+
+image.src=url;
+
+image.alt=doc.document_type;
+
+image.onload=()=>{
+
+if(version===photoVersion)updateApprove();
+
+};
+
+image.onerror=()=>{
+
+if(version!==photoVersion)return;
+
+photoURLs.delete(doc.document_type);
+
+box.textContent="Акс бор нашуд.";
+
+updateApprove();
+
+};
+
+image.onclick=()=>openLargePhoto(
+
+doc.document_type
+
+);
+
+box.replaceChildren(image);
+
+}catch(error){
+
+if(version!==photoVersion)return;
+
+const box=$("photo-"+doc.document_type);
+
+if(box)box.textContent="Акс дастрас нест.";
+
+}
+
+}));
+
+if(version!==photoVersion)return;
+
+$("photoNotice").textContent=
+
+"Ҳуҷҷатҳои сабтшуда: "+documents.length+" / 6";
+
+}
+
+// ==========================
+// LARGE PHOTO
+// ==========================
+
+async function openLargePhoto(type){
+
+const doc=documents.find(
+
+d=>d.document_type===type
+
+);
+
+if(!doc)return;
+
+const version=photoVersion;
+
+try{
+
+const url=await signedPhoto(doc.file_path);
+
+if(version!==photoVersion)return;
+
+$("largeImage").src=url;
+
+$("imageDialog").showModal();
+
+}catch(error){
+
+$("photoNotice").textContent=error.message;
+
+}
+
+}
+
+// ==========================
+// APPROVAL CONTROL
+// ==========================
+
+function updateApprove(){
+
+const allLoaded=types.every(type=>{
+
+const img=$("photo-"+type[0])
+
+?.querySelector("img");
+
+return img&&img.complete&&img.naturalWidth>0;
+
+});
+
+$("approve").disabled=
+
+busy||
+
+!selected||
+
+selected.approved||
+
+!selected.documents_submitted||
+
+documents.length!==6||
+
+!allLoaded||
+
+!$("verified").checked;
+
+}
+
+$("verified").onchange=updateApprove;
+
+// ==========================
+// APPROVE OR REVOKE
+// ==========================
+
+async function changeApproval(approved){
+
+if(!admin||!selected||busy)return;
+
+if(approved&&$("approve").disabled)return;
+
+const message=approved
+
+?"Ронандаро тасдиқ мекунед?"
+
+:"Тасдиқи ронандаро бекор мекунед?";
+
+if(!confirm(message))return;
+
+busy=true;
+
+$("approve").disabled=true;
+
+$("reject").disabled=true;
+
+const id=selected.id;
+
+try{
+
+// Check whether documents changed during review.
+
+if(approved){
+
+const {data,error}=await db.rpc(
+
+"vayo_admin_driver_documents",
+
+{p_driver_id:id}
+
+);
+
+if(error)throw error;
+
+const latest=data||[];
+
+const unchanged=
+
+latest.length===6&&
+
+documents.every(old=>latest.some(current=>
+
+current.document_type===old.document_type&&
+
+current.file_path===old.file_path&&
+
+current.created_at===old.created_at
+
+));
+
+if(!unchanged){
+
+throw new Error(
+
+"Ҳуҷҷатҳо тағйир ёфтанд. Аз нав санҷед."
+
+);
+
+}
+
+}
+
+const {error}=await db.rpc(
+
+"vayo_admin_approve_driver",
+
+{
+
+p_driver_id:id,
+
+p_approved:approved
+
+}
+
+);
+
+if(error)throw error;
+
+closeDriver();
+
+notice(
+
+approved
+
+?"✓ Ронанда тасдиқ шуд."
+
+:"Тасдиқи ронанда бекор шуд."
+
+);
+
+await loadDrivers();
+
+}catch(error){
+
+$("photoNotice").textContent=error.message;
+
+}finally{
+
+busy=false;
+
+updateApprove();
+
+$("reject").disabled=!selected?.approved;
+
+}
+
+}
+
+$("approve").onclick=()=>changeApproval(true);
+
+$("reject").onclick=()=>changeApproval(false);
+
+// ==========================
+// CLOSE PRIVATE DOCUMENTS
+// ==========================
+
+function clearPhotos(){
+
+photoVersion++;
+
+photoURLs.clear();
+
+documents=[];
+
+selected=null;
+
+$("photos").replaceChildren();
+
+$("driverInfo").replaceChildren();
+
+$("largeImage").removeAttribute("src");
+
+$("verified").checked=false;
+
+$("approve").disabled=true;
+
+}
+
+function closeDriver(){
+
+if($("imageDialog").open){
+
+$("imageDialog").close();
+
+}
+
+$("driverDialog").close();
+
+clearPhotos();
+
+}
+
+$("closeDriver").onclick=()=>{
+
+if(!busy)closeDriver();
+
+};
+
+$("closeImage").onclick=()=>{
+
+$("imageDialog").close();
+
+};
+
+$("imageDialog").addEventListener("close",()=>{
+
+$("largeImage").removeAttribute("src");
+
+});
+
+$("driverDialog").addEventListener("cancel",e=>{
+
+e.preventDefault();
+
+if(!busy)closeDriver();
+
+});
+
+// ==========================
+// EVENTS
+// ==========================
+
+$("drivers").onclick=e=>{
+
+const b=e.target.closest("[data-driver]");
+
+if(b)openDriver(b.dataset.driver);
+
+};
+
+$("search").oninput=renderDrivers;
+
+$("filter").onchange=renderDrivers;
+
+$("refresh").onclick=loadDrivers;
+
+// ==========================
+// START
+// ==========================
+
+async function start(){
+
+try{
+
+if(!db){
+
+throw new Error("config.js дастрас нест.");
+
+}
+
+await checkAdmin();
+
+await loadDrivers();
+
+db.auth.onAuthStateChange(event=>{
+
+if(event==="SIGNED_OUT"){
+
+admin=false;
+
+closeDriver();
+
+drivers=[];
+
+$("drivers").replaceChildren();
+
+$("panel").classList.add("hidden");
+
+$("access").classList.remove("hidden");
+
+$("access").textContent=
+
+"Ба аккаунт ворид шавед.";
+
+}
+
+});
+
+}catch(error){
+
+$("access").textContent=error.message;
+
+}
+
+}
+
+start();
+
+</script>
+
+</body>
+</html>
