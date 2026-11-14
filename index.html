@@ -3,9 +3,9 @@
 <html lang="tg">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#ff6500">
-<meta name="description" content="VAYO Тоҷикистон — Marketplace, Taxi ва Food.">
+<meta name="description" content="VAYO Тоҷикистон — Marketplace, Taxi, Food ва Language.">
 
 <title>VAYO — Super App Тоҷикистон</title>
 
@@ -17,16 +17,20 @@
 :root{
  --orange:#ff6500;
  --dark:#202124;
- --background:#f5f6f8;
+ --bg:#f5f6f8;
 }
 
 *{
  box-sizing:border-box;
 }
 
+html{
+ scroll-behavior:smooth;
+}
+
 body{
  margin:0;
- background:var(--background);
+ background:var(--bg);
  color:var(--dark);
  font-family:Arial,sans-serif;
 }
@@ -37,7 +41,7 @@ a{
 }
 
 button,input,select{
- font-family:inherit;
+ font:inherit;
 }
 
 button{
@@ -46,11 +50,11 @@ button{
 
 header{
  background:white;
- padding:16px;
  position:sticky;
  top:0;
- z-index:20;
+ z-index:30;
  border-bottom:1px solid #eee;
+ padding:15px;
 }
 
 .headerContent{
@@ -62,47 +66,75 @@ header{
  display:flex;
  align-items:center;
  justify-content:space-between;
- gap:12px;
+ gap:10px;
 }
 
 .logo{
  font-size:35px;
  font-weight:900;
- color:var(--orange);
  letter-spacing:-2px;
+ color:var(--orange);
 }
 
 .logo span{
- color:#202124;
+ color:var(--dark);
 }
 
 .city{
  border:0;
  background:#f5f5f5;
- padding:11px;
  border-radius:12px;
+ padding:11px 8px;
  font-size:14px;
+ min-width:0;
  max-width:150px;
 }
 
-.account{
- width:44px;
- height:44px;
+.headerActions{
+ display:flex;
+ align-items:center;
+ gap:10px;
+}
+
+.account,.notificationButton{
+ position:relative;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ width:43px;
+ height:43px;
  border-radius:50%;
  background:#fff0df;
- display:flex;
- justify-content:center;
- align-items:center;
  font-size:24px;
+ flex-shrink:0;
+}
+
+.notificationBadge{
+ position:absolute;
+ top:-5px;
+ right:-5px;
+ background:#e53935;
+ color:white;
+ border:2px solid white;
+ border-radius:20px;
+ min-width:21px;
+ height:21px;
+ padding:2px 4px;
+ font-size:10px;
+ font-weight:bold;
+ display:flex;
+ align-items:center;
+ justify-content:center;
 }
 
 .search{
  display:flex;
  align-items:center;
+ gap:10px;
  background:#f3f4f6;
  border-radius:14px;
+ margin-top:14px;
  padding:0 14px;
- margin-top:15px;
 }
 
 .search input{
@@ -110,7 +142,7 @@ header{
  border:0;
  outline:none;
  background:transparent;
- padding:14px 10px;
+ padding:14px 0;
  font-size:16px;
 }
 
@@ -121,22 +153,22 @@ main{
 }
 
 .hero{
- background:linear-gradient(135deg,#ff6500,#ff9d31);
- border-radius:26px;
- padding:28px;
- color:white;
  display:flex;
  align-items:center;
  justify-content:space-between;
- gap:10px;
+ gap:12px;
+ background:linear-gradient(135deg,#ff6500,#ff9d31);
+ color:white;
+ padding:28px;
+ border-radius:26px;
  min-height:210px;
  overflow:hidden;
 }
 
 .hero h1{
- font-size:32px;
- line-height:1.2;
  margin:0 0 12px;
+ font-size:34px;
+ line-height:1.2;
 }
 
 .hero p{
@@ -145,7 +177,7 @@ main{
 }
 
 .heroArt{
- font-size:85px;
+ font-size:90px;
  transform:rotate(-8deg);
 }
 
@@ -153,10 +185,10 @@ main{
  display:inline-block;
  border:0;
  border-radius:13px;
- padding:13px 18px;
  background:var(--orange);
  color:white;
- font-size:15px;
+ padding:13px 18px;
+ font-size:14px;
  font-weight:bold;
 }
 
@@ -167,8 +199,8 @@ main{
 
 .sectionTitle{
  display:flex;
- justify-content:space-between;
  align-items:center;
+ justify-content:space-between;
  gap:10px;
  margin:25px 0 14px;
 }
@@ -178,10 +210,16 @@ main{
  margin:0;
 }
 
+.sectionTitle a{
+ color:var(--orange);
+ font-size:14px;
+}
+
 .services{
  display:grid;
  grid-template-columns:repeat(4,minmax(0,1fr));
  gap:13px;
+ scroll-margin-top:150px;
 }
 
 .service{
@@ -189,12 +227,12 @@ main{
  flex-direction:column;
  justify-content:space-between;
  min-height:200px;
- padding:18px;
- border-radius:23px;
- overflow:hidden;
  border:0;
+ border-radius:23px;
+ padding:18px;
  text-align:left;
- color:#202124;
+ color:var(--dark);
+ overflow:hidden;
  transition:transform .2s;
 }
 
@@ -219,44 +257,70 @@ main{
 }
 
 .service h3{
- font-size:21px;
  margin:0;
+ font-size:21px;
 }
 
 .service p{
- font-size:13px;
- line-height:1.4;
  color:#555;
+ font-size:13px;
+ line-height:1.5;
 }
 
 .serviceArt{
- width:100%;
- height:95px;
  display:flex;
  align-items:center;
  justify-content:center;
+ width:100%;
+ height:100px;
 }
 
 .serviceArt svg{
  width:100%;
- max-width:150px;
+ max-width:155px;
  height:100px;
 }
 
 .serviceLabel{
- font-size:12px;
- font-weight:bold;
  background:#ffffffc0;
  padding:7px 10px;
  border-radius:20px;
+ font-size:12px;
+ font-weight:bold;
  align-self:flex-start;
+}
+
+.profileCard{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:12px;
+ background:white;
+ padding:16px;
+ border-radius:18px;
+ margin-bottom:16px;
+}
+
+.profileCard strong{
+ overflow-wrap:anywhere;
+}
+
+.profileButtons{
+ display:flex;
+ align-items:center;
+ gap:7px;
+}
+
+.small{
+ color:#777;
+ font-size:12px;
 }
 
 .banner{
  background:white;
  border-radius:22px;
- overflow:hidden;
  border:1px solid #eee;
+ overflow:hidden;
  margin-top:18px;
 }
 
@@ -273,7 +337,7 @@ main{
 }
 
 .bannerBody h3{
- margin:0 0 10px;
+ margin:8px 0;
 }
 
 .bannerBody p{
@@ -317,16 +381,16 @@ main{
 
 .product{
  background:white;
+ border:1px solid #eee;
  border-radius:17px;
  overflow:hidden;
- border:1px solid #eee;
 }
 
 .product img{
+ display:block;
  width:100%;
  height:180px;
  object-fit:cover;
- display:block;
 }
 
 .productPlaceholder{
@@ -345,7 +409,7 @@ main{
 .productName{
  font-size:15px;
  font-weight:bold;
- margin:7px 0;
+ margin:8px 0;
  overflow-wrap:anywhere;
 }
 
@@ -359,11 +423,6 @@ main{
  color:#999;
  font-size:13px;
  text-decoration:line-through;
-}
-
-.small{
- font-size:12px;
- color:#777;
 }
 
 .discount{
@@ -446,21 +505,6 @@ main{
  line-height:1.5;
 }
 
-.profileCard{
- background:white;
- border-radius:17px;
- padding:15px;
- margin-bottom:16px;
- display:flex;
- align-items:center;
- justify-content:space-between;
- gap:12px;
-}
-
-.profileCard strong{
- overflow-wrap:anywhere;
-}
-
 .notice{
  background:#fff0df;
  border-radius:13px;
@@ -480,6 +524,7 @@ main{
  padding:25px;
  text-align:center;
  color:#777;
+ overflow-wrap:anywhere;
 }
 
 .hidden{
@@ -497,7 +542,7 @@ nav{
  justify-content:space-around;
  padding:11px 5px;
  padding-bottom:max(11px,env(safe-area-inset-bottom));
- z-index:30;
+ z-index:40;
 }
 
 nav a{
@@ -539,49 +584,75 @@ dialog::backdrop{
 @media(max-width:700px){
 
  .services,.products{
-  grid-template-columns:repeat(2,minmax(0,1fr));
+ grid-template-columns:repeat(2,minmax(0,1fr));
  }
 
  .businessGrid{
-  grid-template-columns:repeat(2,1fr);
+ grid-template-columns:repeat(2,1fr);
  }
 
  .hero{
-  padding:22px;
-  min-height:180px;
+ padding:22px;
+ min-height:180px;
  }
 
  .hero h1{
-  font-size:26px;
+ font-size:26px;
  }
 
  .heroArt{
-  font-size:55px;
+ font-size:55px;
  }
 
  .service{
-  min-height:185px;
-  padding:15px;
+ min-height:185px;
+ padding:15px;
  }
 
  .service h3{
-  font-size:19px;
+ font-size:19px;
  }
 
  .product img,.productPlaceholder{
-  height:155px;
+ height:155px;
  }
 
  .features{
-  gap:7px;
+ gap:7px;
  }
 
  .feature{
-  padding:12px 7px;
+ padding:12px 7px;
  }
 
  .bannerImage{
-  height:170px;
+ height:170px;
+ }
+
+ .profileButtons .btn{
+ padding:10px;
+ }
+
+}
+
+@media(max-width:360px){
+
+ .logo{
+ font-size:29px;
+ }
+
+ .headerActions{
+ gap:6px;
+ }
+
+ .account,.notificationButton{
+ width:36px;
+ height:36px;
+ font-size:21px;
+ }
+
+ .city{
+ max-width:115px;
  }
 
 }
@@ -591,6 +662,8 @@ dialog::backdrop{
 
 <body>
 
+<!-- HEADER -->
+
 <header>
 
 <div class="headerContent">
@@ -598,7 +671,9 @@ dialog::backdrop{
 <div class="top">
 
 <a href="./index.html" class="logo">
+
 VA<span>YO</span>
+
 </a>
 
 <select id="city" class="city" aria-label="Шаҳр">
@@ -618,6 +693,27 @@ VA<span>YO</span>
 
 </select>
 
+<div class="headerActions">
+
+<!-- NOTIFICATIONS -->
+
+<a href="./notifications.html"
+class="notificationButton"
+aria-label="Огоҳиномаҳо">
+
+🔔
+
+<span id="notificationBadge"
+class="notificationBadge hidden">
+
+0
+
+</span>
+
+</a>
+
+<!-- ACCOUNT -->
+
 <a href="./account.html"
 class="account"
 aria-label="Аккаунт">
@@ -625,6 +721,8 @@ aria-label="Аккаунт">
 👤
 
 </a>
+
+</div>
 
 </div>
 
@@ -644,17 +742,28 @@ autocomplete="off">
 
 <main>
 
-<div id="notice" class="notice" role="status"></div>
+<div id="notice"
+class="notice"
+role="status"></div>
 
-<div id="profileCard" class="profileCard hidden">
+<!-- PROFILE -->
+
+<div id="profileCard"
+class="profileCard hidden">
 
 <div>
 
-<div class="small">Хуш омадед!</div>
+<div class="small">
+
+Хуш омадед!
+
+</div>
 
 <strong id="profileName"></strong>
 
 </div>
+
+<div class="profileButtons">
 
 <a id="adminLink"
 class="btn hidden"
@@ -666,15 +775,26 @@ Admin
 
 </div>
 
+</div>
+
+<!-- HERO -->
+
 <section class="hero">
 
 <div>
 
-<h1>Ҳама чиз дар<br>як барнома!</h1>
+<h1>
+
+Ҳама чиз дар<br>
+як барнома!
+
+</h1>
 
 <p>
+
 Харид, таксӣ ва таом.<br>
 VAYO барои Тоҷикистон.
+
 </p>
 
 <a href="#services" class="btn white">
@@ -689,7 +809,10 @@ VAYO барои Тоҷикистон.
 
 </section>
 
-<section id="bannerSection" class="hidden">
+<!-- ADMIN BANNERS -->
+
+<section id="bannerSection"
+class="hidden">
 
 <div class="banner">
 
@@ -701,6 +824,8 @@ class="bannerControls"></div>
 </div>
 
 </section>
+
+<!-- SERVICES -->
 
 <div class="sectionTitle">
 
@@ -814,7 +939,11 @@ rx="4" fill="#222"/>
 <text x="80" y="25"
 font-size="9"
 fill="#fff"
-text-anchor="middle">TAXI</text>
+text-anchor="middle">
+
+TAXI
+
+</text>
 
 <circle cx="42" cy="87"
 r="13" fill="#222"/>
@@ -970,8 +1099,7 @@ text-anchor="middle">Б</text>
 
 <h2>Маҳсулоти нав</h2>
 
-<a href="./marketplace.html"
-style="color:#ff6500;font-size:14px">
+<a href="./marketplace.html">
 
 Ҳама →
 
@@ -1013,7 +1141,8 @@ style="color:#ff6500;font-size:14px">
 
 <div class="businessGrid">
 
-<a href="./seller.html" class="businessLink">
+<a href="./seller.html"
+class="businessLink">
 
 <span>🛍️</span>
 
@@ -1021,7 +1150,8 @@ style="color:#ff6500;font-size:14px">
 
 </a>
 
-<a href="./driver.html" class="businessLink">
+<a href="./driver.html"
+class="businessLink">
 
 <span>🚕</span>
 
@@ -1029,7 +1159,8 @@ style="color:#ff6500;font-size:14px">
 
 </a>
 
-<a href="./restaurant.html" class="businessLink">
+<a href="./restaurant.html"
+class="businessLink">
 
 <span>🍽️</span>
 
@@ -1037,7 +1168,8 @@ style="color:#ff6500;font-size:14px">
 
 </a>
 
-<a href="./courier.html" class="businessLink">
+<a href="./courier.html"
+class="businessLink">
 
 <span>🛵</span>
 
@@ -1048,6 +1180,8 @@ style="color:#ff6500;font-size:14px">
 </div>
 
 </section>
+
+<!-- FEATURES -->
 
 <div class="features">
 
@@ -1098,7 +1232,7 @@ VAYO Тоҷикистон
 
 </main>
 
-<!-- NAVIGATION -->
+<!-- BOTTOM NAVIGATION -->
 
 <nav>
 
@@ -1174,6 +1308,10 @@ onclick="document.getElementById('soonDialog').close()">
 
 <script>
 
+// ===========================
+// SUPABASE CONFIGURATION
+// ===========================
+
 const db = window.vayo;
 
 const $ = id => document.getElementById(id);
@@ -1193,6 +1331,14 @@ let productsError = "";
 let bannerLoading = false;
 
 let accountVersion = 0;
+
+let notificationVersion = 0;
+
+let notificationChannel = null;
+
+let notificationUserId = null;
+
+let realtimeQueue = Promise.resolve();
 
 // ===========================
 // SECURITY
@@ -1228,13 +1374,11 @@ function safeURL(value){
 
  const url = new URL(value,location.href);
 
- if(url.protocol!=="https:"){
+ return url.protocol==="https:"
 
- return "";
+ ? url.href
 
- }
-
- return url.href;
+ : "";
 
  }catch{
 
@@ -1823,7 +1967,213 @@ function changeBanner(delta){
 }
 
 // ===========================
-// ACCOUNT
+// NOTIFICATION BADGE
+// ===========================
+
+function hideNotificationBadge(){
+
+ $("notificationBadge").textContent = "0";
+
+ $("notificationBadge").classList.add("hidden");
+
+}
+
+async function updateNotificationBadge(){
+
+ if(!db) return;
+
+ const version = ++notificationVersion;
+
+ try{
+
+ const {data:sessionData,error:sessionError} =
+
+ await db.auth.getSession();
+
+ if(version!==notificationVersion){
+
+ return;
+
+ }
+
+ if(sessionError){
+
+ throw sessionError;
+
+ }
+
+ const session = sessionData?.session;
+
+ if(!session){
+
+ hideNotificationBadge();
+
+ return;
+
+ }
+
+ const userId = session.user.id;
+
+ const {data,error} = await db.rpc(
+
+ "vayo_unread_notifications"
+
+ );
+
+ if(version!==notificationVersion){
+
+ return;
+
+ }
+
+ if(error){
+
+ throw error;
+
+ }
+
+ const {data:latestSession} =
+
+ await db.auth.getSession();
+
+ if(
+
+ version!==notificationVersion ||
+
+ latestSession?.session?.user?.id!==userId
+
+ ){
+
+ return;
+
+ }
+
+ const count = Number(data || 0);
+
+ $("notificationBadge").textContent =
+
+ count>99 ? "99+" : String(count);
+
+ $("notificationBadge").classList.toggle(
+
+ "hidden",
+
+ count<=0
+
+ );
+
+ }catch(error){
+
+ if(version===notificationVersion){
+
+ hideNotificationBadge();
+
+ }
+
+ console.error("Notifications:",error.message);
+
+ }
+
+}
+
+// ===========================
+// REALTIME NOTIFICATIONS
+// ===========================
+
+function connectNotifications(userId){
+
+ realtimeQueue = realtimeQueue
+
+ .catch(console.error)
+
+ .then(async()=>{
+
+ if(
+
+ notificationChannel &&
+
+ notificationUserId===userId
+
+ ){
+
+ return;
+
+ }
+
+ if(notificationChannel){
+
+ await db.removeChannel(notificationChannel);
+
+ notificationChannel = null;
+
+ notificationUserId = null;
+
+ }
+
+ if(!userId){
+
+ return;
+
+ }
+
+ const {data} = await db.auth.getSession();
+
+ if(data?.session?.user?.id!==userId){
+
+ return;
+
+ }
+
+ notificationUserId = userId;
+
+ notificationChannel = db.channel(
+
+ "vayo-home-notifications-"+userId
+
+ )
+
+ .on(
+
+ "postgres_changes",
+
+ {
+
+ event:"*",
+
+ schema:"public",
+
+ table:"notifications",
+
+ filter:"user_id=eq."+userId
+
+ },
+
+ ()=>{
+
+ updateNotificationBadge();
+
+ }
+
+ )
+
+ .subscribe(status=>{
+
+ if(status==="SUBSCRIBED"){
+
+ updateNotificationBadge();
+
+ }
+
+ });
+
+ });
+
+ return realtimeQueue;
+
+}
+
+// ===========================
+// LOAD ACCOUNT
 // ===========================
 
 async function loadAccount(){
@@ -1846,6 +2196,14 @@ async function loadAccount(){
 
  $("adminLink").classList.add("hidden");
 
+ $("profileName").textContent = "";
+
+ notificationVersion++;
+
+ hideNotificationBadge();
+
+ await connectNotifications(null);
+
  return;
 
  }
@@ -1863,6 +2221,10 @@ async function loadAccount(){
  $("profileCard").classList.remove("hidden");
 
  $("adminLink").classList.add("hidden");
+
+ updateNotificationBadge();
+
+ connectNotifications(user.id).catch(console.error);
 
  try{
 
@@ -1890,7 +2252,11 @@ async function loadAccount(){
 
  }
 
- }catch{}
+ }catch(error){
+
+ console.error(error);
+
+ }
 
  const {data:isAdmin,error:adminError} =
 
@@ -2014,17 +2380,35 @@ async function start(){
 
  }
 
- await Promise.allSettled([
+ db.auth.onAuthStateChange((event)=>{
 
- loadProducts(),
+ if(event==="SIGNED_OUT"){
 
- loadBanners(),
+ accountVersion++;
 
- loadAccount()
+ notificationVersion++;
 
- ]);
+ hideNotificationBadge();
 
- db.auth.onAuthStateChange(()=>{
+ $("profileCard").classList.add("hidden");
+
+ $("adminLink").classList.add("hidden");
+
+ $("profileName").textContent = "";
+
+ }
+
+ if([
+
+ "INITIAL_SESSION",
+
+ "SIGNED_IN",
+
+ "SIGNED_OUT",
+
+ "USER_UPDATED"
+
+ ].includes(event)){
 
  setTimeout(()=>{
 
@@ -2032,13 +2416,25 @@ async function start(){
 
  },0);
 
+ }
+
  });
+
+ await Promise.allSettled([
+
+ loadProducts(),
+
+ loadBanners()
+
+ ]);
 
 }
 
 // ===========================
 // AUTOMATIC REFRESH
 // ===========================
+
+// Banner every 6 seconds
 
 setInterval(()=>{
 
@@ -2057,6 +2453,20 @@ setInterval(()=>{
  }
 
 },6000);
+
+// Notifications every 15 seconds
+
+setInterval(()=>{
+
+ if(document.visibilityState==="visible"){
+
+ updateNotificationBadge();
+
+ }
+
+},15000);
+
+// Products and banners every minute
 
 setInterval(()=>{
 
@@ -2077,6 +2487,26 @@ setInterval(()=>{
  }
 
 },60000);
+
+// Refresh when user returns
+
+document.addEventListener(
+
+ "visibilitychange",()=>{
+
+ if(document.visibilityState==="visible"){
+
+ updateNotificationBadge();
+
+ }
+
+ });
+
+window.addEventListener("pageshow",()=>{
+
+ updateNotificationBadge();
+
+});
 
 start();
 
