@@ -3,109 +3,215 @@
 <html lang="tg">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>VAYO — Аккаунт</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VAYO Account</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./config.js"></script>
 
 <style>
-*{
- box-sizing:border-box;
- font-family:Arial,sans-serif;
-}
+*{box-sizing:border-box}
 body{
  margin:0;
- background:#f5f5f5;
- color:#222;
+ background:#f5f6f8;
+ color:#202124;
+ font-family:Arial,sans-serif;
 }
 header{
- background:#ff6500;
- color:white;
- padding:20px;
+ background:white;
+ padding:17px;
  display:flex;
  align-items:center;
- gap:20px;
-}
-header a{
- color:white;
- text-decoration:none;
- font-size:24px;
-}
-header strong{
- font-size:28px;
-}
-.container{
- max-width:440px;
- margin:30px auto;
- padding:20px;
+ justify-content:space-between;
+ border-bottom:1px solid #eee;
 }
 .logo{
- text-align:center;
- font-size:45px;
- font-weight:bold;
+ font-size:26px;
+ font-weight:900;
  color:#ff6500;
- margin-bottom:20px;
+}
+a{
+ text-decoration:none;
+ color:inherit;
+}
+main{
+ max-width:650px;
+ margin:auto;
+ padding:16px 16px 100px;
 }
 .card{
  background:white;
- padding:25px;
- border-radius:24px;
- box-shadow:0 5px 25px #0000000d;
-}
-h2{
- margin-top:0;
-}
-input{
- width:100%;
- padding:16px;
- border:1px solid #ddd;
- border-radius:12px;
- margin-bottom:12px;
- font-size:16px;
-}
-button{
- width:100%;
- padding:16px;
- background:#ff6500;
- color:white;
- border:none;
- border-radius:12px;
- font-size:16px;
- font-weight:bold;
- cursor:pointer;
- margin-top:8px;
-}
-button:disabled{
- opacity:.6;
-}
-.secondary{
- background:#fff0e5;
- color:#ff6500;
-}
-.link{
- background:transparent;
- color:#ff6500;
-}
-.hidden{
- display:none;
-}
-#message{
- white-space:pre-wrap;
- padding:12px;
- border-radius:10px;
+ border-radius:22px;
+ padding:20px;
  margin-bottom:15px;
- background:#fff0e5;
  overflow-wrap:anywhere;
 }
-#message:empty{
- display:none;
+h2{margin-top:0}
+input,textarea{
+ width:100%;
+ padding:14px;
+ border:1px solid #ddd;
+ border-radius:12px;
+ background:#f7f7f7;
+ font-size:16px;
+ margin:8px 0 15px;
 }
-footer{
+button,.btn{
+ display:inline-block;
+ border:0;
+ border-radius:13px;
+ background:#ff6500;
+ color:white;
+ padding:14px;
+ font-size:15px;
+ font-weight:bold;
+ cursor:pointer;
+}
+button:disabled{opacity:.5}
+.full{width:100%}
+.gray{background:#eee;color:#222}
+.red{background:#dc2626}
+.hidden{display:none!important}
+.notice{
+ background:#fff0df;
+ padding:14px;
+ border-radius:12px;
+ margin-bottom:15px;
+ overflow-wrap:anywhere;
+}
+.notice:empty{display:none}
+.profile{
  text-align:center;
- color:#888;
- margin-top:25px;
- font-size:13px;
+ padding:25px;
+ background:linear-gradient(135deg,#ff6500,#ff9d31);
+ color:white;
+ border-radius:24px;
+ margin-bottom:15px;
+}
+.avatar{
+ width:85px;
+ height:85px;
+ background:white;
+ color:#ff6500;
+ border-radius:50%;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-size:38px;
+ font-weight:bold;
+ margin:0 auto 15px;
+}
+.profile h2{
+ margin:10px 0;
+}
+.profile p{
+ overflow-wrap:anywhere;
+}
+.menuItem{
+ display:flex;
+ align-items:center;
+ gap:14px;
+ padding:15px 5px;
+ border-bottom:1px solid #eee;
+ cursor:pointer;
+}
+.menuItem:last-child{
+ border-bottom:0;
+}
+.menuItem span{
+ font-size:25px;
+}
+.menuItem strong{
+ flex:1;
+}
+.menuItem small{
+ color:#999;
+ font-size:20px;
+}
+.grid{
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap:10px;
+}
+.business{
+ padding:18px 10px;
+ background:#fff0df;
+ border-radius:16px;
+ text-align:center;
+ font-weight:bold;
+}
+.business span{
+ display:block;
+ font-size:35px;
+ margin-bottom:10px;
+}
+.tabs{
+ display:flex;
+ gap:7px;
+ margin-bottom:15px;
+}
+.tabs button{
+ flex:1;
+ background:#eee;
+ color:#222;
+ padding:12px 5px;
+}
+.tabs button.active{
+ background:#ff6500;
+ color:white;
+}
+.order{
+ padding:15px;
+ background:#f7f7f7;
+ border-radius:15px;
+ margin-bottom:12px;
+}
+.badge{
+ display:inline-block;
+ background:#fff0df;
+ color:#b45309;
+ padding:7px 10px;
+ border-radius:20px;
+ font-size:12px;
+}
+.price{
+ font-size:21px;
+ font-weight:bold;
+ color:#ff6500;
+}
+small{color:#777}
+.link{
+ color:#ff6500;
+ cursor:pointer;
+ font-weight:bold;
+ background:none;
+ border:0;
+ padding:8px;
+}
+nav{
+ position:fixed;
+ bottom:0;
+ left:0;
+ right:0;
+ background:white;
+ border-top:1px solid #ddd;
+ display:flex;
+ justify-content:space-around;
+ padding:12px 5px;
+}
+nav a{
+ font-size:12px;
+ color:#777;
+ text-align:center;
+}
+nav span{
+ display:block;
+ font-size:24px;
+ margin-bottom:5px;
+}
+nav .active{
+ color:#ff6500;
+ font-weight:bold;
 }
 </style>
 </head>
@@ -113,176 +219,602 @@ footer{
 <body>
 
 <header>
+
 <a href="./index.html">←</a>
-<strong>VAYO</strong>
+
+<div class="logo">VAYO ACCOUNT</div>
+
+<a href="./index.html">🏠</a>
+
 </header>
 
-<div class="container">
+<main>
 
-<div class="logo">VAYO</div>
-
-<div id="message" role="status"></div>
+<div id="message" class="notice" role="status"></div>
 
 <!-- LOGIN -->
 
-<section class="card" id="login">
+<section id="login" class="card">
 
-<h2>Хуш омадед!</h2>
+<h2>Ворид шудан</h2>
+
+<form id="loginForm">
+
+<label>Email</label>
 
 <input id="loginEmail"
- type="email"
- autocomplete="email"
- placeholder="Email">
+type="email"
+autocomplete="email"
+required>
+
+<label>Парол</label>
 
 <input id="loginPassword"
- type="password"
- autocomplete="current-password"
- placeholder="Парол">
+type="password"
+autocomplete="current-password"
+required>
 
-<button onclick="signIn()">
+<button class="full" type="submit">
+
 Ворид шудан
+
 </button>
 
-<button class="secondary"
- onclick="show('register')">
-Бақайдгирӣ
-</button>
+</form>
+
+<br>
 
 <button class="link"
- onclick="show('forgot')">
+onclick="show('forgot')">
+
 Паролро фаромӯш кардед?
+
+</button>
+
+<hr>
+
+<button class="gray full"
+onclick="show('register')">
+
+Аккаунти нав сохтан
+
 </button>
 
 </section>
 
 <!-- REGISTER -->
 
-<section class="card hidden" id="register">
+<section id="register" class="card hidden">
 
-<h2>Сохтани аккаунт</h2>
+<h2>Сабти ном</h2>
 
-<input id="fullName"
- placeholder="Ному насаб">
+<form id="registerForm">
 
-<input id="phone"
- type="tel"
- placeholder="+992">
+<label>Ному насаб</label>
+
+<input id="registerName"
+maxlength="100"
+required>
+
+<label>Телефон</label>
+
+<input id="registerPhone"
+type="tel"
+placeholder="+992900000000"
+required>
+
+<label>Email</label>
 
 <input id="registerEmail"
- type="email"
- autocomplete="email"
- placeholder="Email">
+type="email"
+required>
+
+<label>Парол</label>
 
 <input id="registerPassword"
- type="password"
- autocomplete="new-password"
- placeholder="Парол (на камтар аз 8 аломат)">
+type="password"
+minlength="8"
+autocomplete="new-password"
+required>
 
-<button onclick="signUp()">
+<button class="full" type="submit">
+
 Сабти ном
+
 </button>
 
-<button class="secondary"
- onclick="show('login')">
-Аллакай аккаунт дорам
+</form>
+
+<br>
+
+<button class="gray full"
+onclick="show('login')">
+
+Бозгашт
+
 </button>
 
 </section>
 
 <!-- FORGOT PASSWORD -->
 
-<section class="card hidden" id="forgot">
+<section id="forgot" class="card hidden">
 
 <h2>Барқарор кардани парол</h2>
 
-<input id="forgotEmail"
- type="email"
- placeholder="Email">
+<form id="forgotForm">
 
-<button onclick="resetPassword()">
-Фиристодани email
+<label>Email</label>
+
+<input id="forgotEmail"
+type="email"
+required>
+
+<button class="full" type="submit">
+
+Фиристодани истинод
+
 </button>
 
-<button class="secondary"
- onclick="show('login')">
+</form>
+
+<br>
+
+<button class="gray full"
+onclick="show('login')">
+
 Бозгашт
+
 </button>
 
 </section>
 
 <!-- NEW PASSWORD -->
 
-<section class="card hidden" id="recovery">
+<section id="recovery" class="card hidden">
 
 <h2>Пароли нав</h2>
 
-<input id="newPassword"
- type="password"
- autocomplete="new-password"
- placeholder="Пароли нав">
+<form id="recoveryForm">
 
-<button onclick="updatePassword()">
-Сабт кардан
+<input id="newPassword"
+type="password"
+minlength="8"
+autocomplete="new-password"
+placeholder="Пароли нав"
+required>
+
+<button class="full" type="submit">
+
+Сабт кардани парол
+
 </button>
+
+</form>
 
 </section>
 
 <!-- ACCOUNT -->
 
-<section class="card hidden" id="account">
+<section id="account" class="hidden">
 
-<h2>Аккаунти ман</h2>
+<div class="profile">
 
-<p id="accountName"></p>
-<p id="accountEmail"></p>
+<div id="avatar" class="avatar">V</div>
 
-<button onclick="location.href='./index.html'">
-Саҳифаи асосӣ
+<h2 id="profileName"></h2>
+
+<p id="profileEmail"></p>
+
+<p id="profilePhone"></p>
+
+<button class="gray"
+onclick="openEdit()">
+
+✏️ Таҳрири профил
+
 </button>
 
-<button id="adminButton"
- class="hidden"
- onclick="location.href='./admin.html'">
-VAYO Admin
-</button>
+</div>
 
-<button class="secondary"
- onclick="signOut()">
-Баромадан
+<div class="card">
+
+<h2>Фармоишҳои ман</h2>
+
+<div class="menuItem"
+onclick="openHistory('market')">
+
+<span>🛍️</span>
+
+<strong>Харидҳои Marketplace</strong>
+
+<small>›</small>
+
+</div>
+
+<a class="menuItem" href="./taxi.html">
+
+<span>🚕</span>
+
+<strong>Сафарҳои Taxi</strong>
+
+<small>›</small>
+
+</a>
+
+<a class="menuItem" href="./food.html">
+
+<span>🍔</span>
+
+<strong>Фармоишҳои Food</strong>
+
+<small>›</small>
+
+</a>
+
+</div>
+
+<div class="card">
+
+<h2>Бо VAYO кор кунед</h2>
+
+<p>Комиссияи платформа: 0%</p>
+
+<div class="grid">
+
+<a class="business" href="./seller.html">
+
+<span>🛍️</span>
+
+Фурӯшанда
+
+</a>
+
+<a class="business" href="./driver.html">
+
+<span>🚕</span>
+
+Ронанда
+
+</a>
+
+<a class="business" href="./restaurant.html">
+
+<span>🍽️</span>
+
+Тарабхона
+
+</a>
+
+<a class="business" href="./courier.html">
+
+<span>🛵</span>
+
+Расонанда
+
+</a>
+
+</div>
+
+</div>
+
+<div id="adminCard" class="card hidden">
+
+<h2>🛡️ Super Admin</h2>
+
+<p>Идоракунии платформаи VAYO</p>
+
+<a class="btn full"
+style="text-align:center"
+href="./admin.html">
+
+Кабинети Admin
+
+</a>
+
+</div>
+
+<div class="card">
+
+<h2>Танзимот</h2>
+
+<div class="menuItem"
+onclick="openEdit()">
+
+<span>👤</span>
+
+<strong>Маълумоти шахсӣ</strong>
+
+<small>›</small>
+
+</div>
+
+<div class="menuItem"
+onclick="openHistory('market')">
+
+<span>📋</span>
+
+<strong>Таърихи фармоишҳо</strong>
+
+<small>›</small>
+
+</div>
+
+<div class="menuItem"
+onclick="sendPasswordLink()">
+
+<span>🔐</span>
+
+<strong>Иваз кардани парол</strong>
+
+<small>›</small>
+
+</div>
+
+</div>
+
+<button class="red full"
+onclick="logout()">
+
+Баромадан аз аккаунт
+
 </button>
 
 </section>
 
-<footer>
-© 2026 VAYO-APP
-</footer>
+<!-- EDIT PROFILE -->
+
+<section id="edit" class="card hidden">
+
+<h2>Таҳрири профил</h2>
+
+<form id="editForm">
+
+<label>Ному насаб</label>
+
+<input id="editName"
+maxlength="100"
+required>
+
+<label>Телефон</label>
+
+<input id="editPhone"
+type="tel"
+required>
+
+<label>Email</label>
+
+<input id="editEmail" readonly>
+
+<button class="full" type="submit">
+
+Сабт кардан
+
+</button>
+
+</form>
+
+<br>
+
+<button class="gray full"
+onclick="show('account')">
+
+Бозгашт
+
+</button>
+
+</section>
+
+<!-- HISTORY -->
+
+<section id="history" class="hidden">
+
+<div class="card">
+
+<h2>Таърихи фармоишҳо</h2>
+
+<div class="tabs">
+
+<button id="marketTab"
+onclick="loadHistory('market')">
+
+🛍️ Бозор
+
+</button>
+
+<button id="taxiTab"
+onclick="loadHistory('taxi')">
+
+🚕 Таксӣ
+
+</button>
+
+<button id="foodTab"
+onclick="loadHistory('food')">
+
+🍔 Таом
+
+</button>
 
 </div>
+
+<div id="historyContent"></div>
+
+<button class="gray full"
+onclick="show('account')">
+
+Бозгашт
+
+</button>
+
+</div>
+
+</section>
+
+</main>
+
+<nav>
+
+<a href="./index.html">
+
+<span>🏠</span>
+
+Асосӣ
+
+</a>
+
+<a href="./marketplace.html">
+
+<span>🛍️</span>
+
+Бозор
+
+</a>
+
+<a href="./taxi.html">
+
+<span>🚕</span>
+
+Таксӣ
+
+</a>
+
+<a href="./food.html">
+
+<span>🍔</span>
+
+Таом
+
+</a>
+
+<a class="active" href="./account.html">
+
+<span>👤</span>
+
+Аккаунт
+
+</a>
+
+</nav>
 
 <script>
 
 const db = window.vayo;
 
-const redirect =
-"https://vayo665.github.io/VAYO-APP/account.html";
-
 const $ = id => document.getElementById(id);
 
+const REDIRECT =
+"https://vayo665.github.io/VAYO-APP/account.html";
+
+let user = null;
+let profile = null;
 let busy = false;
 let recovering = false;
+let historyVersion = 0;
+let accountVersion = 0;
 
-function message(text){
- $("message").textContent = text;
+const screens = [
+
+ "login",
+ "register",
+ "forgot",
+ "recovery",
+ "account",
+ "edit",
+ "history"
+
+];
+
+const statuses = {
+
+ pending:"Интизори қабул",
+ accepted:"Қабул шуд",
+ preparing:"Омода мешавад",
+ ready:"Омода аст",
+ delivering:"Дар роҳ",
+ completed:"Анҷом ёфт",
+ cancelled:"Бекор шуд",
+ searching:"Ҷустуҷӯи ронанда",
+ arrived:"Ронанда расид",
+ in_progress:"Сафар оғоз шуд"
+
+};
+
+function esc(value){
+
+ return String(value ?? "").replace(
+ /[&<>"']/g,
+ c=>({
+ "&":"&amp;",
+ "<":"&lt;",
+ ">":"&gt;",
+ '"':"&quot;",
+ "'":"&#39;"
+ })[c]);
+
 }
 
-function show(page){
+function message(text){
 
- ["login","register","forgot","recovery","account"]
- .forEach(id => $(id).classList.add("hidden"));
+ $("message").textContent = text || "";
 
- $(page).classList.remove("hidden");
+}
+
+function show(id){
+
+ screens.forEach(s=>{
+
+ $(s).classList.toggle("hidden",s!==id);
+
+ });
 
  message("");
+
+ window.scrollTo(0,0);
+
+}
+
+function phone(value){
+
+ let p = value.replace(/[\s()-]/g,"");
+
+ if(/^\d{9}$/.test(p)){
+
+ p = "+992"+p;
+
+ }
+
+ if(/^992\d{9}$/.test(p)){
+
+ p = "+"+p;
+
+ }
+
+ if(!/^\+992\d{9}$/.test(p)){
+
+ throw new Error("Телефонро дуруст ворид кунед.");
+
+ }
+
+ return p;
+
+}
+
+function money(value){
+
+ return Number(value || 0).toFixed(2)+" TJS";
+
+}
+
+function date(value){
+
+ return new Date(value).toLocaleString(
+
+ "ru-RU",
+
+ {timeZone:"Asia/Dushanbe"}
+
+ );
 
 }
 
@@ -290,207 +822,649 @@ async function run(task){
 
  if(busy) return;
 
- if(!db){
-  message("Аввал config.js-ро танзим кунед.");
-  return;
- }
-
  busy = true;
 
  document.querySelectorAll("button")
- .forEach(b => b.disabled = true);
+
+ .forEach(b=>b.disabled=true);
+
+ message("");
 
  try{
-  await task();
+
+ if(!db){
+
+ throw new Error("config.js дастрас нест.");
+
+ }
+
+ await task();
+
  }catch(error){
-  message(error.message || "Хатогӣ рӯй дод.");
+
+ message(error.message || "Хатогӣ.");
+
  }finally{
-  busy = false;
-  document.querySelectorAll("button")
-  .forEach(b => b.disabled = false);
+
+ busy = false;
+
+ document.querySelectorAll("button")
+
+ .forEach(b=>b.disabled=false);
+
  }
 
 }
 
-async function signUp(){
+// LOGIN
 
- await run(async()=>{
+$("loginForm").addEventListener(
 
- const fullName = $("fullName").value.trim();
- const phone = $("phone").value.trim();
- const email = $("registerEmail").value.trim();
- const password = $("registerPassword").value;
+ "submit",event=>{
 
- if(!fullName || !email || !phone){
-  throw new Error("Ҳамаи маълумотро ворид кунед.");
- }
+ event.preventDefault();
 
- if(password.length < 8){
-  throw new Error("Парол бояд на камтар аз 8 аломат бошад.");
- }
+ run(async()=>{
 
- const {data,error} = await db.auth.signUp({
+ const {error} = await db.auth.signInWithPassword({
 
-  email,
-  password,
+ email:$("loginEmail").value.trim(),
 
-  options:{
-   emailRedirectTo:redirect,
-   data:{
-    full_name:fullName,
-    phone:phone
-   }
-  }
+ password:$("loginPassword").value
 
  });
 
  if(error) throw error;
 
- if(data.session){
-  await loadAccount();
- }else{
-  show("login");
-  message("Email-и худро санҷед ва аккаунтро тасдиқ кунед.");
- }
-
- });
-
-}
-
-async function signIn(){
-
- await run(async()=>{
-
- const email = $("loginEmail").value.trim();
- const password = $("loginPassword").value;
-
- const {error} =
- await db.auth.signInWithPassword({
-  email,
-  password
- });
-
- if(error) throw error;
+ $("loginPassword").value = "";
 
  await loadAccount();
 
  });
 
-}
+ });
 
-async function resetPassword(){
+// REGISTER
 
- await run(async()=>{
+$("registerForm").addEventListener(
 
- const email = $("forgotEmail").value.trim();
+ "submit",event=>{
 
- const {error} =
- await db.auth.resetPasswordForEmail(email,{
-  redirectTo:redirect
+ event.preventDefault();
+
+ run(async()=>{
+
+ const fullName = $("registerName").value.trim();
+
+ if(!fullName){
+
+ throw new Error("Ному насабро ворид кунед.");
+
+ }
+
+ const {data,error} = await db.auth.signUp({
+
+ email:$("registerEmail").value.trim(),
+
+ password:$("registerPassword").value,
+
+ options:{
+
+ emailRedirectTo:REDIRECT,
+
+ data:{
+
+ full_name:fullName,
+
+ phone:phone($("registerPhone").value)
+
+ }
+
+ }
+
  });
 
  if(error) throw error;
 
- message("Email-и худро санҷед.");
+ $("registerForm").reset();
+
+ if(data.session){
+
+ await loadAccount();
+
+ }else{
+
+ show("login");
+
+ message(
+
+ "Email-и худро санҷед ва аккаунтро тасдиқ кунед."
+
+ );
+
+ }
 
  });
 
-}
+ });
 
-async function updatePassword(){
+// PASSWORD RESET
 
- await run(async()=>{
+$("forgotForm").addEventListener(
+
+ "submit",event=>{
+
+ event.preventDefault();
+
+ run(async()=>{
+
+ const {error} =
+
+ await db.auth.resetPasswordForEmail(
+
+ $("forgotEmail").value.trim(),
+
+ {redirectTo:REDIRECT}
+
+ );
+
+ if(error) throw error;
+
+ message("Агар аккаунт вуҷуд дошта бошад, истинод ба Email фиристода мешавад.");
+
+ });
+
+ });
+
+$("recoveryForm").addEventListener(
+
+ "submit",event=>{
+
+ event.preventDefault();
+
+ run(async()=>{
 
  if(!recovering){
-  throw new Error("Истиноди барқарорсозиро кушоед.");
+
+ throw new Error("Истиноди барқарорсозӣ лозим аст.");
+
  }
 
- const password = $("newPassword").value;
+ const {error} = await db.auth.updateUser({
 
- if(password.length < 8){
-  throw new Error("На камтар аз 8 аломат.");
- }
+ password:$("newPassword").value
 
- const {error} =
- await db.auth.updateUser({password});
+ });
 
  if(error) throw error;
+
+ const result = await db.auth.signOut();
+
+ if(result.error) throw result.error;
 
  recovering = false;
 
- await db.auth.signOut();
+ user = null;
+
+ profile = null;
+
+ $("newPassword").value = "";
 
  show("login");
- message("Пароли нав сабт шуд.");
+
+ message("Парол иваз шуд. Аз нав ворид шавед.");
+
+ });
+
+ });
+
+// LOAD ACCOUNT
+
+async function loadAccount(){
+
+ if(recovering) return;
+
+ const version = ++accountVersion;
+
+ const {data,error} = await db.auth.getUser();
+
+ if(version!==accountVersion || recovering) return;
+
+ if(error || !data?.user){
+
+ user = null;
+
+ profile = null;
+
+ show("login");
+
+ return;
+
+ }
+
+ user = data.user;
+
+ const {data:p,error:profileError} = await db
+
+ .from("profiles")
+
+ .select("id,full_name,phone,avatar_url")
+
+ .eq("id",user.id)
+
+ .maybeSingle();
+
+ if(version!==accountVersion || recovering) return;
+
+ if(profileError) throw profileError;
+
+ profile = p || {
+
+ full_name:user.user_metadata?.full_name || "",
+
+ phone:user.user_metadata?.phone || ""
+
+ };
+
+ renderProfile();
+
+ $("adminCard").classList.add("hidden");
+
+ show("account");
+
+ const {data:isAdmin,error:adminError} =
+
+ await db.rpc("vayo_is_admin");
+
+ if(version!==accountVersion) return;
+
+ $("adminCard").classList.toggle(
+
+ "hidden",
+
+ !!adminError || isAdmin!==true
+
+ );
+
+}
+
+function renderProfile(){
+
+ const name = profile?.full_name || "Корбари VAYO";
+
+ $("profileName").textContent = name;
+
+ $("profileEmail").textContent = user?.email || "";
+
+ $("profilePhone").textContent = profile?.phone || "";
+
+ $("avatar").textContent =
+
+ name.charAt(0).toUpperCase();
+
+}
+
+// EDIT PROFILE
+
+function openEdit(){
+
+ if(!user) return;
+
+ $("editName").value = profile?.full_name || "";
+
+ $("editPhone").value = profile?.phone || "";
+
+ $("editEmail").value = user.email || "";
+
+ show("edit");
+
+}
+
+$("editForm").addEventListener(
+
+ "submit",event=>{
+
+ event.preventDefault();
+
+ run(async()=>{
+
+ if(!user) throw new Error("Ба аккаунт ворид шавед.");
+
+ const name = $("editName").value.trim();
+
+ const number = phone($("editPhone").value);
+
+ if(!name){
+
+ throw new Error("Номро ворид кунед.");
+
+ }
+
+ const {data,error} = await db
+
+ .from("profiles")
+
+ .update({
+
+ full_name:name,
+
+ phone:number
+
+ })
+
+ .eq("id",user.id)
+
+ .select("id,full_name,phone,avatar_url")
+
+ .single();
+
+ if(error) throw error;
+
+ profile = data;
+
+ const authResult = await db.auth.updateUser({
+
+ data:{
+
+ full_name:name,
+
+ phone:number
+
+ }
+
+ });
+
+ renderProfile();
+
+ show("account");
+
+ if(authResult.error){
+
+ message("Профил сабт шуд, аммо маълумоти Auth нав нашуд.");
+
+ }else{
+
+ message("Профил нав карда шуд.");
+
+ }
+
+ });
+
+ });
+
+// ORDER HISTORY
+
+function openHistory(type){
+
+ if(!user) return;
+
+ show("history");
+
+ loadHistory(type);
+
+}
+
+async function loadHistory(type){
+
+ if(!user) return;
+
+ const version = ++historyVersion;
+
+ ["market","taxi","food"].forEach(t=>{
+
+ $(t+"Tab").classList.toggle("active",t===type);
+
+ });
+
+ $("historyContent").textContent = "Боргирӣ...";
+
+ try{
+
+ let query;
+
+ if(type==="market"){
+
+ query = db.from("orders")
+
+ .select("*,order_items(*)")
+
+ .eq("buyer_id",user.id);
+
+ }else if(type==="taxi"){
+
+ query = db.from("taxi_orders")
+
+ .select("*")
+
+ .eq("customer_id",user.id);
+
+ }else{
+
+ query = db.from("food_orders")
+
+ .select("*,food_order_items(*)")
+
+ .eq("customer_id",user.id);
+
+ }
+
+ const {data,error} = await query
+
+ .order("created_at",{ascending:false})
+
+ .limit(100);
+
+ if(version!==historyVersion) return;
+
+ if(error) throw error;
+
+ $("historyContent").innerHTML =
+
+ (data || []).map(o=>{
+
+ let content = "";
+
+ if(type==="market"){
+
+ content = (o.order_items || []).map(i=>`
+
+ <p>${esc(i.product_name)} × ${esc(i.quantity)}</p>
+
+ `).join("");
+
+ content += `<p>📍 ${esc(o.delivery_address)}</p>`;
+
+ }else if(type==="taxi"){
+
+ content = `
+
+ <p>🟢 ${esc(o.pickup_address)}</p>
+
+ <p>🔴 ${esc(o.destination_address)}</p>
+
+ <p>${esc(o.distance_km)} км</p>
+
+ `;
+
+ }else{
+
+ content = (o.food_order_items || []).map(i=>`
+
+ <p>${esc(i.food_name)} × ${esc(i.quantity)}</p>
+
+ `).join("");
+
+ content += `<p>📍 ${esc(o.delivery_address)}</p>`;
+
+ }
+
+ return `
+
+ <div class="order">
+
+ <span class="badge">
+
+ ${esc(statuses[o.status] || o.status)}
+
+ </span>
+
+ <p><small>#${esc(o.id.slice(0,8))}</small></p>
+
+ <small>${esc(date(o.created_at))}</small>
+
+ ${content}
+
+ <div class="price">
+
+ ${esc(money(type==="taxi"?o.price:o.total))}
+
+ </div>
+
+ </div>
+
+ `;
+
+ }).join("")
+
+ || "<p>Ҳоло фармоиш надоред.</p>";
+
+ }catch(error){
+
+ if(version===historyVersion){
+
+ $("historyContent").textContent = error.message;
+
+ }
+
+ }
+
+}
+
+// CHANGE PASSWORD
+
+function sendPasswordLink(){
+
+ run(async()=>{
+
+ if(!user?.email){
+
+ throw new Error("Email дастрас нест.");
+
+ }
+
+ const {error} =
+
+ await db.auth.resetPasswordForEmail(
+
+ user.email,
+
+ {redirectTo:REDIRECT}
+
+ );
+
+ if(error) throw error;
+
+ message("Истиноди иваз кардани парол ба Email фиристода шуд.");
 
  });
 
 }
 
-async function loadAccount(){
+// LOGOUT
 
- if(!db || recovering) return;
+function logout(){
 
- const {data,error} = await db.auth.getUser();
+ if(!confirm("Аз аккаунт мебароед?")) return;
 
- if(error || !data.user){
-  show("login");
-  return;
- }
-
- const user = data.user;
-
- show("account");
-
- $("accountEmail").textContent = user.email || "";
-
- $("accountName").textContent =
- user.user_metadata?.full_name || "Корбари VAYO";
-
- $("adminButton").classList.add("hidden");
-
- const result = await db.rpc("vayo_is_admin");
-
- if(!result.error && result.data === true){
-  $("adminButton").classList.remove("hidden");
- }
-
-}
-
-async function signOut(){
-
- await run(async()=>{
+ run(async()=>{
 
  const {error} = await db.auth.signOut();
 
  if(error) throw error;
 
+ accountVersion++;
+
+ historyVersion++;
+
+ user = null;
+
+ profile = null;
+
+ recovering = false;
+
+ $("historyContent").textContent = "";
+
+ $("profileName").textContent = "";
+
+ $("profileEmail").textContent = "";
+
+ $("profilePhone").textContent = "";
+
+ $("adminCard").classList.add("hidden");
+
  show("login");
 
  });
 
 }
 
-if(db){
+// START
+
+async function start(){
+
+ if(!db){
+
+ message("Пайвастшавӣ ба Supabase дастрас нест.");
+
+ return;
+
+ }
 
  db.auth.onAuthStateChange((event,session)=>{
 
-  if(event === "PASSWORD_RECOVERY"){
-   recovering = true;
-   show("recovery");
-  }
+ if(event==="PASSWORD_RECOVERY"){
 
-  if(event === "INITIAL_SESSION" && !recovering){
-   setTimeout(loadAccount,0);
-  }
+ recovering = true;
+
+ accountVersion++;
+
+ show("recovery");
+
+ }else if(event==="INITIAL_SESSION"){
+
+ setTimeout(()=>{
+
+ if(!recovering){
+
+ loadAccount().catch(e=>message(e.message));
+
+ }
+
+ },0);
+
+ }else if(event==="SIGNED_OUT" && !busy){
+
+ accountVersion++;
+
+ historyVersion++;
+
+ user = null;
+
+ profile = null;
+
+ recovering = false;
+
+ $("historyContent").textContent = "";
+
+ show("login");
+
+ }
 
  });
 
-}else{
-
- message("config.js ёфт нашуд ё нодуруст аст.");
-
 }
+
+start();
 
 </script>
 
