@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>VAYO Seller</title>
+<title>VAYO Seller V2</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./config.js"></script>
@@ -101,7 +101,11 @@ button:disabled{opacity:.5}
  border-radius:12px;
  background:#eee;
 }
-.info{flex:1;min-width:0;overflow-wrap:anywhere}
+.info{
+ flex:1;
+ min-width:0;
+ overflow-wrap:anywhere;
+}
 .price{
  color:#ff6500;
  font-size:20px;
@@ -136,7 +140,9 @@ button:disabled{opacity:.5}
  color:#15803d;
 }
 dialog{
- width:min(94%,480px);
+ width:min(95%,650px);
+ max-height:90dvh;
+ overflow:auto;
  border:none;
  border-radius:20px;
  padding:22px;
@@ -159,8 +165,12 @@ input,textarea,select{
  margin:12px 0;
  overflow-wrap:anywhere;
 }
-#notice:empty,#editError:empty{display:none}
-.hidden{display:none!important}
+#notice:empty,#editError:empty{
+ display:none;
+}
+.hidden{
+ display:none!important;
+}
 .empty{
  padding:40px;
  text-align:center;
@@ -168,9 +178,38 @@ input,textarea,select{
  border-radius:16px;
  color:#777;
 }
+#photoGrid{
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:10px;
+ margin:12px 0;
+}
+.photoSlot{
+ border:1px dashed #bbb;
+ border-radius:12px;
+ padding:8px;
+ min-width:0;
+ text-align:center;
+}
+.photoSlot img{
+ width:100%;
+ height:110px;
+ object-fit:cover;
+ border-radius:8px;
+}
+.photoSlot button{
+ font-size:12px;
+ padding:7px;
+ margin:3px;
+}
 @media(max-width:700px){
- .grid{grid-template-columns:repeat(2,1fr)}
- .product img{width:80px;height:80px}
+ .grid{
+  grid-template-columns:repeat(2,1fr);
+ }
+ .product img{
+  width:80px;
+  height:80px;
+ }
  .metric{font-size:23px}
 }
 </style>
@@ -290,7 +329,7 @@ input,textarea,select{
 <input type="hidden" id="editId">
 
 <label>Номи маҳсулот</label>
-<input id="editName" required>
+<input id="editName" required maxlength="150">
 
 <label>Нарх (сомонӣ)</label>
 <input id="editPrice" type="number"
@@ -301,7 +340,8 @@ input,textarea,select{
  min="0" step="1" required>
 
 <label>Тавсиф</label>
-<textarea id="editDescription" required></textarea>
+<textarea id="editDescription"
+ rows="4" maxlength="5000" required></textarea>
 
 <label>Тахфиф</label>
 <select id="editSaleEnabled"
@@ -324,12 +364,39 @@ input,textarea,select{
 
 </div>
 
+<h3>📷 Аксҳои маҳсулот</h3>
+
+<p id="photoCount">0 аз 10 акс</p>
+
+<div id="photoGrid"></div>
+
+<label>Аз галерея илова кунед</label>
+
+<input id="photoAdd"
+ type="file"
+ accept="image/jpeg,image/png,image/webp"
+ multiple>
+
+<label>Бо камера акс гиред</label>
+
+<input id="photoCamera"
+ type="file"
+ accept="image/*"
+ capture="environment">
+
+<p>
+<small>
+Акси аввал — акси асосӣ.
+Аз 1 то 10 акс илова кунед.
+</small>
+</p>
+
 <button id="saveButton" type="submit">
 Сабт кардан
 </button>
 
 <button type="button" class="secondary"
- onclick="document.getElementById('editDialog').close()">
+ onclick="if(!busy)document.getElementById('editDialog').close()">
 Бекор кардан
 </button>
 
@@ -348,6 +415,10 @@ let orders = [];
 let busy = false;
 let loading = false;
 
+let photos = [];
+let originalPaths = [];
+let originalStock = 0;
+
 const statusNames = {
  pending:"Фармоиши нав",
  accepted:"Қабул шуд",
@@ -358,6 +429,7 @@ const statusNames = {
 };
 
 function esc(value){
+
  return String(value ?? "").replace(
  /[&<>"']/g,
  c=>({
@@ -367,20 +439,27 @@ function esc(value){
   '"':"&quot;",
   "'":"&#39;"
  })[c]);
+
 }
 
 function money(value){
+
  return Number(value || 0).toFixed(2)+" TJS";
+
 }
 
 function notice(text){
+
  $("notice").textContent = text || "";
+
 }
 
 function date(value){
+
  return new Date(value).toLocaleString("ru-RU",{
   timeZone:"Asia/Dushanbe"
  });
+
 }
 
 function localDate(value){
@@ -394,6 +473,192 @@ function localDate(value){
  return d.toISOString().slice(0,16);
 
 }
+
+/* PHOTO SYSTEM */
+
+function clearPhotos(){
+
+ for(const p of photos){
+
+  if(p.file){
+   URL.revokeObjectURL(p.url);
+  }
+
+ }
+
+ photos=[];
+
+}
+
+function renderPhotos(){
+
+ $("photoCount").textContent =
+ photos.length+" аз 10 акс";
+
+ $("photoGrid").innerHTML=photos.map((p,i)=>`
+
+ <div class="photoSlot">
+
+ <img src="${esc(p.url)}"
+ alt="Акс ${i+1}">
+
+ <div>
+ ${i===0?"⭐ Акси асосӣ":"Акс "+(i+1)}
+ </div>
+
+ <button type="button"
+ data-photo="main"
+ data-index="${i}">
+ Асосӣ
+ </button>
+
+ <button type="button"
+ class="red"
+ data-photo="remove"
+ data-index="${i}">
+ Нест кардан
+ </button>
+
+ </div>
+
+ `).join("");
+
+}
+
+function addPhotos(input){
+
+ if(busy)return;
+
+ const files=[...input.files];
+
+ input.value="";
+
+ if(photos.length+files.length>10){
+
+  $("editError").textContent=
+  "То 10 акс иҷозат аст.";
+
+  return;
+
+ }
+
+ if(files.some(f=>
+ !["image/jpeg","image/png","image/webp"]
+ .includes(f.type)
+ || f.size>20*1024*1024)){
+
+  $("editError").textContent=
+  "JPG, PNG ё WEBP то 20 MB интихоб кунед.";
+
+  return;
+
+ }
+
+ for(const file of files){
+
+  photos.push({
+   file,
+   url:URL.createObjectURL(file)
+  });
+
+ }
+
+ $("editError").textContent="";
+
+ renderPhotos();
+
+}
+
+$("photoAdd").onchange=e=>addPhotos(e.target);
+
+$("photoCamera").onchange=e=>addPhotos(e.target);
+
+$("photoGrid").onclick=e=>{
+
+ const b=e.target.closest("[data-photo]");
+
+ if(!b||busy)return;
+
+ const i=Number(b.dataset.index);
+
+ const p=photos[i];
+
+ if(!p)return;
+
+ photos.splice(i,1);
+
+ if(b.dataset.photo==="main"){
+
+  photos.unshift(p);
+
+ }else if(p.file){
+
+  URL.revokeObjectURL(p.url);
+
+ }
+
+ renderPhotos();
+
+};
+
+$("editDialog").addEventListener("cancel",e=>{
+
+ if(busy)e.preventDefault();
+
+});
+
+$("editDialog").addEventListener("close",clearPhotos);
+
+async function compressPhoto(file){
+
+ const bitmap=await createImageBitmap(file);
+
+ try{
+
+  const scale=Math.min(
+   1,
+   1200/Math.max(bitmap.width,bitmap.height)
+  );
+
+  const c=document.createElement("canvas");
+
+  c.width=Math.max(
+   1,Math.round(bitmap.width*scale)
+  );
+
+  c.height=Math.max(
+   1,Math.round(bitmap.height*scale)
+  );
+
+  const ctx=c.getContext("2d");
+
+  ctx.fillStyle="#fff";
+
+  ctx.fillRect(0,0,c.width,c.height);
+
+  ctx.drawImage(bitmap,0,0,c.width,c.height);
+
+  const blob=await new Promise(r=>
+   c.toBlob(r,"image/jpeg",0.8)
+  );
+
+  if(!blob||blob.size>5242880){
+
+   throw new Error("Акс омода нашуд.");
+
+  }
+
+  return blob;
+
+ }finally{
+
+  bitmap.close();
+
+ }
+
+}
+
+/* NAVIGATION */
 
 function showTab(tab){
 
@@ -417,10 +682,10 @@ function showTab(tab){
 
 function imageURL(product){
 
- const images = [...(product.product_images || [])]
+ const images=[...(product.product_images||[])]
  .sort((a,b)=>a.position-b.position);
 
- if(!images.length) return "";
+ if(!images.length)return "";
 
  return db.storage
  .from("product-images")
@@ -429,15 +694,17 @@ function imageURL(product){
 
 }
 
+/* LOAD DATA */
+
 async function loadAll(){
 
- if(loading || !user) return;
+ if(loading||!user)return;
 
- loading = true;
+ loading=true;
 
  try{
 
- const [p,o] = await Promise.all([
+ const [p,o]=await Promise.all([
 
   db.from("products")
   .select("*,product_images(image_path,position)")
@@ -453,18 +720,20 @@ async function loadAll(){
 
  ]);
 
- if(p.error) throw p.error;
- if(o.error) throw o.error;
+ if(p.error)throw p.error;
 
- products = p.data || [];
- orders = o.data || [];
+ if(o.error)throw o.error;
 
- $("productCount").textContent = products.length;
+ products=p.data||[];
 
- $("pendingCount").textContent =
+ orders=o.data||[];
+
+ $("productCount").textContent=products.length;
+
+ $("pendingCount").textContent=
  orders.filter(o=>o.status==="pending").length;
 
- $("sales").textContent = money(
+ $("sales").textContent=money(
 
   orders
   .filter(o=>o.status==="completed")
@@ -473,6 +742,7 @@ async function loadAll(){
  );
 
  renderProducts();
+
  renderOrders();
 
  }catch(error){
@@ -481,49 +751,63 @@ async function loadAll(){
 
  }finally{
 
- loading = false;
+ loading=false;
 
  }
 
 }
 
+/* PRODUCTS */
+
 function renderProducts(){
 
  if(!products.length){
 
-  $("productList").innerHTML =
+  $("productList").innerHTML=
   '<div class="empty">Ҳоло маҳсулот надоред.</div>';
 
   return;
 
  }
 
- $("productList").innerHTML = products.map(p=>{
+ $("productList").innerHTML=products.map(p=>{
 
- const image = imageURL(p);
+ const image=imageURL(p);
 
  return `
 
  <div class="product">
 
  ${image
- ? `<img src="${esc(image)}" alt="">`
- : '<div style="font-size:45px">📦</div>'}
+ ?`<img src="${esc(image)}" alt="">`
+ :'<div style="font-size:45px">📦</div>'}
 
  <div class="info">
 
  <strong>${esc(p.name)}</strong>
 
- <p class="price">${esc(money(p.price))}</p>
+ <p class="price">
+ ${esc(money(p.price))}
+ </p>
 
- <small>Дар анбор: ${esc(p.stock)} дона</small>
+ <small>
+ Дар анбор: ${esc(p.stock)} дона
+ </small>
 
  <p>
+ 📷 ${(p.product_images||[]).length}/10 акс
+ </p>
+
+ <p>
+
  <span class="badge ${p.active?"ok":""}">
+
  ${p.admin_blocked
- ? "Аз ҷониби Admin баста шудааст"
- : p.active?"Фаъол":"Пинҳон"}
+ ?"Аз ҷониби Admin баста шудааст"
+ :p.active?"Фаъол":"Пинҳон"}
+
  </span>
+
  </p>
 
  <div class="actions">
@@ -538,7 +822,9 @@ function renderProducts(){
  <button class="secondary"
  data-action="visibility"
  data-id="${esc(p.id)}">
+
  ${p.active?"Пинҳон кардан":"Фаъол кардан"}
+
  </button>
 
  `}
@@ -555,6 +841,8 @@ function renderProducts(){
 
 }
 
+/* ORDERS */
+
 function orderButton(id,status,label,color="green"){
 
  return `<button class="${color}"
@@ -570,27 +858,39 @@ function orderActions(o){
 
  if(o.status==="pending"){
 
-  return orderButton(o.id,"accepted","Қабул кардан")
-  +orderButton(o.id,"cancelled","Рад кардан","red");
+  return orderButton(
+   o.id,"accepted","Қабул кардан"
+  )
+  +orderButton(
+   o.id,"cancelled","Рад кардан","red"
+  );
 
  }
 
  if(o.status==="accepted"){
 
-  return orderButton(o.id,"preparing","Омода кардан")
-  +orderButton(o.id,"cancelled","Бекор кардан","red");
+  return orderButton(
+   o.id,"preparing","Омода кардан"
+  )
+  +orderButton(
+   o.id,"cancelled","Бекор кардан","red"
+  );
 
  }
 
  if(o.status==="preparing"){
 
-  return orderButton(o.id,"delivering","Ба роҳ баромад");
+  return orderButton(
+   o.id,"delivering","Ба роҳ баромад"
+  );
 
  }
 
  if(o.status==="delivering"){
 
-  return orderButton(o.id,"completed","Расонида шуд");
+  return orderButton(
+   o.id,"completed","Расонида шуд"
+  );
 
  }
 
@@ -600,30 +900,32 @@ function orderActions(o){
 
 function renderOrders(){
 
- const filter = $("orderFilter").value;
+ const filter=$("orderFilter").value;
 
- const list = orders.filter(o=>
- filter==="all" || o.status===filter
+ const list=orders.filter(o=>
+ filter==="all"||o.status===filter
  );
 
  if(!list.length){
 
-  $("orderList").innerHTML =
+  $("orderList").innerHTML=
   '<div class="empty">Фармоиш вуҷуд надорад.</div>';
 
   return;
 
  }
 
- $("orderList").innerHTML = list.map(o=>`
+ $("orderList").innerHTML=list.map(o=>`
 
  <div class="order">
 
- <strong>Фармоиш #${esc(o.id.slice(0,8))}</strong>
+ <strong>
+ Фармоиш #${esc(o.id.slice(0,8))}
+ </strong>
 
  <p>
  <span class="badge">
- ${esc(statusNames[o.status] || o.status)}
+ ${esc(statusNames[o.status]||o.status)}
  </span>
  </p>
 
@@ -637,22 +939,25 @@ function renderOrders(){
 
  <p>📍 ${esc(o.delivery_address)}</p>
 
- <p>📝 ${esc(o.delivery_note || "—")}</p>
+ <p>📝 ${esc(o.delivery_note||"—")}</p>
 
- <p>Занг задан:
+ <p>
+ Занг задан:
  ${o.call_on_arrival?"Ҳа":"Не"}
  </p>
 
  <hr>
 
- ${(o.order_items || []).map(i=>`
+ ${(o.order_items||[]).map(i=>`
 
  <p>
 
  ${esc(i.product_name)}
+
  × ${esc(i.quantity)}
 
  ${i.size?" | Андоза: "+esc(i.size):""}
+
  ${i.color?" | Ранг: "+esc(i.color):""}
 
  — ${esc(money(i.price*i.quantity))}
@@ -662,10 +967,14 @@ function renderOrders(){
  `).join("")}
 
  <p class="price">
+
  Ҳамагӣ: ${esc(money(o.total))}
+
  </p>
 
- <small>Пардохт: нақдӣ · Комиссия: 0%</small>
+ <small>
+ Пардохт: нақдӣ · Комиссия: 0%
+ </small>
 
  <div class="actions">
 
@@ -679,11 +988,15 @@ function renderOrders(){
 
 }
 
+/* EDIT PRODUCT */
+
 function toggleSale(){
 
- const enabled = $("editSaleEnabled").value==="yes";
+ const enabled=$("editSaleEnabled").value==="yes";
 
- $("saleFields").classList.toggle("hidden",!enabled);
+ $("saleFields").classList.toggle(
+  "hidden",!enabled
+ );
 
  ["editSalePrice","editSaleStart","editSaleEnd"]
  .forEach(id=>$(id).required=enabled);
@@ -692,25 +1005,53 @@ function toggleSale(){
 
 function openEdit(id){
 
- const p = products.find(p=>p.id===id);
+ if(busy)return;
 
- if(!p) return;
+ const p=products.find(p=>p.id===id);
 
- $("editId").value = p.id;
- $("editName").value = p.name;
- $("editPrice").value = p.price;
- $("editStock").value = p.stock;
- $("editDescription").value = p.description;
+ if(!p)return;
 
- $("editSaleEnabled").value =
- p.sale_price!==null?"yes":"no";
+ clearPhotos();
 
- $("editSalePrice").value = p.sale_price ?? "";
+ originalStock=Number(p.stock);
 
- $("editSaleStart").value = localDate(p.sale_start);
- $("editSaleEnd").value = localDate(p.sale_end);
+ originalPaths=[...(p.product_images||[])]
+ .sort((a,b)=>a.position-b.position)
+ .map(i=>i.image_path);
 
- $("editError").textContent = "";
+ photos=originalPaths.map(path=>({
+
+  path,
+
+  url:db.storage
+  .from("product-images")
+  .getPublicUrl(path)
+  .data.publicUrl
+
+ }));
+
+ renderPhotos();
+
+ $("editId").value=p.id;
+
+ $("editName").value=p.name;
+
+ $("editPrice").value=p.price;
+
+ $("editStock").value=p.stock;
+
+ $("editDescription").value=p.description;
+
+ $("editSaleEnabled").value=
+ p.sale_price!=null?"yes":"no";
+
+ $("editSalePrice").value=p.sale_price??"";
+
+ $("editSaleStart").value=localDate(p.sale_start);
+
+ $("editSaleEnd").value=localDate(p.sale_end);
+
+ $("editError").textContent="";
 
  toggleSale();
 
@@ -718,37 +1059,44 @@ function openEdit(id){
 
 }
 
+/* SAVE PRODUCT AND PHOTOS */
+
 $("editForm").addEventListener("submit",async event=>{
 
  event.preventDefault();
 
- if(busy) return;
+ if(busy||!user)return;
 
- busy = true;
- $("saveButton").disabled = true;
- $("editError").textContent = "";
+ busy=true;
+
+ $("saveButton").disabled=true;
+
+ $("editError").textContent="";
 
  try{
 
- const id = $("editId").value;
+ const id=$("editId").value;
 
- const price = Number($("editPrice").value);
+ const price=Number($("editPrice").value);
 
- const stock = Number($("editStock").value);
+ const stock=Number($("editStock").value);
 
- const name = $("editName").value.trim();
+ const name=$("editName").value.trim();
 
- const description = $("editDescription").value.trim();
+ const description=
+ $("editDescription").value.trim();
 
- if(!name || !description || price<=0
- || !Number.isFinite(price)
- || !Number.isInteger(stock) || stock<0){
+ if(!name||!description||price<=0
+ ||!Number.isFinite(price)
+ ||!Number.isInteger(stock)||stock<0){
 
-  throw new Error("Маълумотро дуруст ворид кунед.");
+  throw new Error(
+   "Маълумотро дуруст ворид кунед."
+  );
 
  }
 
- const changes = {
+ const changes={
 
   name,
   price,
@@ -763,83 +1111,141 @@ $("editForm").addEventListener("submit",async event=>{
 
  if($("editSaleEnabled").value==="yes"){
 
-  const sale = Number($("editSalePrice").value);
+  const sale=Number($("editSalePrice").value);
 
-  const start = new Date(
+  const start=new Date(
    $("editSaleStart").value+"+05:00"
   );
 
-  const end = new Date(
+  const end=new Date(
    $("editSaleEnd").value+"+05:00"
   );
 
-  if(sale<=0 || sale>=price
-  || !Number.isFinite(sale)
-  || !Number.isFinite(start.getTime())
-  || !Number.isFinite(end.getTime())
-  || end<=start){
+  if(sale<=0||sale>=price
+  ||!Number.isFinite(sale)
+  ||!Number.isFinite(start.getTime())
+  ||!Number.isFinite(end.getTime())
+  ||end<=start){
 
-   throw new Error("Нарх ё вақти тахфиф нодуруст.");
+   throw new Error(
+    "Нарх ё вақти тахфиф нодуруст."
+   );
 
   }
 
-  changes.sale_price = sale;
-  changes.sale_start = start.toISOString();
-  changes.sale_end = end.toISOString();
+  changes.sale_price=sale;
+
+  changes.sale_start=start.toISOString();
+
+  changes.sale_end=end.toISOString();
 
  }
 
- const {data,error} = await db.from("products")
- .update(changes)
- .eq("id",id)
- .eq("seller_id",user.id)
- .select("id")
- .single();
+ if(photos.length<1||photos.length>10){
 
- if(error) throw error;
+  throw new Error(
+   "Аз 1 то 10 акс интихоб кунед."
+  );
+
+ }
+
+ const paths=[];
+
+ for(const [i,p] of photos.entries()){
+
+  if(p.path){
+
+   paths.push(p.path);
+
+   continue;
+
+  }
+
+  $("editError").textContent=
+  "Сабти акс "+(i+1)+" аз "+photos.length;
+
+  const blob=await compressPhoto(p.file);
+
+  const path=
+  user.id+"/"+id+"/"+crypto.randomUUID()+".jpg";
+
+  const {error}=await db.storage
+  .from("product-images")
+  .upload(path,blob,{
+   contentType:"image/jpeg",
+   upsert:false
+  });
+
+  if(error)throw error;
+
+  paths.push(path);
+
+ }
+
+ const {error}=await db.rpc(
+ "vayo_edit_product_photos",{
+
+  p_id:id,
+
+  p_changes:changes,
+
+  p_old_stock:originalStock,
+
+  p_old_paths:originalPaths,
+
+  p_paths:paths
+
+ });
+
+ if(error)throw error;
 
  $("editDialog").close();
 
  await loadAll();
 
- notice("Маҳсулот нав карда шуд.");
+ notice("✓ Маҳсулот ва аксҳо нав карда шуданд.");
 
  }catch(error){
 
- $("editError").textContent = error.message;
+ $("editError").textContent=error.message;
 
  }finally{
 
- busy = false;
- $("saveButton").disabled = false;
+ busy=false;
+
+ $("saveButton").disabled=false;
 
  }
 
 });
 
+/* PRODUCT VISIBILITY */
+
 async function visibility(id){
 
- if(busy) return;
+ if(busy)return;
 
- const p = products.find(p=>p.id===id);
+ const p=products.find(p=>p.id===id);
 
- if(!p || p.admin_blocked) return;
+ if(!p||p.admin_blocked)return;
 
- busy = true;
+ busy=true;
 
  try{
 
- const {error} = await db.from("products")
+ const {error}=await db.from("products")
 
  .update({active:!p.active})
 
  .eq("id",id)
+
  .eq("seller_id",user.id)
 
  .select("id")
+
  .single();
 
- if(error) throw error;
+ if(error)throw error;
 
  await loadAll();
 
@@ -851,33 +1257,40 @@ async function visibility(id){
 
  }finally{
 
- busy = false;
+ busy=false;
 
  }
 
 }
 
+/* UPDATE ORDER */
+
 async function updateOrder(id,status){
 
- if(busy) return;
+ if(busy)return;
 
- if(!confirm("Тағйири ҳолати фармоишро тасдиқ мекунед?")){
+ if(!confirm(
+ "Тағйири ҳолати фармоишро тасдиқ мекунед?"
+ )){
+
   return;
+
  }
 
- busy = true;
+ busy=true;
 
  try{
 
- const {error} = await db.rpc(
+ const {error}=await db.rpc(
  "vayo_update_order_status",{
 
   p_order_id:id,
+
   p_status:status
 
  });
 
- if(error) throw error;
+ if(error)throw error;
 
  await loadAll();
 
@@ -889,7 +1302,7 @@ async function updateOrder(id,status){
 
  }finally{
 
- busy = false;
+ busy=false;
 
  }
 
@@ -897,19 +1310,21 @@ async function updateOrder(id,status){
 
 document.addEventListener("click",event=>{
 
- const button = event.target.closest("[data-action]");
+ const button=event.target.closest("[data-action]");
 
- if(!button) return;
+ if(!button)return;
 
- const {action,id,status} = button.dataset;
+ const {action,id,status}=button.dataset;
 
- if(action==="edit") openEdit(id);
+ if(action==="edit")openEdit(id);
 
- if(action==="visibility") visibility(id);
+ if(action==="visibility")visibility(id);
 
- if(action==="status") updateOrder(id,status);
+ if(action==="status")updateOrder(id,status);
 
 });
+
+/* LOGIN */
 
 async function start(){
 
@@ -921,21 +1336,26 @@ async function start(){
 
  }
 
- const {data,error} = await db.auth.getUser();
+ const {data,error}=await db.auth.getUser();
 
- if(error || !data.user){
+ if(error||!data.user){
 
-  throw new Error("Аввал ба аккаунт ворид шавед.");
+  throw new Error(
+   "Аввал ба аккаунт ворид шавед."
+  );
 
  }
 
- user = data.user;
+ user=data.user;
 
  $("gate").classList.add("hidden");
+
  $("app").classList.remove("hidden");
 
- $("welcome").textContent =
- "Салом, "+(user.user_metadata?.full_name || "фурӯшанда");
+ $("welcome").textContent=
+ "Салом, "+(
+  user.user_metadata?.full_name||"фурӯшанда"
+ );
 
  showTab("products");
 
@@ -943,7 +1363,7 @@ async function start(){
 
  }catch(error){
 
- $("gateText").textContent = error.message;
+ $("gateText").textContent=error.message;
 
  }
 
@@ -952,6 +1372,8 @@ async function start(){
 start();
 
 </script>
+
+<script src="./chat.js"></script>
 
 </body>
 </html>
