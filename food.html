@@ -10,272 +10,429 @@
 <script src="./config.js"></script>
 
 <style>
+
 *{box-sizing:border-box}
+
 body{
- margin:0;
- background:#f7f7f7;
- color:#202124;
- font-family:Arial,sans-serif;
+margin:0;
+font-family:Arial,sans-serif;
+background:#f5f6f8;
+color:#222;
 }
+
+a{text-decoration:none;color:inherit}
+
+button,input,select,textarea{font:inherit}
+
+button{cursor:pointer}
+
+button:disabled{opacity:.5}
+
 header{
- background:white;
- padding:16px;
- position:sticky;
- top:0;
- z-index:10;
- border-bottom:1px solid #eee;
+position:sticky;
+top:0;
+z-index:30;
+background:white;
+padding:14px;
+border-bottom:1px solid #ddd;
 }
+
 .top{
- display:flex;
- align-items:center;
- justify-content:space-between;
- gap:10px;
+max-width:1150px;
+margin:auto;
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:10px;
 }
+
 .logo{
- font-size:26px;
- font-weight:900;
- color:#ff6500;
+font-size:27px;
+font-weight:900;
+color:#ff6500;
 }
-a{
- color:inherit;
- text-decoration:none;
+
+.search{
+max-width:1150px;
+margin:12px auto 0;
+display:flex;
+gap:8px;
 }
+
+.search input{
+flex:1;
+min-width:0;
+border:0;
+background:#f3f4f6;
+border-radius:13px;
+padding:14px;
+outline:none;
+}
+
 main{
- max-width:1100px;
- margin:auto;
- padding:15px 15px 100px;
+max-width:1150px;
+margin:auto;
+padding:15px 15px 110px;
 }
-input,select,textarea{
- width:100%;
- padding:13px;
- border:1px solid #ddd;
- border-radius:12px;
- background:#f7f7f7;
- font-size:16px;
- margin:8px 0 12px;
-}
-button,.btn{
- border:0;
- border-radius:13px;
- padding:13px 16px;
- background:#ff6500;
- color:white;
- font-size:15px;
- font-weight:bold;
- cursor:pointer;
- display:inline-block;
-}
-button:disabled{
- opacity:.5;
- cursor:not-allowed;
-}
-.full{width:100%}
-.gray{background:#eee;color:#222}
-.green{background:#16a34a}
-.red{background:#dc2626}
+
 .hero{
- background:linear-gradient(120deg,#ff6500,#ff9c38);
- color:white;
- border-radius:24px;
- padding:25px;
- display:flex;
- align-items:center;
- justify-content:space-between;
- margin-bottom:20px;
+background:linear-gradient(135deg,#ff6500,#ff9e36);
+color:white;
+border-radius:25px;
+padding:25px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px;
 }
+
 .hero h1{
- font-size:27px;
- margin:0;
+font-size:30px;
+margin:0 0 10px;
 }
-.hero p{
- line-height:1.5;
+
+.heroArt{
+font-size:75px;
 }
-.heroIcon{font-size:75px}
-.categories{
- display:flex;
- gap:10px;
- overflow:auto;
- margin-bottom:20px;
- padding-bottom:5px;
+
+.hero p{line-height:1.5}
+
+.btn{
+display:inline-block;
+border:0;
+border-radius:12px;
+background:#ff6500;
+color:white;
+padding:12px 16px;
+font-weight:bold;
+text-align:center;
 }
-.category{
- flex-shrink:0;
- background:white;
- color:#222;
- border:1px solid #eee;
-}
-.category.active{
- background:#ff6500;
- color:white;
-}
-.grid{
- display:grid;
- grid-template-columns:repeat(2,minmax(0,1fr));
- gap:12px;
-}
-.card{
- background:white;
- border-radius:18px;
- overflow:hidden;
- border:1px solid #eee;
-}
-.cardBody{
- padding:13px;
- overflow-wrap:anywhere;
-}
-.cover{
- width:100%;
- height:155px;
- object-fit:cover;
- display:block;
-}
-.placeholder{
- height:155px;
- background:#fff0df;
- display:flex;
- align-items:center;
- justify-content:center;
- font-size:65px;
-}
-.price{
- font-size:21px;
- font-weight:900;
- color:#ff6500;
-}
-.oldPrice{
- color:#999;
- text-decoration:line-through;
- font-size:13px;
-}
-small{color:#777}
-.badge{
- display:inline-block;
- background:#fff0df;
- color:#b45309;
- padding:6px 10px;
- border-radius:20px;
- font-size:12px;
-}
-.open{
- background:#dcfce7;
- color:#15803d;
-}
-.hidden{display:none!important}
-.notice{
- padding:13px;
- background:#fff0df;
- border-radius:12px;
- margin-bottom:12px;
- overflow-wrap:anywhere;
-}
-.notice:empty{display:none}
-.empty{
- background:white;
- padding:35px 15px;
- border-radius:18px;
- text-align:center;
- color:#777;
-}
-nav{
- position:fixed;
- bottom:0;
- left:0;
- right:0;
- display:flex;
- justify-content:space-around;
- background:white;
- border-top:1px solid #ddd;
- padding:12px 4px;
- z-index:20;
-}
-nav button,nav a{
- color:#555;
- background:transparent;
- font-size:12px;
- text-align:center;
- padding:5px;
-}
-nav span{
- display:block;
- font-size:24px;
- margin-bottom:5px;
-}
-nav .active{color:#ff6500}
-dialog{
- border:0;
- border-radius:22px;
- width:min(95%,520px);
- max-height:90vh;
- overflow:auto;
- padding:20px;
-}
-dialog::backdrop{
- background:#0008;
-}
+
+.white{background:white;color:#ff6500}
+
+.green{background:#16a34a}
+
+.gray{background:#eee;color:#333}
+
+.red{background:#dc2626}
+
+.full{width:100%}
+
 .row{
- display:flex;
- align-items:center;
- gap:10px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:10px;
+flex-wrap:wrap;
 }
-.between{
- justify-content:space-between;
+
+.filters{
+display:flex;
+gap:8px;
+overflow:auto;
+padding:17px 0;
 }
+
+.filter{
+white-space:nowrap;
+border:0;
+border-radius:20px;
+background:white;
+padding:11px 15px;
+}
+
+.filter.active{
+background:#ff6500;
+color:white;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(3,minmax(0,1fr));
+gap:13px;
+}
+
+.restaurant{
+background:white;
+border-radius:20px;
+overflow:hidden;
+border:1px solid #eee;
+position:relative;
+}
+
+.cover{
+width:100%;
+height:180px;
+object-fit:cover;
+display:block;
+}
+
+.placeholder{
+height:180px;
+background:#fff0df;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:65px;
+}
+
+.restaurantBody{
+padding:15px;
+}
+
+.restaurantBody h3{
+margin:8px 0;
+overflow-wrap:anywhere;
+}
+
+.small{
+font-size:12px;
+color:#777;
+line-height:1.5;
+}
+
+.status{
+display:inline-block;
+background:#fff0df;
+color:#c2410c;
+border-radius:20px;
+padding:7px 10px;
+font-size:12px;
+font-weight:bold;
+}
+
+.open{
+background:#dcfce7;
+color:#15803d;
+}
+
+.closed{
+background:#fee2e2;
+color:#b91c1c;
+}
+
+.favorite{
+position:absolute;
+top:12px;
+right:12px;
+border:0;
+background:white;
+border-radius:50%;
+width:38px;
+height:38px;
+font-size:20px;
+}
+
+.price{
+font-size:23px;
+font-weight:900;
+color:#ff6500;
+}
+
+.oldPrice{
+font-size:13px;
+color:#999;
+text-decoration:line-through;
+}
+
+.card{
+background:white;
+border-radius:20px;
+padding:18px;
+margin:15px 0;
+}
+
+.menuGrid{
+display:grid;
+grid-template-columns:repeat(2,minmax(0,1fr));
+gap:12px;
+}
+
+.foodItem{
+background:#f5f6f8;
+border-radius:15px;
+overflow:hidden;
+}
+
+.foodItem img{
+width:100%;
+height:150px;
+object-fit:cover;
+}
+
+.foodBody{
+padding:12px;
+}
+
+.foodBody h3{
+margin:7px 0;
+overflow-wrap:anywhere;
+}
+
+.foodBody p{
+overflow-wrap:anywhere;
+}
+
+.notice{
+background:#fff0df;
+padding:13px;
+border-radius:12px;
+margin:12px 0;
+overflow-wrap:anywhere;
+}
+
+.notice:empty{display:none}
+
+.hidden{display:none!important}
+
+.empty{
+grid-column:1/-1;
+padding:25px;
+text-align:center;
+color:#777;
+background:white;
+border-radius:15px;
+}
+
+dialog{
+border:0;
+border-radius:22px;
+width:min(95%,700px);
+max-height:92dvh;
+padding:20px;
+overflow:auto;
+}
+
+dialog::backdrop{
+background:#0009;
+}
+
+.close{
+border:0;
+background:#eee;
+width:36px;
+height:36px;
+border-radius:50%;
+font-size:22px;
+}
+
+label{
+display:block;
+font-weight:bold;
+font-size:13px;
+margin:13px 0 7px;
+}
+
+input,textarea,select{
+border:1px solid #ddd;
+border-radius:12px;
+padding:12px;
+background:white;
+color:#222;
+}
+
+.field{width:100%}
+
 .cartItem{
- padding:12px 0;
- border-bottom:1px solid #eee;
+background:#f5f6f8;
+padding:14px;
+border-radius:13px;
+margin:10px 0;
 }
-.qty{
- display:flex;
- align-items:center;
- gap:12px;
+
+.cartItem button{
+border:0;
+border-radius:8px;
+padding:8px 12px;
 }
-.qty button{
- padding:8px 13px;
+
+.orderCard{
+background:#f5f6f8;
+border-radius:15px;
+padding:15px;
+margin:12px 0;
+overflow-wrap:anywhere;
 }
-.panel{
- background:white;
- border-radius:18px;
- padding:17px;
- margin-bottom:14px;
- overflow-wrap:anywhere;
+
+.progress{
+display:flex;
+gap:5px;
+margin:15px 0;
 }
-.total{
- font-size:24px;
- font-weight:bold;
- color:#ff6500;
-}
-.steps{
- display:flex;
- flex-direction:column;
- gap:12px;
- margin:18px 0;
-}
+
 .step{
- color:#999;
+height:7px;
+flex:1;
+background:#ddd;
+border-radius:10px;
 }
+
 .step.done{
- color:#16a34a;
- font-weight:bold;
+background:#ff6500;
 }
-.restaurantTitle{
- font-size:25px;
- margin:12px 0;
+
+.actions{
+display:grid;
+gap:8px;
+margin-top:12px;
 }
-.menuLinks{
- display:flex;
- gap:8px;
- flex-wrap:wrap;
- margin-top:20px;
+
+nav{
+position:fixed;
+bottom:0;
+left:0;
+right:0;
+background:white;
+border-top:1px solid #ddd;
+display:flex;
+justify-content:space-around;
+padding:11px 5px;
+z-index:40;
 }
-.menuLinks a{
- font-size:13px;
+
+nav a,nav button{
+background:none;
+border:0;
+font-size:12px;
+color:#777;
+text-align:center;
+padding:0;
 }
-@media(min-width:750px){
- .grid{
- grid-template-columns:repeat(4,minmax(0,1fr));
- }
- .cover,.placeholder{height:180px}
+
+nav span{
+display:block;
+font-size:24px;
+margin-bottom:4px;
 }
+
+nav .active{
+color:#ff6500;
+font-weight:bold;
+}
+
+@media(max-width:700px){
+
+.grid{
+grid-template-columns:repeat(2,minmax(0,1fr));
+gap:9px;
+}
+
+.hero h1{font-size:25px}
+
+.heroArt{font-size:48px}
+
+.cover,.placeholder{height:140px}
+
+.restaurantBody{padding:10px}
+
+.logo{font-size:22px}
+
+.price{font-size:19px}
+
+.foodItem img{height:120px}
+
+}
+
 </style>
 </head>
 
@@ -287,17 +444,58 @@ dialog::backdrop{
 
 <a href="./index.html">←</a>
 
-<div class="logo">VAYO FOOD</div>
+<a href="./index.html" class="logo">VAYO FOOD</a>
+
+<a href="./chat.html">💬</a>
+
+<a href="./notifications.html">🔔</a>
 
 <a href="./account.html">👤</a>
 
 </div>
 
+<div class="search">
+
 <input id="search"
-placeholder="🔍 Таом ё тарабхонаро ҷустуҷӯ кунед">
+placeholder="Тарабхона ё таом...">
+
+<button id="cartTop" class="btn">
+
+🛒 <span id="cartCount">0</span>
+
+</button>
+
+</div>
+
+</header>
+
+<main>
+
+<div id="notice" class="notice"></div>
+
+<section class="hero">
+
+<div>
+
+<h1>Таоми дӯстдоштаи шумо!</h1>
+
+<p>Аз тарабхонаҳои шаҳри худ фармоиш диҳед.</p>
+
+<strong>0% комиссияи платформа</strong>
+
+</div>
+
+<div class="heroArt">🍔</div>
+
+</section>
+
+<div id="filters" class="filters"></div>
+
+<div class="row">
 
 <select id="city">
 
+<option value="">Ҳамаи шаҳрҳо</option>
 <option>Душанбе</option>
 <option>Хуҷанд</option>
 <option>Бохтар</option>
@@ -305,245 +503,201 @@ placeholder="🔍 Таом ё тарабхонаро ҷустуҷӯ кунед">
 <option>Ҳисор</option>
 <option>Данғара</option>
 <option>Ваҳдат</option>
+<option>Турсунзода</option>
+<option>Истаравшан</option>
+<option>Панҷакент</option>
+<option>Хоруғ</option>
 
 </select>
 
-</header>
+<button id="favoritesButton" class="btn gray">
 
-<main>
+❤️ Дӯстдоштаҳо
 
-<div id="notice" class="notice" role="status"></div>
-
-<section id="homeScreen">
-
-<div class="hero">
-
-<div>
-
-<h1>Таоми дӯстдоштаатон!</h1>
-
-<p>Аз тарабхона фармоиш диҳед.</p>
-
-<strong>Комиссияи VAYO — 0%</strong>
+</button>
 
 </div>
 
-<div class="heroIcon">🍔</div>
-
-</div>
-
-<div id="categories" class="categories"></div>
+<div class="row">
 
 <h2>Тарабхонаҳо</h2>
 
-<div id="restaurants" class="grid"></div>
+<span id="resultCount" class="small"></span>
 
-<h2>Таомҳо</h2>
+</div>
 
-<div id="foods" class="grid"></div>
+<div id="restaurants" class="grid">
 
-<div class="menuLinks">
+<div class="empty">Боргирӣ...</div>
 
-<a class="btn gray" href="./restaurant.html">
-🍽 Тарабхона илова кардан
-</a>
+</div>
 
-<a class="btn gray" href="./courier.html">
-🛵 Расонанда шудан
-</a>
+<section id="ordersSection" class="card">
+
+<h2>📦 Фармоишҳои ман</h2>
+
+<div id="orders">
+
+Барои дидани фармоишҳо ворид шавед.
 
 </div>
 
 </section>
 
-<section id="restaurantScreen" class="hidden">
+<section class="card">
 
-<button class="gray" onclick="goHome()">
-← Тарабхонаҳо
-</button>
+<h2>Бо VAYO Food кор кунед!</h2>
 
-<div id="restaurantInfo"></div>
+<p>Тарабхонаи худро илова кунед ё расонанда шавед.</p>
 
-<h2>Меню</h2>
+<div class="actions">
 
-<div id="restaurantMenu" class="grid"></div>
+<a href="./restaurant.html" class="btn">
 
-</section>
+🍽️ Кабинети тарабхона
 
-<section id="ordersScreen" class="hidden">
+</a>
 
-<h2>Фармоишҳои ман</h2>
+<a href="./courier.html" class="btn green">
 
-<button class="gray" onclick="loadOrders()">
-↻ Навсозӣ
-</button>
+🛵 Кабинети расонанда
 
-<br><br>
+</a>
 
-<div id="orders"></div>
-
-</section>
-
-<section id="favoritesScreen" class="hidden">
-
-<h2>Тарабхонаҳои дӯстдошта</h2>
-
-<div id="favorites" class="grid"></div>
+</div>
 
 </section>
 
 </main>
 
-<nav>
+<!-- RESTAURANT MENU -->
 
-<button class="active" onclick="goHome()">
+<dialog id="menuDialog">
 
-<span>🏠</span>
-Асосӣ
+<div class="row">
 
-</button>
+<strong>Менюи тарабхона</strong>
 
-<button onclick="openFavorites()">
+<button class="close" data-close="menuDialog">×</button>
 
-<span>❤️</span>
-Дӯстдошта
+</div>
 
-</button>
+<div id="restaurantInfo"></div>
 
-<button onclick="openOrders()">
+<div id="menuNotice" class="notice"></div>
 
-<span>📋</span>
-Фармоишҳо
+<div id="menu" class="menuGrid"></div>
 
-</button>
+</dialog>
 
-<button onclick="openCart()">
-
-<span>🛒</span>
-Сабад (<b id="cartCount">0</b>)
-
-</button>
-
-<a href="./account.html">
-
-<span>👤</span>
-Аккаунт
-
-</a>
-
-</nav>
+<!-- CART -->
 
 <dialog id="cartDialog">
 
-<h2>Сабади шумо</h2>
+<div class="row">
 
-<div id="cartError" class="notice"></div>
+<h2>🛒 Сабади шумо</h2>
 
-<div id="cartContent"></div>
+<button class="close" data-close="cartDialog">×</button>
 
-<button id="checkoutButton"
-class="full"
-onclick="openCheckout()">
+</div>
 
-Давом додан
+<div id="cartRestaurant"></div>
 
-</button>
+<div id="cartItems"></div>
 
-<br><br>
+<p>Нархи таом: <strong id="subtotal">0 TJS</strong></p>
 
-<button class="gray full"
-onclick="document.getElementById('cartDialog').close()">
+<p>Расонидан: <strong id="deliveryFee">0 TJS</strong></p>
 
-Пӯшидан
+<div class="row">
+
+<strong>Ҳамагӣ:</strong>
+
+<strong id="total" class="price">0 TJS</strong>
+
+</div>
+
+<p class="small">
+
+Нарх ва дастрасии таом дар сервер санҷида мешаванд.
+
+</p>
+
+<button id="checkoutButton" class="btn full">
+
+Фармоиш додан
 
 </button>
 
 </dialog>
 
+<!-- CHECKOUT -->
+
 <dialog id="checkoutDialog">
 
-<h2>Суроғаи расонидан</h2>
+<div class="row">
 
-<div id="checkoutError" class="notice"></div>
+<h2>Тасдиқи фармоиш</h2>
+
+<button class="close" data-close="checkoutDialog">×</button>
+
+</div>
 
 <form id="checkoutForm">
 
 <label>Ному насаб</label>
 
-<input id="customerName"
+<input id="customerName" class="field"
 maxlength="100" required>
 
 <label>Телефон</label>
 
-<input id="customerPhone"
-type="tel"
-placeholder="+992900000000"
-required>
+<input id="customerPhone" class="field"
+type="tel" placeholder="+992" required>
 
-<label>Шаҳр</label>
+<label>Суроғаи расонидан</label>
 
-<input id="deliveryCity" readonly>
+<textarea id="address" class="field"
+maxlength="500" required
+placeholder="Шаҳр, кӯча, хона, ҳуҷра"></textarea>
 
-<label>Кӯча ва рақами хона</label>
+<button type="button" id="gpsButton"
+class="btn gray full"
+style="margin-top:10px">
 
-<input id="deliveryStreet"
-maxlength="300"
-required>
-
-<label>Хона, ошёна ё ҳуҷра</label>
-
-<input id="apartment"
-maxlength="100">
-
-<button class="gray full"
-type="button"
-onclick="getGPS()">
-
-📍 Илова кардани GPS
+📍 Илова кардани ҷойгиршавӣ
 
 </button>
 
-<p id="gpsInfo"></p>
+<div id="gpsStatus" class="small"></div>
 
-<label>Шарҳ барои расонанда</label>
+<label>Эзоҳ</label>
 
-<textarea id="note"
-maxlength="500"></textarea>
+<textarea id="note" class="field"
+maxlength="500"
+placeholder="Назди даромадгоҳ..."></textarea>
 
 <label>
 
-<input id="callOnArrival"
-type="checkbox"
-style="width:auto"
-checked>
+<input id="call" type="checkbox" checked>
 
-Ҳангоми расидан занг занад
+Ҳангоми расидан занг занед
 
 </label>
 
-<div class="panel">
+<div class="notice">
 
-<p>Пардохт: нақдӣ</p>
-
-<div id="checkoutTotal"></div>
+💵 Пардохт: нақдӣ
 
 </div>
 
-<button id="confirmButton"
-type="submit"
-class="full">
+<div id="checkoutNotice" class="notice"></div>
+
+<button id="placeOrder"
+class="btn full" type="submit">
 
 Тасдиқи фармоиш
-
-</button>
-
-<br><br>
-
-<button class="gray full"
-type="button"
-onclick="closeCheckout()">
-
-Бозгашт
 
 </button>
 
@@ -551,1771 +705,2006 @@ onclick="closeCheckout()">
 
 </dialog>
 
+<!-- REVIEW -->
+
+<dialog id="reviewDialog">
+
+<div class="row">
+
+<h2>Баҳо додан</h2>
+
+<button class="close" data-close="reviewDialog">×</button>
+
+</div>
+
+<form id="reviewForm">
+
+<label>Баҳои шумо</label>
+
+<select id="rating" class="field">
+
+<option value="5">⭐⭐⭐⭐⭐</option>
+<option value="4">⭐⭐⭐⭐</option>
+<option value="3">⭐⭐⭐</option>
+<option value="2">⭐⭐</option>
+<option value="1">⭐</option>
+
+</select>
+
+<label>Фикри шумо</label>
+
+<textarea id="comment" class="field"
+maxlength="1000"></textarea>
+
+<div id="reviewNotice" class="notice"></div>
+
+<button class="btn full" type="submit">
+
+Сабт кардан
+
+</button>
+
+</form>
+
+</dialog>
+
+<!-- NAVIGATION -->
+
+<nav>
+
+<a href="./index.html">
+
+<span>🏠</span>
+
+Асосӣ
+
+</a>
+
+<a href="./marketplace.html">
+
+<span>🛍️</span>
+
+Бозор
+
+</a>
+
+<a href="./taxi.html">
+
+<span>🚕</span>
+
+Таксӣ
+
+</a>
+
+<a href="./food.html" class="active">
+
+<span>🍔</span>
+
+Таом
+
+</a>
+
+<button id="ordersNav">
+
+<span>📦</span>
+
+Фармоишҳо
+
+</button>
+
+</nav>
+
 <script>
 
-const db = window.vayo;
-const $ = id => document.getElementById(id);
+const db=window.vayo;
 
-let user = null;
-let restaurants = [];
-let foods = [];
-let favorites = new Set();
+const $=id=>document.getElementById(id);
 
-let currentRestaurant = null;
-let selectedCategory = "Ҳама";
-let currentScreen = "homeScreen";
+let user=null;
 
-let cart = [];
-let gps = null;
-let gpsVersion = 0;
-let busy = false;
-let loadingOrders = false;
-let catalogVersion = 0;
-let checkoutSnapshot = "";
+let restaurants=[];
 
-const categories = [
- ["Ҳама","🍽"],
- ["Ош","🍚"],
- ["Бургер","🍔"],
- ["Пицца","🍕"],
- ["Шашлик","🍢"],
- ["Самбӯса","🥟"],
- ["Нӯшокӣ","🥤"],
- ["Ширинӣ","🍰"]
+let foodCatalog=[];
+
+let favorites=new Set();
+
+let selectedRestaurant=null;
+
+let menuItems=[];
+
+let cart={restaurant_id:null,items:[]};
+
+let filter="Ҳама";
+
+let onlyFavorites=false;
+
+let coordinates=null;
+
+let busy=false;
+
+let loading=false;
+
+let menuVersion=0;
+
+let authVersion=0;
+
+let ordersVersion=0;
+
+let catalogVersion=0;
+
+let ordersLoading=false;
+
+let reviewOrder=null;
+
+const categories=[
+
+"Ҳама",
+
+"Ош",
+
+"Fast Food",
+
+"Пицца",
+
+"Бургер",
+
+"Шашлик",
+
+"Суши",
+
+"Шириниҳо",
+
+"Нӯшокиҳо"
+
 ];
 
-const statuses = {
- pending:"Интизори тарабхона",
- accepted:"Тарабхона қабул кард",
- preparing:"Таом омода мешавад",
- ready:"Таом омода аст",
- delivering:"Расонанда дар роҳ аст",
- completed:"Расонида шуд",
- cancelled:"Бекор шуд"
+const statuses={
+
+pending:"Интизори тасдиқ",
+
+accepted:"Қабул шуд",
+
+preparing:"Таом омода мешавад",
+
+ready:"Таом омода аст",
+
+delivering:"Дар роҳ",
+
+completed:"Расонида шуд",
+
+cancelled:"Бекор шуд"
+
 };
 
 function esc(value){
 
- return String(value ?? "").replace(
- /[&<>"']/g,
- c=>({
- "&":"&amp;",
- "<":"&lt;",
- ">":"&gt;",
- '"':"&quot;",
- "'":"&#39;"
- })[c]);
+return String(value??"").replace(
 
-}
+/[&<>"']/g,
 
-function safeURL(value){
+c=>({
 
- try{
+"&":"&amp;",
 
- const url = new URL(value);
+"<":"&lt;",
 
- return url.protocol==="https:"
- ? url.href
- : "";
+">":"&gt;",
 
- }catch{
+'"':"&quot;",
 
- return "";
+"'":"&#39;"
 
- }
+})[c]);
 
 }
 
 function money(value){
 
- return Number(value || 0).toFixed(2)+" TJS";
+return Number(value||0).toFixed(2)+" TJS";
+
+}
+
+function safeURL(value){
+
+try{
+
+const u=new URL(value);
+
+return u.protocol==="https:"?u.href:"";
+
+}catch{
+
+return "";
+
+}
 
 }
 
 function notice(text){
 
- $("notice").textContent = text || "";
+$("notice").textContent=text||"";
 
 }
 
-function normalizePhone(value){
+function requireLogin(){
 
- let p = value.replace(/[\s()-]/g,"");
+if(user)return true;
 
- if(/^\d{9}$/.test(p)) p = "+992"+p;
+location.href="./account.html";
 
- if(/^992\d{9}$/.test(p)) p = "+"+p;
-
- if(!/^\+992\d{9}$/.test(p)){
-
-  throw new Error("Рақами телефон нодуруст.");
-
- }
-
- return p;
+return false;
 
 }
 
-function imageHTML(url,emoji){
+function phone(value){
 
- const src = safeURL(url);
+let n=String(value||"").replace(/\D/g,"");
 
- return src
+if(n.length===9)n="992"+n;
 
- ? `<img class="cover"
- loading="lazy"
- src="${esc(src)}" alt="">`
+if(!/^992\d{9}$/.test(n)){
 
- : `<div class="placeholder">${emoji}</div>`;
+throw new Error("Телефонро дуруст ворид кунед.");
 
 }
 
-function currentPrice(food){
-
- const now = Date.now();
-
- if(food.sale_price!==null
- && food.sale_start
- && food.sale_end
- && now>=new Date(food.sale_start).getTime()
- && now<new Date(food.sale_end).getTime()){
-
-  return Number(food.sale_price);
-
- }
-
- return Number(food.price);
+return "+"+n;
 
 }
 
-async function rpc(name,args={}){
+function priceOf(item){
 
- const {data,error} = await db.rpc(name,args);
+const now=Date.now();
 
- if(error) throw error;
+if(
 
- return data;
+item.sale_price!=null&&
+
+item.sale_start&&
+
+item.sale_end&&
+
+now>=new Date(item.sale_start).getTime()&&
+
+now<new Date(item.sale_end).getTime()
+
+){
+
+return Number(item.sale_price);
+
+}
+
+return Number(item.price);
 
 }
 
-async function requireUser(){
-
- const {data,error} = await db.auth.getUser();
-
- if(error || !data.user){
-
-  if(confirm("Аввал ба аккаунт ворид шавед.")){
-
-   location.href = "./account.html";
-
-  }
-
-  return null;
-
- }
-
- if(!user || user.id!==data.user.id){
-
-  user = data.user;
-
-  readCart();
-
-  await loadFavorites();
-
- }
-
- return user;
-
-}
+// =======================
+// CART STORAGE
+// =======================
 
 function cartKey(){
 
- return "vayo_food_cart_v5_"
- +(user?.id || "guest");
+return "vayo_food_cart_v6_"+(user?.id||"guest");
 
 }
 
 function readCart(){
 
- try{
+try{
 
- const saved = JSON.parse(
- localStorage.getItem(cartKey()) || "[]"
- );
+const saved=JSON.parse(
 
- cart = Array.isArray(saved)
+localStorage.getItem(cartKey())||"null"
 
- ? saved.filter(i=>
- typeof i.id==="string"
- && Number.isInteger(i.quantity)
- && i.quantity>=1
- && i.quantity<=99
- )
+);
 
- : [];
+cart=saved&&Array.isArray(saved.items)
 
- }catch{
+?saved
 
- cart = [];
+:{restaurant_id:null,items:[]};
 
- }
+}catch{
 
- updateCartCount();
+cart={restaurant_id:null,items:[]};
+
+}
+
+updateCartCount();
 
 }
 
 function saveCart(){
 
- try{
+if(!cart.items.length){
 
- localStorage.setItem(
- cartKey(),JSON.stringify(cart)
- );
+cart.restaurant_id=null;
 
- }catch{}
+}
 
- updateCartCount();
+try{
+
+localStorage.setItem(
+
+cartKey(),
+
+JSON.stringify(cart)
+
+);
+
+}catch{}
+
+updateCartCount();
 
 }
 
 function updateCartCount(){
 
- $("cartCount").textContent =
+$("cartCount").textContent=
 
- cart.reduce((sum,i)=>sum+i.quantity,0);
+cart.items.reduce((sum,item)=>
 
-}
+sum+Number(item.quantity||0),0
 
-function showScreen(id){
-
- currentScreen = id;
-
- [
- "homeScreen",
- "restaurantScreen",
- "ordersScreen",
- "favoritesScreen"
- ].forEach(name=>{
-
- $(name).classList.toggle(
- "hidden",name!==id
- );
-
- });
-
- window.scrollTo(0,0);
+);
 
 }
 
-function renderCategories(){
+// =======================
+// RESTAURANTS
+// =======================
 
- $("categories").innerHTML =
+function renderFilters(){
 
- categories.map(([name,emoji])=>`
+$("filters").innerHTML=categories.map(c=>`
 
- <button class="category
- ${selectedCategory===name?"active":""}"
+<button class="filter ${filter===c?"active":""}"
 
- data-category="${esc(name)}">
+data-filter="${esc(c)}">
 
- ${emoji} ${esc(name)}
+${esc(c)}
 
- </button>
+</button>
 
- `).join("");
-
-}
-
-async function loadCatalog(){
-
- const version = ++catalogVersion;
-
- const city = $("city").value;
-
- const {data,error} = await db
-
- .from("restaurants")
-
- .select("*")
-
- .eq("approved",true)
-
- .eq("city",city)
-
- .order("created_at",{ascending:false})
-
- .limit(300);
-
- if(error) throw error;
-
- if(version!==catalogVersion) return;
-
- const list = data || [];
-
- let menu = [];
-
- if(list.length){
-
- const {data:items,error:itemError} = await db
-
- .from("food_items")
-
- .select("*")
-
- .in("restaurant_id",list.map(r=>r.id))
-
- .eq("available",true)
-
- .limit(1000);
-
- if(itemError) throw itemError;
-
- menu = items || [];
-
- }
-
- if(version!==catalogVersion) return;
-
- restaurants = list;
-
- foods = menu;
-
- renderHome();
+`).join("");
 
 }
 
-function restaurantCard(r){
+async function loadRestaurants(){
 
- return `
+const version=++catalogVersion;
 
- <article class="card">
+loading=true;
 
- <div data-action="restaurant"
- data-id="${esc(r.id)}">
+$("restaurants").innerHTML=
 
- ${imageHTML(r.cover_url || r.logo_url,"🍽")}
+'<div class="empty">Боргирӣ...</div>';
 
- </div>
+try{
 
- <div class="cardBody">
+const results=await Promise.all([
 
- <span class="badge ${r.is_open?"open":""}">
+db.from("restaurants")
 
- ${r.is_open?"Кушода":"Пӯшида"}
+.select("*")
 
- </span>
+.eq("approved",true)
 
- <h3>${esc(r.name)}</h3>
+.order("created_at",{ascending:false})
 
- <small>${esc(r.category || "Тарабхона")}</small>
+.limit(500),
 
- <p>📍 ${esc(r.address)}</p>
+db.from("food_items")
 
- <p>🛵 ${esc(money(r.delivery_fee))}</p>
+.select("*")
 
- <div class="row">
+.eq("available",true)
 
- <button data-action="restaurant"
- data-id="${esc(r.id)}">
+.limit(1000)
 
- Меню
+]);
 
- </button>
+if(version!==catalogVersion)return;
 
- <button class="gray"
- data-action="favorite"
- data-id="${esc(r.id)}">
+if(results[0].error)throw results[0].error;
 
- ${favorites.has(r.id)?"❤️":"🤍"}
+if(results[1].error)throw results[1].error;
 
- </button>
+restaurants=results[0].data||[];
 
- </div>
+foodCatalog=results[1].data||[];
 
- </div>
+loading=false;
 
- </article>
+renderRestaurants();
 
- `;
+}catch(error){
 
-}
+if(version!==catalogVersion)return;
 
-function foodCard(f){
+loading=false;
 
- const r = restaurants.find(
- r=>r.id===f.restaurant_id
- );
+$("restaurants").innerHTML=
 
- const price = currentPrice(f);
+`<div class="empty">
 
- return `
+<p>${esc(error.message)}</p>
 
- <article class="card">
+<button class="btn" onclick="loadRestaurants()">
 
- ${imageHTML(f.image_url,"🍲")}
+Такрор
 
- <div class="cardBody">
+</button>
 
- <h3>${esc(f.name)}</h3>
-
- <small>${esc(r?.name || "")}</small>
-
- <p>${esc(f.description)}</p>
-
- <p>⏱ ${esc(f.preparation_minutes)} дақ.</p>
-
- <div class="price">${esc(money(price))}</div>
-
- ${price<Number(f.price)
-
- ? `<div class="oldPrice">
- ${esc(money(f.price))}
- </div>`
-
- : ""}
-
- <br>
-
- <button class="full"
- data-action="add"
- data-id="${esc(f.id)}"
- ${r?.is_open?"":"disabled"}>
-
- ${r?.is_open?"＋ Ба сабад":"Пӯшида"}
-
- </button>
-
- </div>
-
- </article>
-
- `;
+</div>`;
 
 }
 
-function renderHome(){
+}
 
- const q = $("search").value.trim().toLowerCase();
+function renderRestaurants(){
 
- const filteredFoods = foods.filter(f=>{
+if(loading)return;
 
- const r = restaurants.find(
- r=>r.id===f.restaurant_id
- );
+const q=$("search").value.trim().toLowerCase();
 
- const text = [
+const city=$("city").value;
 
- f.name,
- f.description,
- f.category,
- r?.name
+const list=restaurants.filter(r=>{
 
- ].join(" ").toLowerCase();
+if(city&&r.city!==city)return false;
 
- return text.includes(q)
+if(onlyFavorites&&!favorites.has(r.id))return false;
 
- && (
+const foods=foodCatalog.filter(
 
- selectedCategory==="Ҳама"
+f=>f.restaurant_id===r.id
 
- || String(f.category).toLowerCase()
+);
 
- .includes(selectedCategory.toLowerCase())
+if(filter!=="Ҳама"){
 
- );
+const cat=filter.toLowerCase();
 
- });
+if(
 
- const filteredRestaurants = restaurants.filter(r=>{
+!String(r.category||"").toLowerCase().includes(cat)&&
 
- const matches =
+!foods.some(f=>
 
- [r.name,r.category,r.address]
+[f.name,f.category].join(" ")
 
- .join(" ").toLowerCase().includes(q);
+.toLowerCase().includes(cat)
 
- const menuMatches = filteredFoods.some(
+)
 
- f=>f.restaurant_id===r.id
-
- );
-
- return selectedCategory==="Ҳама"
-
- ? matches || menuMatches
-
- : menuMatches;
-
- });
-
- $("restaurants").innerHTML =
-
- filteredRestaurants.map(restaurantCard).join("")
-
- || '<div class="empty">Тарабхона ёфт нашуд.</div>';
-
- $("foods").innerHTML =
-
- filteredFoods.map(foodCard).join("")
-
- || '<div class="empty">Таом ёфт нашуд.</div>';
+)return false;
 
 }
 
-function goHome(){
+const restaurantText=[
 
- notice("");
+r.name,r.description,r.category,r.city
 
- showScreen("homeScreen");
+].join(" ").toLowerCase();
 
- renderHome();
+return restaurantText.includes(q)||
+
+foods.some(f=>
+
+[f.name,f.description,f.category]
+
+.join(" ").toLowerCase().includes(q)
+
+);
+
+});
+
+$("resultCount").textContent=list.length+" тарабхона";
+
+$("restaurants").innerHTML=list.map(r=>{
+
+const image=safeURL(r.cover_url||r.logo_url);
+
+return `
+
+<article class="restaurant">
+
+${image?
+
+`<img class="cover" src="${esc(image)}"
+
+alt="${esc(r.name)}" loading="lazy">`
+
+:'<div class="placeholder">🍽️</div>'}
+
+<button class="favorite"
+
+data-favorite="${esc(r.id)}">
+
+${favorites.has(r.id)?"❤️":"🤍"}
+
+</button>
+
+<div class="restaurantBody">
+
+<span class="status ${r.is_open?"open":"closed"}">
+
+${r.is_open?"Кушода":"Баста"}
+
+</span>
+
+<h3>${esc(r.name)}</h3>
+
+<p class="small">${esc(r.category||"Тарабхона")}</p>
+
+<p class="small">📍 ${esc(r.city)}</p>
+
+<p class="small">
+
+🛵 Расонидан: ${money(r.delivery_fee)}
+
+</p>
+
+<button class="btn full"
+
+data-restaurant="${esc(r.id)}">
+
+Дидани меню
+
+</button>
+
+</div>
+
+</article>`;
+
+}).join("")||'<div class="empty">Тарабхона ёфт нашуд.</div>';
 
 }
 
-function openRestaurant(id){
-
- const r = restaurants.find(r=>r.id===id);
-
- if(!r) return;
-
- currentRestaurant = r;
-
- $("restaurantInfo").innerHTML = `
-
- <div class="panel">
-
- ${imageHTML(r.cover_url || r.logo_url,"🍽")}
-
- <h1 class="restaurantTitle">${esc(r.name)}</h1>
-
- <span class="badge ${r.is_open?"open":""}">
-
- ${r.is_open?"Кушода":"Пӯшида"}
-
- </span>
-
- <p>${esc(r.description || "")}</p>
-
- <p>📍 ${esc(r.address)}</p>
-
- <p>🕐 ${esc(r.opening_time)} —
- ${esc(r.closing_time)}</p>
-
- <p>Расонидан: ${esc(money(r.delivery_fee))}</p>
-
- <p>Фармоиши ҳадди ақал:
-
- ${esc(money(r.minimum_order))}</p>
-
- </div>
-
- `;
-
- $("restaurantMenu").innerHTML =
-
- foods.filter(f=>f.restaurant_id===id)
-
- .map(foodCard).join("")
-
- || '<div class="empty">Меню ҳоло холӣ аст.</div>';
-
- showScreen("restaurantScreen");
-
-}
+// =======================
+// FAVORITES
+// =======================
 
 async function loadFavorites(){
 
- favorites = new Set();
+const uid=user?.id;
 
- if(!user) return;
+favorites=new Set();
 
- const {data,error} = await db
+if(!uid){
 
- .from("food_favorites")
+renderRestaurants();
 
- .select("restaurant_id")
+return;
 
- .eq("user_id",user.id);
+}
 
- if(error) throw error;
+const {data,error}=await db
 
- favorites = new Set(
+.from("food_favorites")
 
- (data || []).map(i=>i.restaurant_id)
+.select("restaurant_id")
 
- );
+.eq("user_id",uid);
+
+if(user?.id!==uid)return;
+
+if(error){
+
+notice(error.message);
+
+return;
+
+}
+
+favorites=new Set(
+
+(data||[]).map(f=>f.restaurant_id)
+
+);
+
+renderRestaurants();
 
 }
 
 async function toggleFavorite(id){
 
- try{
+if(!requireLogin())return;
 
- if(!await requireUser()) return;
+const uid=user.id;
 
- let result;
+try{
 
- if(favorites.has(id)){
+let result;
 
- result = await db
+if(favorites.has(id)){
 
- .from("food_favorites")
+result=await db
 
- .delete()
+.from("food_favorites")
 
- .eq("user_id",user.id)
+.delete()
 
- .eq("restaurant_id",id);
+.eq("user_id",uid)
 
- if(result.error) throw result.error;
+.eq("restaurant_id",id);
 
- favorites.delete(id);
+}else{
 
- }else{
+result=await db
 
- result = await db
+.from("food_favorites")
 
- .from("food_favorites")
+.insert({
 
- .upsert({
+user_id:uid,
 
- user_id:user.id,
- restaurant_id:id
+restaurant_id:id
 
- });
-
- if(result.error) throw result.error;
-
- favorites.add(id);
-
- }
-
- renderHome();
-
- if(currentScreen==="favoritesScreen"){
-
- renderFavorites();
-
- }
-
- }catch(error){
-
- notice(error.message);
-
- }
+});
 
 }
 
-function renderFavorites(){
+if(result.error)throw result.error;
 
- $("favorites").innerHTML =
+await loadFavorites();
 
- restaurants.filter(r=>favorites.has(r.id))
+}catch(error){
 
- .map(restaurantCard).join("")
-
- || '<div class="empty">Рӯйхат холӣ аст.</div>';
+notice(error.message);
 
 }
 
-async function openFavorites(){
+}
 
- try{
+// =======================
+// MENU
+// =======================
 
- if(!await requireUser()) return;
+async function openRestaurant(id){
 
- await loadFavorites();
+const restaurant=restaurants.find(r=>r.id===id);
 
- renderFavorites();
+if(!restaurant)return;
 
- showScreen("favoritesScreen");
+const version=++menuVersion;
 
- }catch(error){
+selectedRestaurant=restaurant;
 
- notice(error.message);
+$("restaurantInfo").innerHTML=`
 
- }
+<h2>${esc(restaurant.name)}</h2>
+
+<p>${esc(restaurant.description||"")}</p>
+
+<p>📍 ${esc(restaurant.address)}</p>
+
+<p>🛵 Расонидан: ${money(restaurant.delivery_fee)}</p>
+
+<p>Фармоиши камтарин:
+
+${money(restaurant.minimum_order)}</p>
+
+<span class="status ${restaurant.is_open?"open":"closed"}">
+
+${restaurant.is_open?"Кушода":"Баста"}
+
+</span>
+
+`;
+
+$("menuNotice").textContent="";
+
+$("menu").innerHTML="Меню боргирӣ мешавад...";
+
+$("menuDialog").showModal();
+
+try{
+
+const {data,error}=await db
+
+.from("food_items")
+
+.select("*")
+
+.eq("restaurant_id",id)
+
+.eq("available",true)
+
+.order("category")
+
+.order("name");
+
+if(version!==menuVersion)return;
+
+if(error)throw error;
+
+menuItems=data||[];
+
+renderMenu();
+
+}catch(error){
+
+if(version===menuVersion){
+
+$("menu").textContent=error.message;
 
 }
 
-function addToCart(id){
-
- if(busy) return;
-
- const f = foods.find(f=>f.id===id);
-
- if(!f) return;
-
- const r = restaurants.find(
-
- r=>r.id===f.restaurant_id
-
- );
-
- if(!r?.is_open){
-
- notice("Тарабхона пӯшида аст.");
-
- return;
-
- }
-
- const first = foods.find(
-
- f=>f.id===cart[0]?.id
-
- );
-
- if(cart.length &&
-
- (!first || first.restaurant_id!==f.restaurant_id)){
-
- if(!confirm(
-
- "Сабадро холӣ карда, аз ин тарабхона фармоиш медиҳед?"
-
- )) return;
-
- cart = [];
-
- }
-
- const item = cart.find(i=>i.id===id);
-
- if(item){
-
- item.quantity = Math.min(99,item.quantity+1);
-
- }else{
-
- cart.push({id,quantity:1});
-
- }
-
- saveCart();
-
- notice("Таом ба сабад илова шуд.");
+}
 
 }
 
-function changeQuantity(id,delta){
+function renderMenu(){
 
- if(busy) return;
+$("menu").innerHTML=menuItems.map(f=>{
 
- const item = cart.find(i=>i.id===id);
+const image=safeURL(f.image_url);
 
- if(!item) return;
+const price=priceOf(f);
 
- item.quantity = Math.min(
+return `
 
- 99,item.quantity+delta
+<article class="foodItem">
 
- );
+${image?
 
- cart = cart.filter(i=>i.quantity>0);
+`<img src="${esc(image)}" alt="${esc(f.name)}">`
 
- saveCart();
+:'<div class="placeholder">🍔</div>'}
 
- renderCart();
+<div class="foodBody">
 
-}
+<h3>${esc(f.name)}</h3>
 
-function cartDetails(){
+<p class="small">${esc(f.description)}</p>
 
- const items = cart.map(i=>({
+<p class="small">
 
- ...i,
+⏱️ ${esc(f.preparation_minutes)} дақ.
 
- food:foods.find(f=>f.id===i.id)
+</p>
 
- }));
+<div class="price">${money(price)}</div>
 
- const valid = items.filter(i=>i.food);
+${price<Number(f.price)?
 
- const restaurant = restaurants.find(
+`<p class="oldPrice">${money(f.price)}</p>`:""}
 
- r=>r.id===valid[0]?.food.restaurant_id
+<button class="btn full"
 
- );
+data-food="${esc(f.id)}"
 
- const subtotal = valid.reduce(
+${!selectedRestaurant?.is_open?"disabled":""}>
 
- (sum,i)=>sum+currentPrice(i.food)*i.quantity,0
++ Ба сабад
 
- );
+</button>
 
- const fee = Number(restaurant?.delivery_fee || 0);
+</div>
 
- return {
+</article>`;
 
- items,
-
- valid,
-
- restaurant,
-
- subtotal,
-
- fee,
-
- total:subtotal+fee
-
- };
+}).join("")||"Меню ҳоло холӣ аст.";
 
 }
 
-function validateCart(){
+function addFood(id){
 
- const d = cartDetails();
+if(busy)return;
 
- if(!cart.length){
+const food=menuItems.find(f=>f.id===id);
 
- throw new Error("Сабад холӣ аст.");
+if(!food||!selectedRestaurant?.is_open)return;
 
- }
+if(
 
- if(d.valid.length!==cart.length){
+cart.restaurant_id&&
 
- throw new Error(
+cart.restaurant_id!==food.restaurant_id
 
- "Баъзе таомҳо дастрас нестанд. Онҳоро аз сабад хориҷ кунед."
+){
 
- );
+if(!confirm(
 
- }
+"Дар сабад таоми тарабхонаи дигар ҳаст. Сабадро холӣ мекунед?"
 
- if(!d.restaurant?.is_open){
+))return;
 
- throw new Error("Тарабхона пӯшида аст.");
-
- }
-
- if(d.valid.some(i=>
-
- i.food.restaurant_id!==d.restaurant.id
-
- )){
-
- throw new Error("Танҳо аз як тарабхона фармоиш диҳед.");
-
- }
-
- if(d.subtotal<Number(d.restaurant.minimum_order)){
-
- throw new Error(
-
- "Фармоиши ҳадди ақал: "
-
- +money(d.restaurant.minimum_order)
-
- );
-
- }
-
- return d;
+cart={restaurant_id:null,items:[]};
 
 }
 
-function snapshot(d){
+cart.restaurant_id=food.restaurant_id;
 
- return JSON.stringify({
+const item=cart.items.find(
 
- items:d.valid.map(i=>[
+i=>i.food_id===id
 
- i.id,i.quantity,currentPrice(i.food)
+);
 
- ]),
+if(item){
 
- restaurant:d.restaurant?.id,
+if(item.quantity>=99)return;
 
- fee:d.fee,
+item.quantity++;
 
- minimum:d.restaurant?.minimum_order
+}else{
 
- });
+cart.items.push({
+
+food_id:id,
+
+quantity:1
+
+});
 
 }
 
-function totalsHTML(d){
+foodCatalog=foodCatalog.filter(f=>f.id!==id);
 
- return `
+foodCatalog.push(food);
 
- <p>Таомҳо: ${esc(money(d.subtotal))}</p>
+saveCart();
 
- <p>Расонидан: ${esc(money(d.fee))}</p>
+$("menuNotice").textContent=
 
- <p>Комиссияи VAYO: 0%</p>
+"✓ "+food.name+" ба сабад илова шуд.";
 
- <div class="total">
+}
 
- Ҳамагӣ: ${esc(money(d.total))}
+// =======================
+// CART
+// =======================
 
- </div>
+function cartSummary(){
 
- `;
+let subtotal=0;
+
+let valid=true;
+
+const restaurant=restaurants.find(
+
+r=>r.id===cart.restaurant_id
+
+);
+
+for(const item of cart.items){
+
+const food=foodCatalog.find(
+
+f=>f.id===item.food_id&&
+
+f.restaurant_id===cart.restaurant_id
+
+);
+
+if(!food||!food.available){
+
+valid=false;
+
+continue;
+
+}
+
+subtotal+=priceOf(food)*item.quantity;
+
+}
+
+const fee=cart.items.length&&restaurant
+
+?Number(restaurant.delivery_fee):0;
+
+return{
+
+restaurant,
+
+subtotal,
+
+fee,
+
+total:subtotal+fee,
+
+valid:valid&&!!restaurant
+
+};
 
 }
 
 function renderCart(){
 
- const d = cartDetails();
+const summary=cartSummary();
 
- $("cartContent").innerHTML =
+$("cartRestaurant").textContent=
 
- d.items.map(i=>`
+summary.restaurant?.name||"";
 
- <div class="cartItem">
+$("cartItems").innerHTML=cart.items.map((i,index)=>{
 
- <strong>
+const f=foodCatalog.find(f=>f.id===i.food_id);
 
- ${esc(i.food?.name || "Таоми дастнорас")}
+return `
 
- </strong>
+<div class="cartItem">
 
- <p>${i.food
+<strong>${esc(f?.name||"Таом дастрас нест")}</strong>
 
- ? esc(money(currentPrice(i.food)*i.quantity))
+<div class="row" style="margin-top:10px">
 
- : "Дастрас нест"}
+<div>
 
- </p>
+<button data-minus="${index}">−</button>
 
- <div class="qty">
+<strong>${i.quantity}</strong>
 
- <button class="gray"
- data-action="minus"
- data-id="${esc(i.id)}">−</button>
+<button data-plus="${index}">+</button>
 
- <strong>${i.quantity}</strong>
+</div>
 
- <button class="gray"
- data-action="plus"
- data-id="${esc(i.id)}"
- ${i.food?"":"disabled"}>＋</button>
+<strong>
 
- <button class="red"
- data-action="remove"
- data-id="${esc(i.id)}">✕</button>
+${f?money(priceOf(f)*i.quantity):"—"}
 
- </div>
+</strong>
 
- </div>
+<button data-remove="${index}">🗑️</button>
 
- `).join("")
+</div>
 
- + (cart.length
+</div>`;
 
- ? totalsHTML(d)
+}).join("")||'<div class="empty">Сабад холӣ аст.</div>';
 
- : "<p>Сабад холӣ аст.</p>");
+$("subtotal").textContent=money(summary.subtotal);
 
- $("checkoutButton").disabled = !cart.length;
+$("deliveryFee").textContent=money(summary.fee);
+
+$("total").textContent=money(summary.total);
+
+$("checkoutButton").disabled=
+
+!cart.items.length||!summary.valid||
+
+!summary.restaurant?.is_open;
 
 }
 
 function openCart(){
 
- $("cartError").textContent = "";
+if($("menuDialog").open){
 
- renderCart();
-
- if(!$("cartDialog").open){
-
- $("cartDialog").showModal();
-
- }
+$("menuDialog").close();
 
 }
 
-async function openCheckout(){
+renderCart();
 
- if(busy) return;
-
- try{
-
- const guestCart = !user ? [...cart] : null;
-
- if(!await requireUser()) return;
-
- if(guestCart?.length && !cart.length){
-
- cart = guestCart;
-
- saveCart();
-
- }
-
- await loadCatalog();
-
- const d = validateCart();
-
- checkoutSnapshot = snapshot(d);
-
- gps = null;
-
- gpsVersion++;
-
- $("gpsInfo").textContent = "";
-
- $("customerName").value =
-
- user.user_metadata?.full_name || "";
-
- $("customerPhone").value =
-
- user.user_metadata?.phone || "";
-
- $("deliveryCity").value = d.restaurant.city;
-
- $("checkoutTotal").innerHTML = totalsHTML(d);
-
- $("checkoutError").textContent = "";
-
- $("cartDialog").close();
-
- $("checkoutDialog").showModal();
-
- }catch(error){
-
- $("cartError").textContent = error.message;
-
- renderCart();
-
- }
+$("cartDialog").showModal();
 
 }
 
-function closeCheckout(){
+$("cartItems").onclick=e=>{
 
- if(busy) return;
+if(busy)return;
 
- gpsVersion++;
+const b=e.target.closest("button");
 
- $("checkoutDialog").close();
+if(!b)return;
 
- openCart();
+if(b.dataset.remove!==undefined){
 
-}
+cart.items.splice(Number(b.dataset.remove),1);
 
-function getGPS(){
+}else if(b.dataset.minus!==undefined){
 
- if(busy) return;
+const i=Number(b.dataset.minus);
 
- if(!navigator.geolocation){
+if(cart.items[i].quantity>1){
 
- $("gpsInfo").textContent = "GPS дастрас нест.";
+cart.items[i].quantity--;
 
- return;
+}else{
 
- }
-
- const version = ++gpsVersion;
-
- $("gpsInfo").textContent = "GPS ҷустуҷӯ мешавад...";
-
- navigator.geolocation.getCurrentPosition(
-
- position=>{
-
- if(version!==gpsVersion) return;
-
- gps = {
-
- lat:position.coords.latitude,
-
- lng:position.coords.longitude
-
- };
-
- $("gpsInfo").textContent =
-
- "GPS илова шуд: "
-
- +gps.lat.toFixed(5)+", "
-
- +gps.lng.toFixed(5);
-
- },
-
- error=>{
-
- if(version!==gpsVersion) return;
-
- $("gpsInfo").textContent =
-
- "GPS дастрас нест: "+error.message;
-
- },
-
- {
-
- enableHighAccuracy:true,
-
- timeout:15000,
-
- maximumAge:5000
-
- }
-
- );
+cart.items.splice(i,1);
 
 }
 
-$("checkoutForm").addEventListener(
+}else if(b.dataset.plus!==undefined){
 
- "submit",async event=>{
+const item=cart.items[Number(b.dataset.plus)];
 
- event.preventDefault();
-
- if(busy) return;
-
- busy = true;
-
- $("confirmButton").disabled = true;
-
- $("checkoutError").textContent = "";
-
- try{
-
- await loadCatalog();
-
- const d = validateCart();
-
- if(snapshot(d)!==checkoutSnapshot){
-
- checkoutSnapshot = snapshot(d);
-
- $("checkoutTotal").innerHTML = totalsHTML(d);
-
- throw new Error(
-
- "Нарх тағйир ёфт. Маблағи навро санҷида, боз тасдиқ кунед."
-
- );
-
- }
-
- const name = $("customerName").value.trim();
-
- const phone = normalizePhone(
-
- $("customerPhone").value
-
- );
-
- const street = $("deliveryStreet").value.trim();
-
- if(!name || !street){
-
- throw new Error("Ном ва суроғаро ворид кунед.");
-
- }
-
- const address = [
-
- d.restaurant.city,
-
- street,
-
- $("apartment").value.trim()
-
- ].filter(Boolean).join(", ");
-
- await rpc("vayo_create_food_order",{
-
- p_restaurant_id:d.restaurant.id,
-
- p_items:d.valid.map(i=>({
-
- food_id:i.id,
-
- quantity:i.quantity
-
- })),
-
- p_customer_name:name,
-
- p_customer_phone:phone,
-
- p_delivery_address:address,
-
- p_lat:gps?.lat ?? null,
-
- p_lng:gps?.lng ?? null,
-
- p_note:$("note").value.trim(),
-
- p_call_on_arrival:$("callOnArrival").checked
-
- });
-
- cart = [];
-
- saveCart();
-
- gpsVersion++;
-
- $("checkoutDialog").close();
-
- $("checkoutForm").reset();
-
- notice("Фармоиш ба тарабхона фиристода шуд!");
-
- showScreen("ordersScreen");
-
- await loadOrders();
-
- }catch(error){
-
- $("checkoutError").textContent = error.message;
-
- }finally{
-
- busy = false;
-
- $("confirmButton").disabled = false;
-
- }
-
- });
-
-$("checkoutDialog").addEventListener(
-
- "cancel",event=>{
-
- if(busy){
-
- event.preventDefault();
-
- }else{
-
- gpsVersion++;
-
- }
-
- });
-
-function trackingHTML(status){
-
- const steps = [
-
- ["pending","Фармоиш сабт шуд"],
-
- ["accepted","Тарабхона қабул кард"],
-
- ["preparing","Таом омода мешавад"],
-
- ["ready","Таом омода аст"],
-
- ["delivering","Расонанда дар роҳ"],
-
- ["completed","Расонида шуд"]
-
- ];
-
- if(status==="cancelled"){
-
- return "<p>❌ Фармоиш бекор шуд.</p>";
-
- }
-
- const index = steps.findIndex(
-
- s=>s[0]===status
-
- );
-
- return `<div class="steps">
-
- ${steps.map(([key,label],i)=>`
-
- <div class="step ${i<=index?"done":""}">
-
- ${i<=index?"✓":"○"} ${label}
-
- </div>
-
- `).join("")}
-
- </div>`;
+if(item.quantity<99)item.quantity++;
 
 }
 
-async function courierHTML(order){
+saveCart();
 
- if(!order.courier_id ||
+renderCart();
 
- !["ready","delivering"].includes(order.status)){
+};
 
- return "";
+// =======================
+// CHECKOUT
+// =======================
 
- }
+$("checkoutButton").onclick=()=>{
 
- try{
+if(!requireLogin()||busy)return;
 
- const result = await rpc("vayo_my_courier",{
+const summary=cartSummary();
 
- p_order_id:order.id
+if(!summary.valid||!cart.items.length)return;
 
- });
+if(summary.subtotal<Number(
 
- const c = Array.isArray(result)
+summary.restaurant.minimum_order
 
- ? result[0]
+)){
 
- : result;
+alert("Фармоиши камтарин: "+
 
- if(!c) return "";
+money(summary.restaurant.minimum_order));
 
- const tel = String(c.phone || "")
-
- .replace(/[^\d+]/g,"");
-
- const fresh = c.location_updated_at
-
- && Date.now()-new Date(
-
- c.location_updated_at
-
- ).getTime()<120000;
-
- const mapLink = fresh
-
- && c.latitude!==null
-
- && c.longitude!==null
-
- ? `<a class="btn gray"
-
- href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.latitude+","+c.longitude)}"
-
- target="_blank" rel="noopener noreferrer">
-
- 📍 Ҷойгиршавии расонанда
-
- </a>`
-
- : "<p>GPS-и нав дастрас нест.</p>";
-
- return `
-
- <div class="panel">
-
- <h3>🛵 Расонандаи шумо</h3>
-
- <p>${esc(c.full_name)}</p>
-
- <a class="btn green" href="tel:${esc(tel)}">
-
- 📞 Занг задан
-
- </a>
-
- <br><br>
-
- ${mapLink}
-
- </div>
-
- `;
-
- }catch{
-
- return "<p>Маълумоти расонанда ҳоло дастрас нест.</p>";
-
- }
+return;
 
 }
+
+$("customerName").value=
+
+user.user_metadata?.full_name||"";
+
+$("customerPhone").value=
+
+user.user_metadata?.phone||"+992";
+
+coordinates=null;
+
+$("gpsStatus").textContent="";
+
+$("checkoutNotice").textContent="";
+
+$("cartDialog").close();
+
+$("checkoutDialog").showModal();
+
+};
+
+$("gpsButton").onclick=()=>{
+
+if(!navigator.geolocation){
+
+$("gpsStatus").textContent="GPS дастрас нест.";
+
+return;
+
+}
+
+$("gpsButton").disabled=true;
+
+$("gpsStatus").textContent="Ҷойгиршавӣ муайян мешавад...";
+
+navigator.geolocation.getCurrentPosition(
+
+position=>{
+
+coordinates={
+
+lat:position.coords.latitude,
+
+lng:position.coords.longitude
+
+};
+
+$("gpsStatus").textContent=
+
+"✓ Ҷойгиршавӣ илова шуд.";
+
+$("gpsButton").disabled=false;
+
+},
+
+()=>{
+
+coordinates=null;
+
+$("gpsStatus").textContent=
+
+"GPS дастрас нест. Суроғаро дастӣ нависед.";
+
+$("gpsButton").disabled=false;
+
+},
+
+{
+
+enableHighAccuracy:true,
+
+timeout:15000,
+
+maximumAge:10000
+
+}
+
+);
+
+};
+
+$("checkoutForm").onsubmit=async e=>{
+
+e.preventDefault();
+
+if(!requireLogin()||busy)return;
+
+busy=true;
+
+$("placeOrder").disabled=true;
+
+const uid=user.id;
+
+try{
+
+const oldSummary=cartSummary();
+
+const restaurantId=cart.restaurant_id;
+
+const items=cart.items.map(i=>({...i}));
+
+const results=await Promise.all([
+
+db.from("restaurants")
+
+.select("*")
+
+.eq("id",restaurantId)
+
+.eq("approved",true)
+
+.maybeSingle(),
+
+db.from("food_items")
+
+.select("*")
+
+.eq("restaurant_id",restaurantId)
+
+.in("id",items.map(i=>i.food_id))
+
+]);
+
+if(results[0].error)throw results[0].error;
+
+if(results[1].error)throw results[1].error;
+
+const restaurant=results[0].data;
+
+if(!restaurant?.is_open){
+
+throw new Error("Тарабхона ҳоло баста аст.");
+
+}
+
+let subtotal=0;
+
+for(const item of items){
+
+const food=results[1].data.find(
+
+f=>f.id===item.food_id
+
+);
+
+if(!food?.available){
+
+throw new Error("Яке аз таомҳо дастрас нест.");
+
+}
+
+subtotal+=priceOf(food)*item.quantity;
+
+}
+
+const newTotal=subtotal+Number(restaurant.delivery_fee);
+
+if(Math.abs(newTotal-oldSummary.total)>0.005){
+
+restaurants=restaurants.map(r=>
+
+r.id===restaurantId?restaurant:r
+
+);
+
+for(const f of results[1].data){
+
+foodCatalog=foodCatalog.filter(i=>i.id!==f.id);
+
+foodCatalog.push(f);
+
+}
+
+throw new Error(
+
+"Нарх тағйир ёфт. Сабадро аз нав санҷед."
+
+);
+
+}
+
+if(subtotal<Number(restaurant.minimum_order)){
+
+throw new Error("Маблағи фармоиш кам аст.");
+
+}
+
+if(user?.id!==uid){
+
+throw new Error("Аккаунт тағйир ёфт.");
+
+}
+
+const {data,error}=await db.rpc(
+
+"vayo_create_food_order",
+
+{
+
+p_restaurant_id:restaurantId,
+
+p_items:items,
+
+p_customer_name:$("customerName").value.trim(),
+
+p_customer_phone:phone($("customerPhone").value),
+
+p_delivery_address:$("address").value.trim(),
+
+p_lat:coordinates?.lat??null,
+
+p_lng:coordinates?.lng??null,
+
+p_note:$("note").value.trim(),
+
+p_call_on_arrival:$("call").checked
+
+}
+
+);
+
+if(error)throw error;
+
+if(user?.id!==uid)return;
+
+cart={restaurant_id:null,items:[]};
+
+saveCart();
+
+$("checkoutDialog").close();
+
+notice("✓ Фармоиш бомуваффақият сабт шуд.");
+
+await loadOrders();
+
+$("ordersSection").scrollIntoView({
+
+behavior:"smooth"
+
+});
+
+}catch(error){
+
+$("checkoutNotice").textContent=error.message;
+
+}finally{
+
+busy=false;
+
+$("placeOrder").disabled=false;
+
+}
+
+};
+
+// =======================
+// ORDERS
+// =======================
 
 async function loadOrders(){
 
- if(!user || loadingOrders) return;
+if(!user||ordersLoading)return;
 
- loadingOrders = true;
+ordersLoading=true;
 
- try{
+const uid=user.id;
 
- const {data,error} = await db
+const version=++ordersVersion;
 
- .from("food_orders")
+try{
 
- .select("*,food_order_items(*)")
+const {data,error}=await db
 
- .eq("customer_id",user.id)
+.from("food_orders")
 
- .order("created_at",{ascending:false})
+.select("*,food_order_items(*)")
 
- .limit(100);
+.eq("customer_id",uid)
 
- if(error) throw error;
+.order("created_at",{ascending:false})
 
- const rows = await Promise.all(
+.limit(50);
 
- (data || []).map(async o=>{
+if(version!==ordersVersion||user?.id!==uid)return;
 
- const r = restaurants.find(
+if(error)throw error;
 
- r=>r.id===o.restaurant_id
+renderOrders(data||[]);
 
- );
+for(const order of data||[]){
 
- const courier = await courierHTML(o);
+if(
 
- return `
+order.courier_id&&
 
- <article class="panel">
+["ready","delivering"].includes(order.status)
 
- <span class="badge">
+){
 
- ${esc(statuses[o.status] || o.status)}
-
- </span>
-
- <h3>${esc(r?.name || "Тарабхона")}</h3>
-
- <small>Фармоиш #${esc(o.id.slice(0,8))}</small>
-
- <p>${esc(new Date(o.created_at)
-
- .toLocaleString("ru-RU",{
-
- timeZone:"Asia/Dushanbe"
-
- }))}</p>
-
- ${(o.food_order_items || []).map(i=>`
-
- <p>${esc(i.food_name)} × ${esc(i.quantity)}</p>
-
- `).join("")}
-
- <p>📍 ${esc(o.delivery_address)}</p>
-
- <p>Расонидан: ${esc(money(o.delivery_fee))}</p>
-
- <div class="total">
-
- ${esc(money(o.total))}
-
- </div>
-
- ${trackingHTML(o.status)}
-
- ${courier}
-
- ${o.status==="pending"
-
- ? `<button class="red full"
-
- data-action="cancel"
-
- data-id="${esc(o.id)}">
-
- Бекор кардани фармоиш
-
- </button>`
-
- : ""}
-
- ${o.status==="completed"
-
- ? `<button class="gray full"
-
- data-action="review"
-
- data-id="${esc(o.id)}">
-
- ⭐ Баҳо додан
-
- </button>`
-
- : ""}
-
- </article>
-
- `;
-
- })
-
- );
-
- $("orders").innerHTML = rows.join("")
-
- || '<div class="empty">Ҳоло фармоиш надоред.</div>';
-
- }catch(error){
-
- notice(error.message);
-
- }finally{
-
- loadingOrders = false;
-
- }
+loadCourier(order,version);
 
 }
 
-async function openOrders(){
+}
 
- try{
+}catch(error){
 
- if(!await requireUser()) return;
+if(version===ordersVersion){
 
- showScreen("ordersScreen");
-
- await loadOrders();
-
- }catch(error){
-
- notice(error.message);
-
- }
+$("orders").textContent=error.message;
 
 }
+
+}finally{
+
+ordersLoading=false;
+
+}
+
+}
+
+function renderOrders(orders){
+
+const steps=[
+
+"pending",
+
+"accepted",
+
+"preparing",
+
+"ready",
+
+"delivering",
+
+"completed"
+
+];
+
+$("orders").innerHTML=orders.map(o=>{
+
+const restaurant=restaurants.find(
+
+r=>r.id===o.restaurant_id
+
+);
+
+const current=steps.indexOf(o.status);
+
+const active=steps.slice(0,5).includes(o.status);
+
+return `
+
+<div class="orderCard">
+
+<div class="row">
+
+<strong>${esc(restaurant?.name||"VAYO Food")}</strong>
+
+<span class="status">
+
+${esc(statuses[o.status]||o.status)}
+
+</span>
+
+</div>
+
+<div class="progress">
+
+${steps.map((s,index)=>`
+
+<div class="step ${index<=current?"done":""}"></div>
+
+`).join("")}
+
+</div>
+
+${(o.food_order_items||[]).map(i=>`
+
+<p>
+
+${esc(i.food_name)} × ${esc(i.quantity)}
+
+</p>
+
+`).join("")}
+
+<p>🛵 Расонидан: ${money(o.delivery_fee)}</p>
+
+<p>📍 ${esc(o.delivery_address)}</p>
+
+<div class="price">${money(o.total)}</div>
+
+<p class="small">
+
+${esc(new Date(o.created_at).toLocaleString(
+
+"ru-RU",{timeZone:"Asia/Dushanbe"}
+
+))}
+
+</p>
+
+<div id="courier-${esc(o.id)}"></div>
+
+<div class="actions">
+
+${active?`
+
+<a class="btn"
+
+href="./chat.html?service=food&ref=${encodeURIComponent(o.id)}">
+
+💬 Паём ба тарабхона
+
+</a>`:""}
+
+${o.courier_id&&["ready","delivering"].includes(o.status)?
+
+`<a class="btn green"
+
+href="./chat.html?service=courier&ref=${encodeURIComponent(o.id)}">
+
+💬 Паём ба расонанда
+
+</a>`:""}
+
+${o.status==="pending"?
+
+`<button class="btn red"
+
+data-cancel="${esc(o.id)}">
+
+Бекор кардани фармоиш
+
+</button>`:""}
+
+${o.status==="completed"?
+
+`<button class="btn gray"
+
+data-review="${esc(o.id)}">
+
+⭐ Баҳо додан
+
+</button>`:""}
+
+</div>
+
+</div>`;
+
+}).join("")||"Ҳоло фармоиш нест.";
+
+}
+
+// =======================
+// COURIER TRACKING
+// =======================
+
+async function loadCourier(order,version){
+
+try{
+
+const {data,error}=await db.rpc(
+
+"vayo_my_courier",
+
+{p_order_id:order.id}
+
+);
+
+if(version!==ordersVersion)return;
+
+const box=$("courier-"+order.id);
+
+if(!box)return;
+
+if(error)throw error;
+
+const c=Array.isArray(data)?data[0]:data;
+
+if(!c)return;
+
+const fresh=Date.now()-
+
+new Date(c.location_updated_at||0).getTime()<300000;
+
+const number=String(c.phone||"")
+
+.replace(/[^\d+]/g,"");
+
+let mapLink="";
+
+if(
+
+fresh&&
+
+c.latitude!=null&&
+
+c.longitude!=null&&
+
+Number.isFinite(Number(c.latitude))&&
+
+Number.isFinite(Number(c.longitude))&&
+
+Math.abs(Number(c.latitude))<=90&&
+
+Math.abs(Number(c.longitude))<=180
+
+){
+
+mapLink="https://www.openstreetmap.org/?mlat="+
+
+encodeURIComponent(c.latitude)+
+
+"&mlon="+encodeURIComponent(c.longitude)+
+
+"#map=16/"+encodeURIComponent(c.latitude)+
+
+"/"+encodeURIComponent(c.longitude);
+
+}
+
+box.innerHTML=`
+
+<div class="card">
+
+<h3>🛵 Расонандаи шумо</h3>
+
+<p>${esc(c.full_name)}</p>
+
+<p>${esc(c.vehicle)}</p>
+
+${number?
+
+`<a class="btn gray"
+
+href="tel:${esc(number)}">
+
+📞 Занг задан
+
+</a>`:""}
+
+${mapLink?
+
+`<a class="btn gray"
+
+href="${esc(mapLink)}"
+
+target="_blank"
+
+rel="noopener noreferrer">
+
+📍 Дар харита
+
+</a>`:
+
+'<p class="small">GPS-и нав дастрас нест.</p>'}
+
+</div>`;
+
+}catch(error){
+
+if(version===ordersVersion){
+
+const box=$("courier-"+order.id);
+
+if(box)box.textContent=
+
+"Маълумоти расонанда дастрас нест.";
+
+}
+
+}
+
+}
+
+// =======================
+// CANCEL ORDER
+// =======================
 
 async function cancelOrder(id){
 
- if(busy) return;
+if(busy)return;
 
- if(!confirm("Фармоишро бекор мекунед?")) return;
+if(!confirm("Фармоишро бекор мекунед?"))return;
 
- busy = true;
+busy=true;
 
- try{
+try{
 
- await rpc("vayo_food_status",{
+const {error}=await db.rpc(
 
- p_order_id:id,
+"vayo_food_status",
 
- p_status:"cancelled"
+{
 
- });
+p_order_id:id,
 
- await loadOrders();
-
- notice("Фармоиш бекор шуд.");
-
- }catch(error){
-
- notice(error.message);
-
- }finally{
-
- busy = false;
-
- }
+p_status:"cancelled"
 
 }
 
-async function reviewOrder(id){
+);
 
- if(busy) return;
+if(error)throw error;
 
- const input = prompt(
+notice("Фармоиш бекор шуд.");
 
- "Ба тарабхона аз 1 то 5 баҳо диҳед:","5"
+await loadOrders();
 
- );
+}catch(error){
 
- if(input===null) return;
+notice(error.message);
 
- const rating = Number(input);
+}finally{
 
- if(!Number.isInteger(rating)
-
- || rating<1 || rating>5){
-
- notice("Баҳо бояд аз 1 то 5 бошад.");
-
- return;
-
- }
-
- const comment = prompt("Назари шумо:","");
-
- if(comment===null) return;
-
- if(comment.length>1000){
-
- notice("Матн хеле дароз аст.");
-
- return;
-
- }
-
- busy = true;
-
- try{
-
- await rpc("vayo_food_review",{
-
- p_order_id:id,
-
- p_rating:rating,
-
- p_comment:comment
-
- });
-
- notice("Ташаккур барои баҳо!");
-
- }catch(error){
-
- notice(error.message);
-
- }finally{
-
- busy = false;
-
- }
+busy=false;
 
 }
 
-document.addEventListener("click",event=>{
+}
 
- const category = event.target.closest(
+// =======================
+// REVIEW
+// =======================
 
- "[data-category]"
+function openReview(id){
 
- );
+reviewOrder=id;
 
- if(category){
+$("rating").value="5";
 
- selectedCategory = category.dataset.category;
+$("comment").value="";
 
- renderCategories();
+$("reviewNotice").textContent="";
 
- renderHome();
+$("reviewDialog").showModal();
 
- return;
+}
 
- }
+$("reviewForm").onsubmit=async e=>{
 
- const b = event.target.closest("[data-action]");
+e.preventDefault();
 
- if(!b || busy) return;
+if(busy||!reviewOrder)return;
 
- const {action,id} = b.dataset;
+busy=true;
 
- if(action==="restaurant") openRestaurant(id);
+try{
 
- if(action==="favorite") toggleFavorite(id);
+const {error}=await db.rpc(
 
- if(action==="add") addToCart(id);
+"vayo_food_review",
 
- if(action==="plus") changeQuantity(id,1);
+{
 
- if(action==="minus") changeQuantity(id,-1);
+p_order_id:reviewOrder,
 
- if(action==="remove"){
+p_rating:Number($("rating").value),
 
- cart = cart.filter(i=>i.id!==id);
+p_comment:$("comment").value.trim()
 
- saveCart();
+}
 
- renderCart();
+);
 
- }
+if(error)throw error;
 
- if(action==="cancel") cancelOrder(id);
+$("reviewDialog").close();
 
- if(action==="review") reviewOrder(id);
+notice("✓ Ташаккур барои баҳои шумо!");
+
+}catch(error){
+
+$("reviewNotice").textContent=error.message;
+
+}finally{
+
+busy=false;
+
+}
+
+};
+
+// =======================
+// ACCOUNT
+// =======================
+
+async function loadSession(){
+
+const version=++authVersion;
+
+const {data}=await db.auth.getUser();
+
+if(version!==authVersion)return;
+
+const oldId=user?.id;
+
+user=data?.user||null;
+
+if(oldId!==user?.id){
+
+ordersVersion++;
+
+favorites=new Set();
+
+coordinates=null;
+
+reviewOrder=null;
+
+document.querySelectorAll("dialog").forEach(d=>{
+
+if(d.open&&!busy)d.close();
 
 });
 
-$("search").addEventListener("input",()=>{
+readCart();
 
- if(currentScreen!=="homeScreen"){
+$("orders").textContent="";
 
- showScreen("homeScreen");
+}
 
- }
+await loadFavorites();
 
- renderHome();
+if(user){
+
+await loadOrders();
+
+}else{
+
+$("orders").innerHTML=`
+
+<a href="./account.html" class="btn">
+
+Ба аккаунт ворид шавед
+
+</a>`;
+
+}
+
+}
+
+// =======================
+// EVENTS
+// =======================
+
+$("filters").onclick=e=>{
+
+const b=e.target.closest("[data-filter]");
+
+if(!b)return;
+
+filter=b.dataset.filter;
+
+onlyFavorites=false;
+
+renderFilters();
+
+renderRestaurants();
+
+};
+
+$("restaurants").onclick=e=>{
+
+const favorite=e.target.closest("[data-favorite]");
+
+const restaurant=e.target.closest("[data-restaurant]");
+
+if(favorite){
+
+toggleFavorite(favorite.dataset.favorite);
+
+}else if(restaurant){
+
+openRestaurant(restaurant.dataset.restaurant);
+
+}
+
+};
+
+$("menu").onclick=e=>{
+
+const b=e.target.closest("[data-food]");
+
+if(b)addFood(b.dataset.food);
+
+};
+
+$("orders").onclick=e=>{
+
+const cancel=e.target.closest("[data-cancel]");
+
+const review=e.target.closest("[data-review]");
+
+if(cancel){
+
+cancelOrder(cancel.dataset.cancel);
+
+}else if(review){
+
+openReview(review.dataset.review);
+
+}
+
+};
+
+$("favoritesButton").onclick=()=>{
+
+if(!requireLogin())return;
+
+onlyFavorites=!onlyFavorites;
+
+$("favoritesButton").textContent=
+
+onlyFavorites?"❤️ Ҳамаи тарабхонаҳо":"❤️ Дӯстдоштаҳо";
+
+renderRestaurants();
+
+};
+
+$("search").oninput=renderRestaurants;
+
+$("city").onchange=()=>{
+
+try{
+
+if($("city").value){
+
+localStorage.setItem("vayo_city",$("city").value);
+
+}
+
+}catch{}
+
+renderRestaurants();
+
+};
+
+$("cartTop").onclick=openCart;
+
+$("ordersNav").onclick=()=>{
+
+$("ordersSection").scrollIntoView({
+
+behavior:"smooth"
 
 });
 
-$("city").addEventListener("change",async()=>{
+};
 
- if(busy) return;
+document.querySelectorAll("[data-close]").forEach(b=>{
 
- try{
+b.onclick=()=>{
 
- selectedCategory = "Ҳама";
+if(!busy)$(b.dataset.close).close();
 
- renderCategories();
-
- showScreen("homeScreen");
-
- await loadCatalog();
-
- }catch(error){
-
- notice(error.message);
-
- }
+};
 
 });
+
+document.querySelectorAll("dialog").forEach(d=>{
+
+d.addEventListener("cancel",e=>{
+
+if(busy)e.preventDefault();
+
+});
+
+});
+
+// =======================
+// START
+// =======================
 
 async function start(){
 
- try{
+try{
 
- if(!db){
+const city=localStorage.getItem("vayo_city");
 
- throw new Error("config.js ёфт нашуд.");
+if([...$("city").options].some(o=>o.value===city)){
 
- }
+$("city").value=city;
 
- const savedCity = localStorage.getItem("vayo_city");
+}
 
- if([...$("city").options].some(
+}catch{}
 
- o=>o.value===savedCity
+renderFilters();
 
- )){
+readCart();
 
- $("city").value = savedCity;
+if(!db){
 
- }
+notice("Supabase дастрас нест. config.js-ро санҷед.");
 
- const {data} = await db.auth.getUser();
+return;
 
- user = data?.user || null;
+}
 
- readCart();
+db.auth.onAuthStateChange(event=>{
 
- renderCategories();
+if([
 
- await loadFavorites();
+"INITIAL_SESSION",
 
- await loadCatalog();
+"SIGNED_IN",
 
- }catch(error){
+"SIGNED_OUT"
 
- notice(error.message);
+].includes(event)){
 
- }
+setTimeout(()=>loadSession().catch(console.error),0);
+
+}
+
+});
+
+await loadRestaurants();
 
 }
 
 setInterval(()=>{
 
- if(user && !busy
+if(user&&document.visibilityState==="visible"){
 
- && currentScreen==="ordersScreen"
+loadOrders();
 
- && document.visibilityState==="visible"){
-
- loadOrders();
-
- }
+}
 
 },8000);
 
-start();
+setInterval(()=>{
+
+if(db&&!busy&&
+
+document.visibilityState==="visible"&&
+
+!$("menuDialog").open&&
+
+!$("cartDialog").open&&
+
+!$("checkoutDialog").open){
+
+loadRestaurants();
+
+}
+
+},60000);
+
+start().catch(error=>notice(error.message));
 
 </script>
+
+<script src="./chat.js"></script>
 
 </body>
 </html>
