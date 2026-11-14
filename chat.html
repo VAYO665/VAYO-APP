@@ -1,0 +1,1555 @@
+
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VAYO Chat</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./config.js"></script>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ background:#f5f6f8;
+ color:#222;
+ font-family:Arial,sans-serif;
+}
+a{text-decoration:none;color:inherit}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.5}
+header{
+ height:65px;
+ background:white;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ padding:12px 18px;
+ border-bottom:1px solid #ddd;
+}
+.logo{
+ font-size:25px;
+ font-weight:900;
+ color:#ff6500;
+}
+.layout{
+ max-width:1100px;
+ margin:auto;
+ display:grid;
+ grid-template-columns:340px 1fr;
+ height:calc(100dvh - 65px);
+ background:white;
+}
+.sidebar{
+ border-right:1px solid #ddd;
+ overflow:auto;
+}
+.sidebarTitle{
+ padding:18px;
+ font-size:22px;
+ font-weight:bold;
+}
+.searchBox{
+ padding:0 15px 15px;
+}
+.searchBox input{
+ width:100%;
+ padding:13px;
+ border:0;
+ border-radius:13px;
+ background:#f3f4f6;
+ outline:none;
+}
+.chatItem{
+ display:flex;
+ width:100%;
+ align-items:center;
+ gap:12px;
+ padding:16px;
+ background:white;
+ border:0;
+ border-bottom:1px solid #eee;
+ text-align:left;
+}
+.chatItem:hover,.chatItem.active{
+ background:#fff0df;
+}
+.avatar{
+ width:48px;
+ height:48px;
+ min-width:48px;
+ background:#fff0df;
+ border-radius:50%;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-size:25px;
+}
+.chatInfo{
+ flex:1;
+ min-width:0;
+}
+.chatInfo strong{
+ display:block;
+ overflow:hidden;
+ text-overflow:ellipsis;
+ white-space:nowrap;
+}
+.preview{
+ color:#777;
+ font-size:13px;
+ margin-top:6px;
+ overflow:hidden;
+ text-overflow:ellipsis;
+ white-space:nowrap;
+}
+.chatTime{
+ font-size:11px;
+ color:#999;
+}
+.badge{
+ background:#ff6500;
+ color:white;
+ border-radius:20px;
+ padding:5px 8px;
+ font-size:11px;
+ margin-top:7px;
+ display:inline-block;
+}
+.chatWindow{
+ display:flex;
+ flex-direction:column;
+ min-width:0;
+ min-height:0;
+ background:#f7f3ef;
+}
+.chatHeader{
+ display:flex;
+ align-items:center;
+ gap:12px;
+ padding:13px;
+ background:white;
+ border-bottom:1px solid #ddd;
+}
+.chatHeader strong{
+ overflow-wrap:anywhere;
+}
+.chatHeader small{
+ display:block;
+ color:#777;
+ margin-top:5px;
+}
+.back{
+ display:none;
+ background:#eee;
+ border:0;
+ border-radius:12px;
+ padding:10px;
+}
+.messages{
+ flex:1;
+ min-height:0;
+ overflow:auto;
+ padding:18px;
+}
+.messageRow{
+ display:flex;
+ margin-bottom:10px;
+}
+.messageRow.mine{
+ justify-content:flex-end;
+}
+.bubble{
+ max-width:80%;
+ background:white;
+ padding:12px 15px;
+ border-radius:16px 16px 16px 4px;
+ box-shadow:0 1px 3px #00000008;
+ overflow-wrap:anywhere;
+}
+.mine .bubble{
+ background:#ff6500;
+ color:white;
+ border-radius:16px 16px 4px 16px;
+}
+.messageText{
+ white-space:pre-wrap;
+ line-height:1.5;
+ font-size:15px;
+}
+.messageTime{
+ text-align:right;
+ font-size:10px;
+ opacity:.7;
+ margin-top:7px;
+}
+.composer{
+ background:white;
+ padding:12px;
+ display:flex;
+ gap:9px;
+ align-items:flex-end;
+ border-top:1px solid #ddd;
+ padding-bottom:max(12px,env(safe-area-inset-bottom));
+}
+.composer textarea{
+ flex:1;
+ min-width:0;
+ resize:none;
+ border:0;
+ outline:none;
+ background:#f3f4f6;
+ border-radius:20px;
+ padding:14px;
+ max-height:120px;
+}
+.send{
+ width:48px;
+ height:48px;
+ flex-shrink:0;
+ background:#ff6500;
+ color:white;
+ border:0;
+ border-radius:50%;
+ font-size:23px;
+}
+.empty{
+ padding:35px 20px;
+ text-align:center;
+ color:#888;
+}
+.emptyIcon{
+ font-size:65px;
+ margin-bottom:15px;
+}
+.welcome{
+ flex:1;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ text-align:center;
+ padding:25px;
+ color:#777;
+}
+.notice{
+ background:#fff0df;
+ color:#9a3412;
+ padding:12px;
+ font-size:14px;
+ overflow-wrap:anywhere;
+}
+.notice:empty{display:none}
+.hidden{display:none!important}
+.loginBox{
+ max-width:450px;
+ background:white;
+ border-radius:20px;
+ margin:40px auto;
+ padding:25px;
+ text-align:center;
+}
+.btn{
+ display:inline-block;
+ background:#ff6500;
+ color:white;
+ border:0;
+ border-radius:12px;
+ padding:13px 18px;
+ font-weight:bold;
+}
+.more{
+ display:block;
+ margin:0 auto 18px;
+ border:0;
+ background:white;
+ color:#ff6500;
+ border-radius:15px;
+ padding:10px 15px;
+}
+@media(max-width:700px){
+ .layout{
+ display:block;
+ }
+ .sidebar{
+ height:100%;
+ border:0;
+ }
+ .chatWindow{
+ display:none;
+ height:100%;
+ }
+ .layout.open .sidebar{
+ display:none;
+ }
+ .layout.open .chatWindow{
+ display:flex;
+ }
+ .back{
+ display:block;
+ }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+<a href="./index.html">←</a>
+
+<div class="logo">VAYO CHAT</div>
+
+<a href="./notifications.html">🔔</a>
+
+</header>
+
+<div id="notice" class="notice" role="status"></div>
+
+<section id="loginBox" class="loginBox hidden">
+
+<div class="emptyIcon">🔐</div>
+
+<h2>Ба аккаунт ворид шавед</h2>
+
+<p>Барои фиристодани паём аккаунт лозим аст.</p>
+
+<a href="./account.html" class="btn">
+
+Ворид шудан
+
+</a>
+
+</section>
+
+<div id="layout" class="layout hidden">
+
+<!-- CHAT LIST -->
+
+<aside class="sidebar">
+
+<div class="sidebarTitle">
+
+Паёмҳо <span id="totalUnread"></span>
+
+</div>
+
+<div class="searchBox">
+
+<input id="search"
+placeholder="Ҷустуҷӯи суҳбат..."
+autocomplete="off">
+
+</div>
+
+<div id="chatList">
+
+<div class="empty">Боргирӣ...</div>
+
+</div>
+
+</aside>
+
+<!-- CHAT WINDOW -->
+
+<section class="chatWindow">
+
+<div id="welcome" class="welcome">
+
+<div>
+
+<div class="emptyIcon">💬</div>
+
+<h2>VAYO Chat</h2>
+
+<p>Барои оғоз суҳбатро интихоб кунед.</p>
+
+</div>
+
+</div>
+
+<div id="chatHeader" class="chatHeader hidden">
+
+<button id="back" class="back">←</button>
+
+<div id="chatAvatar" class="avatar">💬</div>
+
+<div>
+
+<strong id="chatName"></strong>
+
+<small id="chatService"></small>
+
+</div>
+
+</div>
+
+<div id="messages" class="messages hidden"></div>
+
+<form id="composer" class="composer hidden">
+
+<textarea id="messageInput"
+rows="1"
+maxlength="2000"
+placeholder="Паём нависед..."
+required></textarea>
+
+<button id="sendButton"
+class="send"
+type="submit"
+aria-label="Фиристодан">
+
+➤
+
+</button>
+
+</form>
+
+</section>
+
+</div>
+
+<script>
+
+const db = window.vayo;
+
+const $ = id => document.getElementById(id);
+
+let user = null;
+
+let chats = [];
+
+let activeChat = null;
+
+let messages = [];
+
+let messageLimit = 100;
+
+let sending = false;
+
+let listVersion = 0;
+
+let messageVersion = 0;
+
+let sessionVersion = 0;
+
+let chatChannel = null;
+
+let listChannel = null;
+
+let pendingLink = true;
+
+let channelQueue = Promise.resolve();
+
+const services = {
+
+ marketplace:"Marketplace",
+
+ taxi:"VAYO Taxi",
+
+ food:"VAYO Food",
+
+ courier:"VAYO Courier"
+
+};
+
+const icons = {
+
+ marketplace:"🛍️",
+
+ taxi:"🚕",
+
+ food:"🍔",
+
+ courier:"🛵"
+
+};
+
+// ==========================
+// SECURITY
+// ==========================
+
+function esc(value){
+
+ return String(value ?? "").replace(
+
+ /[&<>"']/g,
+
+ c=>({
+
+ "&":"&amp;",
+
+ "<":"&lt;",
+
+ ">":"&gt;",
+
+ '"':"&quot;",
+
+ "'":"&#39;"
+
+ })[c]);
+
+}
+
+function notice(text){
+
+ $("notice").textContent = text || "";
+
+}
+
+function isUUID(value){
+
+ return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+
+ value || ""
+
+ );
+
+}
+
+function time(value){
+
+ return new Date(value).toLocaleTimeString(
+
+ "ru-RU",
+
+ {
+
+ hour:"2-digit",
+
+ minute:"2-digit",
+
+ timeZone:"Asia/Dushanbe"
+
+ }
+
+ );
+
+}
+
+function date(value){
+
+ return new Date(value).toLocaleDateString(
+
+ "ru-RU",
+
+ {timeZone:"Asia/Dushanbe"}
+
+ );
+
+}
+
+// ==========================
+// LOAD CHAT LIST
+// ==========================
+
+async function loadChats(){
+
+ if(!user) return;
+
+ const version = ++listVersion;
+
+ const userId = user.id;
+
+ try{
+
+ const {data,error} = await db.rpc(
+
+ "vayo_chat_list"
+
+ );
+
+ if(version!==listVersion ||
+
+ user?.id!==userId) return;
+
+ if(error) throw error;
+
+ chats = data || [];
+
+ renderChats();
+
+ const result = await db.rpc(
+
+ "vayo_unread_messages"
+
+ );
+
+ if(version!==listVersion ||
+
+ user?.id!==userId) return;
+
+ if(!result.error){
+
+ const count = Number(result.data || 0);
+
+ $("totalUnread").textContent =
+
+ count>0 ? "("+count+")" : "";
+
+ }
+
+ }catch(error){
+
+ if(version===listVersion){
+
+ notice(error.message);
+
+ }
+
+ }
+
+}
+
+// ==========================
+// RENDER CHAT LIST
+// ==========================
+
+function renderChats(){
+
+ const q = $("search").value
+
+ .trim().toLowerCase();
+
+ const list = chats.filter(c=>
+
+ [
+
+ c.other_name,
+
+ c.last_message,
+
+ services[c.service]
+
+ ].join(" ").toLowerCase().includes(q)
+
+ );
+
+ $("chatList").innerHTML = list.map(c=>`
+
+ <button class="chatItem
+
+ ${activeChat?.conversation_id===c.conversation_id
+
+ ?"active":""}"
+
+ data-chat="${esc(c.conversation_id)}">
+
+ <div class="avatar">
+
+ ${icons[c.service] || "💬"}
+
+ </div>
+
+ <div class="chatInfo">
+
+ <strong>${esc(c.other_name)}</strong>
+
+ <div class="preview">
+
+ ${esc(c.last_message || services[c.service])}
+
+ </div>
+
+ </div>
+
+ <div>
+
+ <div class="chatTime">
+
+ ${esc(time(c.last_message_at))}
+
+ </div>
+
+ ${Number(c.unread_count)>0
+
+ ? `<span class="badge">
+
+ ${esc(c.unread_count)}
+
+ </span>`
+
+ : ""}
+
+ </div>
+
+ </button>
+
+ `).join("")
+
+ || `<div class="empty">
+
+ <div class="emptyIcon">💬</div>
+
+ <p>Суҳбат ёфт нашуд.</p>
+
+ </div>`;
+
+}
+
+// ==========================
+// OPEN CHAT
+// ==========================
+
+async function openChat(id){
+
+ if(!user || !isUUID(id)) return;
+
+ let chat = chats.find(
+
+ c=>c.conversation_id===id
+
+ );
+
+ if(!chat){
+
+ await loadChats();
+
+ chat = chats.find(
+
+ c=>c.conversation_id===id
+
+ );
+
+ }
+
+ if(!chat){
+
+ notice("Суҳбат дастрас нест.");
+
+ return;
+
+ }
+
+ messageVersion++;
+
+ activeChat = chat;
+
+ messageLimit = 100;
+
+ messages = [];
+
+ $("messageInput").value = "";
+
+ $("chatName").textContent = chat.other_name;
+
+ $("chatService").textContent =
+
+ services[chat.service] || "VAYO";
+
+ $("chatAvatar").textContent =
+
+ icons[chat.service] || "💬";
+
+ $("welcome").classList.add("hidden");
+
+ $("chatHeader").classList.remove("hidden");
+
+ $("messages").classList.remove("hidden");
+
+ $("composer").classList.remove("hidden");
+
+ $("layout").classList.add("open");
+
+ $("messages").textContent = "Боргирӣ...";
+
+ notice("");
+
+ renderChats();
+
+ await connectChatRealtime(id);
+
+ if(activeChat?.conversation_id!==id) return;
+
+ await loadMessages(true);
+
+}
+
+// ==========================
+// LOAD MESSAGES
+// ==========================
+
+async function loadMessages(scrollBottom=false){
+
+ if(!user || !activeChat) return;
+
+ const version = ++messageVersion;
+
+ const id = activeChat.conversation_id;
+
+ const userId = user.id;
+
+ try{
+
+ const {data,error} = await db
+
+ .from("chat_messages")
+
+ .select(
+
+ "id,conversation_id,sender_id,message,is_read,created_at"
+
+ )
+
+ .eq("conversation_id",id)
+
+ .order("created_at",{ascending:false})
+
+ .order("id",{ascending:false})
+
+ .limit(messageLimit+1);
+
+ if(version!==messageVersion ||
+
+ activeChat?.conversation_id!==id ||
+
+ user?.id!==userId){
+
+ return;
+
+ }
+
+ if(error) throw error;
+
+ const list = data || [];
+
+ const more = list.length>messageLimit;
+
+ messages = list.slice(0,messageLimit).reverse();
+
+ renderMessages(scrollBottom,more);
+
+ if(document.visibilityState==="visible"
+
+ && messages.some(m=>
+
+ m.sender_id!==userId && !m.is_read
+
+ )){
+
+ const result = await db.rpc(
+
+ "vayo_chat_read",
+
+ {p_conversation_id:id}
+
+ );
+
+ if(result.error){
+
+ notice(result.error.message);
+
+ }
+
+ if(activeChat?.conversation_id===id){
+
+ loadChats();
+
+ }
+
+ }
+
+ }catch(error){
+
+ if(version===messageVersion){
+
+ notice(error.message);
+
+ }
+
+ }
+
+}
+
+// ==========================
+// RENDER MESSAGES
+// ==========================
+
+function renderMessages(scrollBottom,more){
+
+ const box = $("messages");
+
+ const oldTop = box.scrollTop;
+
+ const oldHeight = box.scrollHeight;
+
+ const nearBottom =
+
+ oldHeight-box.clientHeight-oldTop<100;
+
+ let previousDate = "";
+
+ let html = "";
+
+ if(more && messageLimit<900){
+
+ html += `
+
+ <button class="more" id="older">
+
+ Паёмҳои пешина
+
+ </button>`;
+
+ }
+
+ for(const m of messages){
+
+ const day = date(m.created_at);
+
+ if(day!==previousDate){
+
+ html += `
+
+ <div style="text-align:center;
+
+ color:#888;font-size:12px;margin:15px">
+
+ ${esc(day)}
+
+ </div>`;
+
+ previousDate = day;
+
+ }
+
+ const mine = m.sender_id===user.id;
+
+ html += `
+
+ <div class="messageRow ${mine?"mine":""}">
+
+ <div class="bubble">
+
+ <div class="messageText">
+
+ ${esc(m.message)}
+
+ </div>
+
+ <div class="messageTime">
+
+ ${esc(time(m.created_at))}
+
+ ${mine ? (m.is_read?"✓✓":"✓") : ""}
+
+ </div>
+
+ </div>
+
+ </div>`;
+
+ }
+
+ box.innerHTML = html ||
+
+ `<div class="empty">
+
+ <p>Аввалин паёмро нависед.</p>
+
+ </div>`;
+
+ if(scrollBottom || nearBottom){
+
+ box.scrollTop = box.scrollHeight;
+
+ }else{
+
+ box.scrollTop = oldTop;
+
+ }
+
+ const older = $("older");
+
+ if(older){
+
+ older.onclick = async()=>{
+
+ const height = box.scrollHeight;
+
+ const top = box.scrollTop;
+
+ messageLimit = Math.min(messageLimit+100,900);
+
+ await loadMessages(false);
+
+ box.scrollTop = top+box.scrollHeight-height;
+
+ };
+
+ }
+
+}
+
+// ==========================
+// SEND MESSAGE
+// ==========================
+
+$("composer").addEventListener(
+
+ "submit",async event=>{
+
+ event.preventDefault();
+
+ if(!user || !activeChat || sending) return;
+
+ const text = $("messageInput").value.trim();
+
+ if(!text || text.length>2000) return;
+
+ const id = activeChat.conversation_id;
+
+ const userId = user.id;
+
+ sending = true;
+
+ $("sendButton").disabled = true;
+
+ $("messageInput").disabled = true;
+
+ notice("");
+
+ try{
+
+ const {error} = await db.rpc(
+
+ "vayo_send_message",
+
+ {
+
+ p_conversation_id:id,
+
+ p_message:text
+
+ }
+
+ );
+
+ if(error) throw error;
+
+ if(user?.id===userId &&
+
+ activeChat?.conversation_id===id){
+
+ $("messageInput").value = "";
+
+ await loadMessages(true);
+
+ }
+
+ await loadChats();
+
+ }catch(error){
+
+ const translations = {
+
+ "Chat is closed":
+
+ "Ин суҳбат баста шудааст.",
+
+ "Too many messages":
+
+ "Паёмҳои зиёд фиристодед. Каме интизор шавед.",
+
+ "Access denied":
+
+ "Дастрасӣ иҷозат дода нашудааст."
+
+ };
+
+ notice(
+
+ translations[error.message] || error.message
+
+ );
+
+ }finally{
+
+ sending = false;
+
+ $("sendButton").disabled = false;
+
+ $("messageInput").disabled = false;
+
+ }
+
+ });
+
+// ==========================
+// CHAT REALTIME
+// ==========================
+
+function connectChatRealtime(id){
+
+ channelQueue = channelQueue
+
+ .catch(console.error)
+
+ .then(async()=>{
+
+ if(chatChannel){
+
+ await db.removeChannel(chatChannel);
+
+ chatChannel = null;
+
+ }
+
+ if(!user || !id ||
+
+ activeChat?.conversation_id!==id){
+
+ return;
+
+ }
+
+ chatChannel = db.channel(
+
+ "vayo-chat-"+id
+
+ )
+
+ .on(
+
+ "postgres_changes",
+
+ {
+
+ event:"*",
+
+ schema:"public",
+
+ table:"chat_messages",
+
+ filter:"conversation_id=eq."+id
+
+ },
+
+ ()=>{
+
+ if(activeChat?.conversation_id===id){
+
+ loadMessages(false);
+
+ }
+
+ loadChats();
+
+ }
+
+ )
+
+ .subscribe(status=>{
+
+ if(status==="SUBSCRIBED" &&
+
+ activeChat?.conversation_id===id){
+
+ loadMessages(false);
+
+ }
+
+ });
+
+ });
+
+ return channelQueue;
+
+}
+
+// ==========================
+// CHAT LIST REALTIME
+// ==========================
+
+async function connectListRealtime(){
+
+ if(listChannel){
+
+ await db.removeChannel(listChannel);
+
+ listChannel = null;
+
+ }
+
+ if(!user) return;
+
+ const userId = user.id;
+
+ listChannel = db.channel(
+
+ "vayo-chat-list-"+userId
+
+ )
+
+ .on(
+
+ "postgres_changes",
+
+ {
+
+ event:"*",
+
+ schema:"public",
+
+ table:"chat_conversations",
+
+ filter:"participant_one=eq."+userId
+
+ },
+
+ ()=>loadChats()
+
+ )
+
+ .on(
+
+ "postgres_changes",
+
+ {
+
+ event:"*",
+
+ schema:"public",
+
+ table:"chat_conversations",
+
+ filter:"participant_two=eq."+userId
+
+ },
+
+ ()=>loadChats()
+
+ )
+
+ .subscribe();
+
+}
+
+// ==========================
+// OPEN CHAT FROM OTHER PAGE
+// ==========================
+
+async function openFromURL(){
+
+ if(!pendingLink || !user) return;
+
+ pendingLink = false;
+
+ const params = new URLSearchParams(
+
+ location.search
+
+ );
+
+ const conversation = params.get("id");
+
+ const service = params.get("service");
+
+ const reference = params.get("ref");
+
+ if(isUUID(conversation)){
+
+ await openChat(conversation);
+
+ return;
+
+ }
+
+ if(!Object.hasOwn(services,service) ||
+
+ !isUUID(reference)){
+
+ return;
+
+ }
+
+ try{
+
+ const {data,error} = await db.rpc(
+
+ "vayo_open_chat",
+
+ {
+
+ p_service:service,
+
+ p_reference_id:reference
+
+ }
+
+ );
+
+ if(error) throw error;
+
+ await loadChats();
+
+ await openChat(data);
+
+ }catch(error){
+
+ notice(error.message);
+
+ }
+
+}
+
+// ==========================
+// NAVIGATION
+// ==========================
+
+$("chatList").addEventListener(
+
+ "click",event=>{
+
+ const button = event.target.closest(
+
+ "[data-chat]"
+
+ );
+
+ if(button && !sending){
+
+ openChat(button.dataset.chat);
+
+ }
+
+ });
+
+$("search").addEventListener(
+
+ "input",renderChats
+
+ );
+
+$("back").addEventListener("click",()=>{
+
+ if(sending) return;
+
+ messageVersion++;
+
+ activeChat = null;
+
+ messages = [];
+
+ $("messageInput").value = "";
+
+ $("layout").classList.remove("open");
+
+ $("chatHeader").classList.add("hidden");
+
+ $("messages").classList.add("hidden");
+
+ $("composer").classList.add("hidden");
+
+ $("welcome").classList.remove("hidden");
+
+ $("messages").textContent = "";
+
+ connectChatRealtime(null);
+
+ renderChats();
+
+});
+
+// ==========================
+// AUTH
+// ==========================
+
+async function loadSession(){
+
+ const version = ++sessionVersion;
+
+ try{
+
+ const {data,error} = await db.auth.getUser();
+
+ if(version!==sessionVersion) return;
+
+ if(error || !data?.user){
+
+ user = null;
+
+ activeChat = null;
+
+ chats = [];
+
+ messages = [];
+
+ listVersion++;
+
+ messageVersion++;
+
+ $("chatList").textContent = "";
+
+ $("messages").textContent = "";
+
+ $("messageInput").value = "";
+
+ $("layout").classList.add("hidden");
+
+ $("layout").classList.remove("open");
+
+ $("chatHeader").classList.add("hidden");
+
+ $("messages").classList.add("hidden");
+
+ $("composer").classList.add("hidden");
+
+ $("welcome").classList.remove("hidden");
+
+ $("loginBox").classList.remove("hidden");
+
+ await connectChatRealtime(null);
+
+ if(listChannel){
+
+ await db.removeChannel(listChannel);
+
+ listChannel = null;
+
+ }
+
+ return;
+
+ }
+
+ const changed = user?.id!==data.user.id;
+
+ user = data.user;
+
+ if(changed){
+
+ activeChat = null;
+
+ chats = [];
+
+ messages = [];
+
+ pendingLink = true;
+
+ messageVersion++;
+
+ $("messages").textContent = "";
+
+ $("messageInput").value = "";
+
+ $("chatList").textContent = "";
+
+ $("layout").classList.remove("open");
+
+ $("chatHeader").classList.add("hidden");
+
+ $("messages").classList.add("hidden");
+
+ $("composer").classList.add("hidden");
+
+ $("welcome").classList.remove("hidden");
+
+ await connectChatRealtime(null);
+
+ }
+
+ $("loginBox").classList.add("hidden");
+
+ $("layout").classList.remove("hidden");
+
+ await loadChats();
+
+ if(version!==sessionVersion) return;
+
+ await connectListRealtime();
+
+ if(version!==sessionVersion) return;
+
+ await openFromURL();
+
+ }catch(error){
+
+ notice(error.message);
+
+ }
+
+}
+
+// ==========================
+// START
+// ==========================
+
+function start(){
+
+ if(!db){
+
+ notice("Supabase дастрас нест.");
+
+ return;
+
+ }
+
+ db.auth.onAuthStateChange(event=>{
+
+ if([
+
+ "INITIAL_SESSION",
+
+ "SIGNED_IN",
+
+ "SIGNED_OUT"
+
+ ].includes(event)){
+
+ setTimeout(loadSession,0);
+
+ }
+
+ });
+
+}
+
+setInterval(()=>{
+
+ if(!user ||
+
+ document.visibilityState!=="visible"){
+
+ return;
+
+ }
+
+ loadChats();
+
+ if(activeChat){
+
+ loadMessages(false);
+
+ }
+
+},10000);
+
+document.addEventListener(
+
+ "visibilitychange",()=>{
+
+ if(user &&
+
+ document.visibilityState==="visible"){
+
+ loadChats();
+
+ if(activeChat){
+
+ loadMessages(false);
+
+ }
+
+ }
+
+ });
+
+start();
+
+</script>
+
+</body>
+</html>
