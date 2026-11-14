@@ -6,225 +6,347 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>VAYO Taxi</title>
 
-<link rel="stylesheet"
-href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./config.js"></script>
 
 <style>
+
 *{box-sizing:border-box}
+
 body{
- margin:0;
- background:#f5f5f5;
- font-family:Arial,sans-serif;
- color:#171717;
+margin:0;
+font-family:Arial,sans-serif;
+background:#f5f6f8;
+color:#222;
 }
-header{
- background:#fff;
- padding:16px;
- display:flex;
- justify-content:space-between;
- align-items:center;
-}
-header a{
- color:#171717;
- text-decoration:none;
- font-size:22px;
-}
-.logo{
- font-size:25px;
- font-weight:900;
-}
-#map{
- height:43vh;
- min-height:250px;
- z-index:1;
-}
-.sheet{
- position:relative;
- background:white;
- border-radius:24px 24px 0 0;
- margin-top:-15px;
- padding:20px;
- z-index:2;
- max-width:900px;
- margin-left:auto;
- margin-right:auto;
-}
-input,textarea,select{
- width:100%;
- padding:14px;
- border:1px solid #ddd;
- border-radius:12px;
- font-size:16px;
- margin:7px 0 12px;
- background:#f7f7f7;
-}
-button,.btn{
- border:0;
- background:#ffc400;
- color:#171717;
- padding:14px;
- border-radius:13px;
- font-size:15px;
- font-weight:bold;
- cursor:pointer;
- text-decoration:none;
- display:inline-block;
-}
+
+a{text-decoration:none;color:inherit}
+
+button,input,select,textarea{font:inherit}
+
+button{cursor:pointer}
+
 button:disabled{opacity:.5}
-.full{width:100%}
-.gray{background:#eee}
-.red{background:#dc2626;color:white}
-.green{background:#16a34a;color:white}
-.row{
- display:flex;
- gap:8px;
- align-items:center;
+
+header{
+background:white;
+padding:15px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:10px;
+border-bottom:1px solid #ddd;
 }
-.row input{flex:1;min-width:0}
-.cars{
- display:grid;
- grid-template-columns:repeat(4,1fr);
- gap:8px;
- margin:16px 0;
+
+.logo{
+font-size:26px;
+font-weight:900;
+color:#ff6500;
 }
-.car{
- background:#f7f7f7;
- border:2px solid transparent;
- padding:12px 5px;
- border-radius:16px;
- text-align:center;
- cursor:pointer;
+
+main{
+max-width:1000px;
+margin:auto;
+padding:15px 15px 110px;
 }
-.car.active{
- border-color:#ffc400;
- background:#fff9df;
+
+.hero{
+background:linear-gradient(135deg,#ffcf00,#ffe99a);
+border-radius:23px;
+padding:23px;
+margin-bottom:15px;
 }
-.carIcon{font-size:35px}
-.carName{
- font-size:13px;
- font-weight:bold;
- margin:8px 0;
-}
-.carPrice{
- font-size:14px;
- font-weight:bold;
-}
-.notice{
- padding:12px;
- border-radius:12px;
- background:#fff2c2;
- margin:12px 0;
- overflow-wrap:anywhere;
-}
-.notice:empty{display:none}
+
+.hero h1{margin:0 0 12px}
+
+.hero p{margin-bottom:0}
+
 .card{
- padding:16px;
- background:#f7f7f7;
- border-radius:16px;
- margin:12px 0;
- overflow-wrap:anywhere;
+background:white;
+border-radius:20px;
+padding:18px;
+margin-bottom:15px;
+border:1px solid #eee;
 }
+
+#map{
+height:340px;
+width:100%;
+border-radius:18px;
+z-index:1;
+margin-bottom:15px;
+background:#eee;
+}
+
+label{
+display:block;
+font-weight:bold;
+font-size:13px;
+margin:14px 0 7px;
+}
+
+input,select,textarea{
+width:100%;
+padding:13px;
+border:1px solid #ddd;
+border-radius:12px;
+outline:none;
+background:white;
+}
+
+input:focus,textarea:focus{
+border-color:#ff6500;
+}
+
+.row{
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+.between{
+justify-content:space-between;
+}
+
+.btn{
+display:inline-block;
+border:0;
+border-radius:12px;
+background:#ff6500;
+color:white;
+font-weight:bold;
+padding:13px 17px;
+text-align:center;
+}
+
+.full{width:100%}
+
+.gray{background:#eee;color:#222}
+
+.green{background:#16a34a}
+
+.red{background:#dc2626}
+
+.yellow{background:#ffcf00;color:#222}
+
+.small{
+font-size:12px;
+color:#777;
+line-height:1.5;
+}
+
+.notice{
+background:#fff0df;
+color:#9a3412;
+padding:13px;
+border-radius:12px;
+margin:10px 0;
+overflow-wrap:anywhere;
+}
+
+.notice:empty{display:none}
+
+.classes{
+display:grid;
+grid-template-columns:repeat(4,minmax(0,1fr));
+gap:9px;
+margin:15px 0;
+}
+
+.car{
+border:2px solid #eee;
+border-radius:16px;
+background:white;
+padding:15px 8px;
+text-align:center;
+}
+
+.car.active{
+border-color:#ff6500;
+background:#fff0df;
+}
+
+.car span{
+display:block;
+font-size:35px;
+margin-bottom:8px;
+}
+
+.car strong{
+display:block;
+font-size:14px;
+}
+
+.car small{
+display:block;
+color:#777;
+margin-top:6px;
+}
+
 .price{
- font-size:30px;
- font-weight:900;
+font-size:32px;
+font-weight:900;
+color:#ff6500;
 }
+
+.routeInfo{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+margin:15px 0;
+}
+
+.routeBox{
+background:#f5f6f8;
+border-radius:13px;
+padding:14px;
+text-align:center;
+}
+
+.routeBox strong{
+display:block;
+font-size:20px;
+margin-top:6px;
+}
+
 .hidden{display:none!important}
-dialog{
- border:0;
- border-radius:22px;
- width:min(94%,480px);
- max-height:90vh;
- overflow:auto;
- padding:22px;
+
+.status{
+background:#fff0df;
+color:#c2410c;
+border-radius:20px;
+padding:8px 12px;
+font-size:12px;
+font-weight:bold;
 }
-dialog::backdrop{background:#0008}
-.badge{
- display:inline-block;
- background:#fff0bf;
- padding:8px 12px;
- border-radius:20px;
- font-size:13px;
+
+.driverCard{
+background:#f5f6f8;
+border-radius:15px;
+padding:15px;
+margin-top:15px;
 }
-small{color:#777}
-.menu{
- display:flex;
- gap:8px;
- flex-wrap:wrap;
- margin-top:15px;
+
+.driverAvatar{
+font-size:45px;
 }
-.menu a{
- font-size:13px;
+
+.historyItem{
+border-bottom:1px solid #eee;
+padding:15px 0;
+overflow-wrap:anywhere;
 }
-@media(max-width:450px){
- .sheet{padding:15px}
- .carIcon{font-size:28px}
- .carName{font-size:11px}
- .carPrice{font-size:12px}
+
+.actions{
+display:grid;
+gap:10px;
+margin-top:15px;
 }
+
+nav{
+position:fixed;
+bottom:0;
+left:0;
+right:0;
+background:white;
+display:flex;
+justify-content:space-around;
+padding:12px 5px;
+border-top:1px solid #ddd;
+z-index:40;
+}
+
+nav a{
+text-align:center;
+font-size:12px;
+color:#777;
+}
+
+nav span{
+display:block;
+font-size:24px;
+margin-bottom:4px;
+}
+
+nav .active{
+color:#ff6500;
+font-weight:bold;
+}
+
+.searchResults{
+display:grid;
+gap:6px;
+margin-top:8px;
+}
+
+.searchResult{
+text-align:left;
+background:#f5f6f8;
+border:0;
+border-radius:10px;
+padding:12px;
+overflow-wrap:anywhere;
+}
+
+@media(max-width:650px){
+
+.classes{
+grid-template-columns:repeat(2,minmax(0,1fr));
+}
+
+#map{height:300px}
+
+.hero h1{font-size:25px}
+
+.logo{font-size:22px}
+
+}
+
 </style>
 </head>
 
 <body>
 
 <header>
+
 <a href="./index.html">←</a>
-<div class="logo">VAYO <span style="color:#d9a500">TAXI</span></div>
+
+<a class="logo" href="./index.html">VAYO TAXI</a>
+
+<a href="./chat.html">💬</a>
+
+<a href="./notifications.html">🔔</a>
+
 <a href="./account.html">👤</a>
+
 </header>
+
+<main>
+
+<section class="hero">
+
+<h1>🚕 VAYO Taxi</h1>
+
+<p>Таксӣ дар шаҳри шумо</p>
+
+<p><strong>0% комиссия барои ронандагон</strong></p>
+
+</section>
+
+<div id="notice" class="notice"></div>
 
 <div id="map"></div>
 
-<div class="sheet">
+<!-- BOOKING -->
 
-<div id="notice" class="notice" role="status"></div>
-
-<section id="bookingSection">
+<section id="booking" class="card">
 
 <h2>Ба куҷо меравед?</h2>
 
-<label>🟢 Аз куҷо</label>
-
-<div class="row">
-
-<input id="fromAddress"
-placeholder="Суроғаи шумо">
-
-<button onclick="searchAddress('from')">🔍</button>
-
-<button onclick="getGPS()">📍</button>
-
-</div>
-
-<button class="gray"
-onclick="pickPoint('from')">
-Интихоб аз харита
-</button>
-
-<br><br>
-
-<label>🔴 Ба куҷо</label>
-
-<div class="row">
-
-<input id="toAddress"
-placeholder="Ҷойи таъинот">
-
-<button onclick="searchAddress('to')">🔍</button>
-
-</div>
-
-<button class="gray"
-onclick="pickPoint('to')">
-Интихоб аз харита
-</button>
-
-<label style="display:block;margin-top:15px">
-Шаҳр
-</label>
+<label>Шаҳр</label>
 
 <select id="city">
 
@@ -235,1521 +357,1758 @@ onclick="pickPoint('to')">
 <option>Ҳисор</option>
 <option>Данғара</option>
 <option>Ваҳдат</option>
+<option>Турсунзода</option>
+<option>Истаравшан</option>
+<option>Панҷакент</option>
+<option>Хоруғ</option>
 
 </select>
 
-<div id="cars" class="cars"></div>
+<label>🟢 Аз куҷо?</label>
 
-<div class="card">
+<div class="row">
 
-<small>Нархи тахминии сафар</small>
+<input id="pickup"
+placeholder="Суроғаи шумо">
 
-<div id="tripPrice" class="price">—</div>
-
-<p id="tripInfo">Масирро интихоб кунед.</p>
-
-<small>Комиссияи VAYO: 0%</small>
+<button id="searchPickup" class="btn gray">
+🔍
+</button>
 
 </div>
 
-<button id="orderButton"
-class="full"
-onclick="openBooking()" disabled>
+<div id="pickupResults" class="searchResults"></div>
 
-Фармоиш додани таксӣ
+<div class="row" style="margin-top:10px">
+
+<button id="gps" class="btn gray">
+📍 GPS
+</button>
+
+<button id="pickOnMap" class="btn gray">
+Аз харита
+</button>
+
+</div>
+
+<label>🔴 Ба куҷо?</label>
+
+<div class="row">
+
+<input id="destination"
+placeholder="Суроғаи таъинот">
+
+<button id="searchDestination" class="btn gray">
+🔍
+</button>
+
+</div>
+
+<div id="destinationResults" class="searchResults"></div>
+
+<button id="destinationOnMap"
+class="btn gray"
+style="margin-top:10px">
+
+Аз харита интихоб кунед
 
 </button>
 
-</section>
+<h3>Навъи мошин</h3>
 
-<section id="activeSection" class="hidden">
+<div id="classes" class="classes">
 
-<div id="activeContent"></div>
+Тарифҳо боргирӣ мешаванд...
 
-</section>
+</div>
 
-<div class="menu">
+<div class="routeInfo">
 
-<button class="gray" onclick="openHistory()">
-📋 Таърихи сафарҳо
+<div class="routeBox">
+
+<span class="small">Масофа</span>
+
+<strong id="distance">—</strong>
+
+</div>
+
+<div class="routeBox">
+
+<span class="small">Вақт</span>
+
+<strong id="duration">—</strong>
+
+</div>
+
+</div>
+
+<div class="row between">
+
+<div>
+
+<div class="small">Нархи тахминӣ</div>
+
+<div id="price" class="price">—</div>
+
+</div>
+
+<button id="calculate" class="btn gray">
+
+Ҳисоб кардан
+
 </button>
 
-<a class="btn gray" href="./driver.html">
-🚕 Ронанда шудан
-</a>
-
 </div>
-
-</div>
-
-<dialog id="bookingDialog">
-
-<h2>Тасдиқи фармоиш</h2>
-
-<div id="bookingError" class="notice"></div>
 
 <form id="bookingForm">
 
 <label>Ному насаб</label>
 
-<input id="customerName" required maxlength="100">
+<input id="customerName" maxlength="100" required>
 
 <label>Телефон</label>
 
 <input id="customerPhone"
 type="tel"
-placeholder="+992900000000" required>
+placeholder="+992"
+required>
 
-<label>Шарҳ барои ронанда</label>
+<label>Эзоҳ ба ронанда</label>
 
 <textarea id="note"
 maxlength="500"
 placeholder="Масалан: назди даромадгоҳ"></textarea>
 
-<label>
+<label class="row">
 
-<input id="callOnArrival"
+<input id="call"
 type="checkbox"
 style="width:auto"
 checked>
 
-Ҳангоми расидан занг занад
+Ҳангоми расидан занг занед
 
 </label>
 
-<div class="card">
+<p>💵 Пардохт: нақдӣ</p>
 
-<p>Пардохт: нақдӣ</p>
+<button id="bookButton"
+type="submit"
+class="btn full yellow">
 
-<strong id="bookingPrice"></strong>
-
-</div>
-
-<button id="confirmButton"
-class="full"
-type="submit">
-
-Тасдиқ кардани фармоиш
-
-</button>
-
-<br><br>
-
-<button class="gray full"
-type="button"
-onclick="document.getElementById('bookingDialog').close()">
-
-Бекор
+🚕 Фармоиш додани таксӣ
 
 </button>
 
 </form>
 
-</dialog>
+</section>
 
-<dialog id="historyDialog">
+<!-- ACTIVE ORDER -->
+
+<section id="activeSection" class="card hidden">
+
+<div class="row between">
+
+<h2>Сафари шумо</h2>
+
+<span id="activeStatus" class="status"></span>
+
+</div>
+
+<div id="activeDetails"></div>
+
+<div id="driverDetails"></div>
+
+<div id="activeActions" class="actions"></div>
+
+</section>
+
+<!-- DRIVER -->
+
+<section class="card">
+
+<h2>Ронандаи VAYO шавед</h2>
+
+<p>Комиссияи платформа 0%.</p>
+
+<a href="./driver.html" class="btn full">
+
+🚕 Кабинети ронанда
+
+</a>
+
+</section>
+
+<!-- HISTORY -->
+
+<section class="card">
 
 <h2>Таърихи сафарҳо</h2>
 
-<div id="historyList"></div>
+<div id="history">
 
-<button class="gray full"
-onclick="document.getElementById('historyDialog').close()">
+Барои дидани таърих ба аккаунт ворид шавед.
 
-Пӯшидан
+</div>
 
-</button>
+</section>
 
-</dialog>
+</main>
+
+<nav>
+
+<a href="./index.html">
+
+<span>🏠</span>
+
+Асосӣ
+
+</a>
+
+<a href="./marketplace.html">
+
+<span>🛍️</span>
+
+Бозор
+
+</a>
+
+<a href="./taxi.html" class="active">
+
+<span>🚕</span>
+
+Таксӣ
+
+</a>
+
+<a href="./food.html">
+
+<span>🍔</span>
+
+Таом
+
+</a>
+
+<a href="./account.html">
+
+<span>👤</span>
+
+Аккаунт
+
+</a>
+
+</nav>
 
 <script>
 
-const db = window.vayo;
-const $ = id => document.getElementById(id);
+const db=window.vayo;
 
-let user = null;
-let tariffs = [];
-let selectedClass = "economy";
+const $=id=>document.getElementById(id);
 
-let points = {
- from:null,
- to:null
+let user=null;
+
+let tariffs=[];
+
+let selectedClass="economy";
+
+let pickup=null;
+
+let destination=null;
+
+let route=null;
+
+let activeOrder=null;
+
+let mapMode=null;
+
+let pickupMarker=null;
+
+let destinationMarker=null;
+
+let driverMarker=null;
+
+let routeLine=null;
+
+let busy=false;
+
+let routeVersion=0;
+
+let orderVersion=0;
+
+let authVersion=0;
+
+let searchVersion=0;
+
+let orderLoading=false;
+
+let lastSearch=0;
+
+const cities={
+
+"Душанбе":[38.5598,68.7870],
+
+"Хуҷанд":[40.2833,69.6222],
+
+"Бохтар":[37.8364,68.7803],
+
+"Кӯлоб":[37.9142,69.7845],
+
+"Ҳисор":[38.525,68.551],
+
+"Данғара":[38.095,69.339],
+
+"Ваҳдат":[38.556,69.020],
+
+"Турсунзода":[38.512,68.231],
+
+"Истаравшан":[39.914,69.003],
+
+"Панҷакент":[39.495,67.609],
+
+"Хоруғ":[37.49,71.55]
+
 };
 
-let markers = {
- from:null,
- to:null
-};
+const carIcons={
 
-let versions = {
- from:0,
- to:0
-};
+economy:"🚕",
 
-let routeLine = null;
-let driverMarker = null;
+comfort:"🚗",
 
-let routeVersion = 0;
-let routeController = null;
+business:"🚘",
 
-let distanceKm = 0;
-let durationMin = 0;
-let routeReady = false;
-
-let pickMode = null;
-let activeOrder = null;
-
-let busy = false;
-let refreshing = false;
-
-let geoQueue = Promise.resolve();
-let lastGeoRequest = 0;
-
-const classNames = {
-
- economy:"Эконом",
- comfort:"Комфорт",
- business:"Бизнес",
- minivan:"Минивэн"
+minivan:"🚐"
 
 };
 
-const statuses = {
+const statuses={
 
- searching:"Ҷустуҷӯи ронанда...",
- accepted:"Ронанда фармоишро қабул кард",
- arrived:"Ронанда расид",
- in_progress:"Сафар оғоз шуд",
- completed:"Сафар анҷом ёфт",
- cancelled:"Сафар бекор шуд"
+searching:"Ҷустуҷӯи ронанда",
+
+accepted:"Ронанда қабул кард",
+
+arrived:"Ронанда расид",
+
+in_progress:"Дар роҳ",
+
+completed:"Анҷом ёфт",
+
+cancelled:"Бекор шуд"
 
 };
 
 function esc(value){
 
- return String(value ?? "").replace(
- /[&<>"']/g,
- c=>({
- "&":"&amp;",
- "<":"&lt;",
- ">":"&gt;",
- '"':"&quot;",
- "'":"&#39;"
- })[c]);
+return String(value??"").replace(
+
+/[&<>"']/g,
+
+c=>({
+
+"&":"&amp;",
+
+"<":"&lt;",
+
+">":"&gt;",
+
+'"':"&quot;",
+
+"'":"&#39;"
+
+})[c]);
 
 }
 
 function notice(text){
 
- $("notice").textContent = text || "";
+$("notice").textContent=text||"";
 
 }
 
 function money(value){
 
- return Number(value || 0).toFixed(2)+" TJS";
+return Number(value||0).toFixed(2)+" TJS";
 
 }
 
-function normalizePhone(value){
+function phone(value){
 
- let p = value.replace(/[\s()-]/g,"");
+let n=String(value||"").replace(/\D/g,"");
 
- if(/^\d{9}$/.test(p)) p = "+992"+p;
+if(n.length===9)n="992"+n;
 
- if(/^992\d{9}$/.test(p)) p = "+"+p;
+if(!/^992\d{9}$/.test(n)){
 
- if(!/^\+992\d{9}$/.test(p)){
-
-  throw new Error("Рақами телефон нодуруст.");
-
- }
-
- return p;
+throw new Error("Телефонро дуруст ворид кунед.");
 
 }
 
-async function rpc(name,args={}){
-
- const {data,error} = await db.rpc(name,args);
-
- if(error) throw error;
-
- return data;
+return "+"+n;
 
 }
 
-const map = L.map("map").setView(
+function validCoords(lat,lng){
 
- [38.5598,68.7870],13
+return Number.isFinite(lat)&&
+
+Number.isFinite(lng)&&
+
+Math.abs(lat)<=90&&
+
+Math.abs(lng)<=180;
+
+}
+
+function requireLogin(){
+
+if(user)return true;
+
+location.href="./account.html";
+
+return false;
+
+}
+
+// =======================
+// MAP
+// =======================
+
+const map=L.map("map").setView(
+
+cities["Душанбе"],13
 
 );
 
 L.tileLayer(
 
- "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
 
- {
+{
 
-  maxZoom:19,
+maxZoom:19,
 
-  attribution:"&copy; OpenStreetMap contributors"
+attribution:"© OpenStreetMap contributors"
 
- }
+}
 
 ).addTo(map);
 
-function markerIcon(color){
+function clearLayer(layer){
 
- return L.divIcon({
-
-  className:"",
-
-  html:`<div style="
-  width:23px;height:23px;
-  background:${color};
-  border:4px solid white;
-  border-radius:50%;
-  box-shadow:0 2px 8px #0005">
-  </div>`,
-
-  iconSize:[23,23],
-
-  iconAnchor:[11,11]
-
- });
+if(layer)map.removeLayer(layer);
 
 }
 
-function setMarker(type,lat,lng){
+function clearRoute(){
 
- if(markers[type]){
+routeVersion++;
 
-  markers[type].setLatLng([lat,lng]);
+route=null;
 
- }else{
+clearLayer(routeLine);
 
-  markers[type] = L.marker([lat,lng],{
+routeLine=null;
 
-   icon:markerIcon(
-   type==="from"?"#16a34a":"#dc2626"
-   )
-
-  }).addTo(map);
-
- }
+renderPrice();
 
 }
 
-async function geoRequest(url){
+function setPoint(type,lat,lng,address){
 
- const task = geoQueue.catch(()=>{}).then(async()=>{
+if(!validCoords(lat,lng))return;
 
-  const wait = Math.max(
-   0,1100-(Date.now()-lastGeoRequest)
-  );
+const point={lat,lng,address};
 
-  await new Promise(resolve=>
-   setTimeout(resolve,wait)
-  );
+clearRoute();
 
-  lastGeoRequest = Date.now();
+if(type==="pickup"){
 
-  const response = await fetch(url);
+pickup=point;
 
-  if(!response.ok){
+$("pickup").value=address;
 
-   throw new Error("Ҷустуҷӯи суроға дастрас нест.");
+clearLayer(pickupMarker);
 
-  }
+pickupMarker=L.marker([lat,lng])
 
-  return response.json();
+.addTo(map)
 
- });
+.bindPopup("Ҷои саворшавӣ");
 
- geoQueue = task;
+$("pickupResults").replaceChildren();
 
- return task;
+}else{
 
-}
+destination=point;
 
-function invalidateRoute(){
+$("destination").value=address;
 
- routeVersion++;
+clearLayer(destinationMarker);
 
- routeReady = false;
+destinationMarker=L.marker([lat,lng])
 
- distanceKm = 0;
+.addTo(map)
 
- durationMin = 0;
+.bindPopup("Ҷои таъинот");
 
- if(routeController){
-
-  routeController.abort();
-
- }
-
- if(routeLine){
-
-  map.removeLayer(routeLine);
-
-  routeLine = null;
-
- }
-
- updatePrice();
+$("destinationResults").replaceChildren();
 
 }
 
-function clearPoint(type){
+if(pickup&&destination){
 
- versions[type]++;
+map.fitBounds([
 
- points[type] = null;
+[pickup.lat,pickup.lng],
 
- if(markers[type]){
+[destination.lat,destination.lng]
 
-  map.removeLayer(markers[type]);
+],{padding:[40,40]});
 
-  markers[type] = null;
+}else{
 
- }
-
- invalidateRoute();
+map.setView([lat,lng],15);
 
 }
 
-async function setPoint(type,lat,lng,address){
+}
 
- if(activeOrder || busy) return;
+map.on("click",e=>{
 
- points[type] = {
+if(activeOrder||!mapMode||busy)return;
 
-  lat:Number(lat),
+const type=mapMode;
 
-  lng:Number(lng),
+mapMode=null;
 
-  address
+const lat=e.latlng.lat;
 
- };
+const lng=e.latlng.lng;
 
- $(type+"Address").value = address;
+setPoint(
 
- setMarker(type,lat,lng);
+type,
 
- invalidateRoute();
+lat,
 
- if(points.from && points.to){
+lng,
 
-  await calculateRoute();
+lat.toFixed(6)+", "+lng.toFixed(6)
 
- }else{
+);
 
-  map.setView([lat,lng],15);
+notice("Ҷой интихоб шуд.");
 
- }
+});
+
+// =======================
+// GPS
+// =======================
+
+$("gps").onclick=()=>{
+
+if(!navigator.geolocation){
+
+notice("GPS дастрас нест.");
+
+return;
 
 }
+
+$("gps").disabled=true;
+
+notice("Ҷойгиршавии шумо муайян мешавад...");
+
+navigator.geolocation.getCurrentPosition(
+
+position=>{
+
+$("gps").disabled=false;
+
+if(activeOrder||busy)return;
+
+const lat=position.coords.latitude;
+
+const lng=position.coords.longitude;
+
+setPoint(
+
+"pickup",
+
+lat,
+
+lng,
+
+"GPS: "+lat.toFixed(6)+", "+lng.toFixed(6)
+
+);
+
+notice("");
+
+},
+
+error=>{
+
+$("gps").disabled=false;
+
+notice("GPS кор накард. Иҷозати ҷойгиршавиро санҷед.");
+
+},
+
+{
+
+enableHighAccuracy:true,
+
+timeout:15000,
+
+maximumAge:10000
+
+}
+
+);
+
+};
+
+$("pickOnMap").onclick=()=>{
+
+mapMode="pickup";
+
+notice("Ҷои саворшавиро дар харита пахш кунед.");
+
+$("map").scrollIntoView({behavior:"smooth"});
+
+};
+
+$("destinationOnMap").onclick=()=>{
+
+mapMode="destination";
+
+notice("Ҷои таъинотро дар харита пахш кунед.");
+
+$("map").scrollIntoView({behavior:"smooth"});
+
+};
+
+// =======================
+// ADDRESS SEARCH
+// =======================
 
 async function searchAddress(type){
 
- if(activeOrder || busy) return;
+const input=$(type);
 
- const text = $(type+"Address").value.trim();
+const q=input.value.trim();
 
- if(!text){
+if(q.length<3){
 
-  notice("Суроғаро ворид кунед.");
+notice("Суроғаро пурратар нависед.");
 
-  return;
-
- }
-
- clearPoint(type);
-
- const version = versions[type];
-
- try{
-
- notice("Ҷустуҷӯи суроға...");
-
- const url =
-
- "https://nominatim.openstreetmap.org/search?"
-
- +new URLSearchParams({
-
-  format:"jsonv2",
-
-  q:text+", "+$("city").value+", Тоҷикистон",
-
-  countrycodes:"tj",
-
-  limit:"5",
-
-  "accept-language":"tg,ru,en"
-
- });
-
- const data = await geoRequest(url);
-
- if(version!==versions[type]) return;
-
- if(!data.length){
-
-  throw new Error(
-  "Суроға ёфт нашуд. Аз харита интихоб кунед."
-  );
-
- }
-
- let item = data[0];
-
- if(data.length>1){
-
- const answer = prompt(
-
-  "Суроғаро интихоб кунед:\n"+
-
-  data.map((d,i)=>
-   (i+1)+". "+d.display_name
-  ).join("\n"),
-
-  "1"
-
- );
-
- if(answer===null){
-
-  notice("");
-
-  return;
-
- }
-
- const index = Number(answer)-1;
-
- if(!Number.isInteger(index) || !data[index]){
-
-  throw new Error("Интихоб нодуруст.");
-
- }
-
- item = data[index];
-
- }
-
- await setPoint(
-
-  type,
-
-  Number(item.lat),
-
-  Number(item.lon),
-
-  item.display_name
-
- );
-
- notice("");
-
- }catch(error){
-
- notice(error.message);
-
- }
+return;
 
 }
 
-function pickPoint(type){
+if(Date.now()-lastSearch<1100){
 
- if(activeOrder || busy) return;
+notice("Каме интизор шавед.");
 
- pickMode = type;
-
- notice(
-
- type==="from"
-
- ? "Ҷойи гирифтани мусофирро дар харита пахш кунед."
-
- : "Ҷойи таъинотро дар харита пахш кунед."
-
- );
+return;
 
 }
 
-async function reversePoint(type,lat,lng){
+lastSearch=Date.now();
 
- clearPoint(type);
+const version=++searchVersion;
 
- const version = versions[type];
+const box=$(type+"Results");
 
- let address =
+box.textContent="Ҷустуҷӯ...";
 
- lat.toFixed(5)+", "+lng.toFixed(5);
+try{
 
- await setPoint(type,lat,lng,address);
+const url=new URL(
 
- try{
+"https://nominatim.openstreetmap.org/search"
 
- const data = await geoRequest(
+);
 
- "https://nominatim.openstreetmap.org/reverse?"
+url.searchParams.set(
 
- +new URLSearchParams({
+"q",q+", "+$("city").value+", Tajikistan"
 
-  format:"jsonv2",
+);
 
-  lat:String(lat),
+url.searchParams.set("format","jsonv2");
 
-  lon:String(lng),
+url.searchParams.set("countrycodes","tj");
 
-  "accept-language":"tg,ru,en"
+url.searchParams.set("limit","5");
 
- })
+const response=await fetch(url);
 
- );
+if(!response.ok){
 
- if(version!==versions[type]) return;
-
- if(points[type] && data.display_name){
-
-  points[type].address = data.display_name;
-
-  $(type+"Address").value = data.display_name;
-
- }
-
- }catch{}
+throw new Error("Ҷустуҷӯи суроға дастрас нест.");
 
 }
 
-map.on("click",async event=>{
+const data=await response.json();
 
- if(!pickMode || activeOrder || busy) return;
+if(version!==searchVersion)return;
 
- const type = pickMode;
+box.replaceChildren();
 
- pickMode = null;
+for(const item of data){
 
- await reversePoint(
+const b=document.createElement("button");
 
-  type,
+b.type="button";
 
-  event.latlng.lat,
+b.className="searchResult";
 
-  event.latlng.lng
+b.textContent=item.display_name;
 
- );
+b.onclick=()=>{
 
- notice("");
+setPoint(
 
-});
+type,
 
-function getGPS(){
+Number(item.lat),
 
- if(activeOrder || busy) return;
+Number(item.lon),
 
- if(!navigator.geolocation){
+item.display_name
 
-  notice("GPS дастрас нест.");
+);
 
-  return;
+notice("");
 
- }
+};
 
- const version = ++versions.from;
-
- notice("GPS ҷустуҷӯ мешавад...");
-
- navigator.geolocation.getCurrentPosition(
-
- async position=>{
-
- if(version!==versions.from) return;
-
- await reversePoint(
-
-  "from",
-
-  position.coords.latitude,
-
-  position.coords.longitude
-
- );
-
- notice("");
-
- },
-
- error=>notice("GPS: "+error.message),
-
- {
-
-  enableHighAccuracy:true,
-
-  timeout:20000,
-
-  maximumAge:5000
-
- }
-
- );
+box.appendChild(b);
 
 }
 
-async function calculateRoute(){
+if(!data.length){
 
- if(!points.from || !points.to) return;
-
- const version = ++routeVersion;
-
- routeController = new AbortController();
-
- const from = points.from;
-
- const to = points.to;
-
- try{
-
- const url =
-
- "https://router.project-osrm.org/route/v1/driving/"
-
- +from.lng+","+from.lat+";"
-
- +to.lng+","+to.lat
-
- +"?overview=full&geometries=geojson";
-
- const response = await fetch(url,{
-
-  signal:routeController.signal
-
- });
-
- if(!response.ok){
-
-  throw new Error("Хатои масир.");
-
- }
-
- const data = await response.json();
-
- if(version!==routeVersion) return;
-
- if(data.code!=="Ok" || !data.routes?.length){
-
-  throw new Error("Масир ёфт нашуд.");
-
- }
-
- const route = data.routes[0];
-
- distanceKm = Math.max(
-
-  0.1,
-
-  Math.round(route.distance/10)/100
-
- );
-
- durationMin = Math.max(
-
-  1,
-
-  Math.ceil(route.duration/60)
-
- );
-
- routeLine = L.geoJSON(route.geometry,{
-
-  style:{
-
-   color:"#e6a900",
-
-   weight:6
-
-  }
-
- }).addTo(map);
-
- map.fitBounds(routeLine.getBounds(),{
-
-  padding:[30,30],
-
-  maxZoom:17
-
- });
-
- routeReady = true;
-
- updatePrice();
-
- }catch(error){
-
- if(error.name==="AbortError") return;
-
- if(version!==routeVersion) return;
-
- routeReady = false;
-
- updatePrice();
-
- notice(error.message);
-
- }
+box.textContent="Суроға ёфт нашуд. Аз харита интихоб кунед.";
 
 }
+
+}catch(error){
+
+if(version===searchVersion){
+
+box.textContent=error.message;
+
+}
+
+}
+
+}
+
+$("searchPickup").onclick=()=>searchAddress("pickup");
+
+$("searchDestination").onclick=()=>searchAddress("destination");
+
+$("pickup").oninput=()=>{
+
+searchVersion++;
+
+pickup=null;
+
+clearLayer(pickupMarker);
+
+pickupMarker=null;
+
+clearRoute();
+
+$("pickupResults").replaceChildren();
+
+};
+
+$("destination").oninput=()=>{
+
+searchVersion++;
+
+destination=null;
+
+clearLayer(destinationMarker);
+
+destinationMarker=null;
+
+clearRoute();
+
+$("destinationResults").replaceChildren();
+
+};
+
+// =======================
+// TARIFFS
+// =======================
 
 async function loadTariffs(){
 
- const {data,error} = await db
+const {data,error}=await db
 
- .from("taxi_tariffs")
+.from("taxi_tariffs")
 
- .select("*")
+.select("*")
 
- .eq("active",true);
+.eq("active",true);
 
- if(error) throw error;
+if(error){
 
- const order = [
+notice(error.message);
 
-  "economy","comfort","business","minivan"
-
- ];
-
- tariffs = (data || []).sort(
-
- (a,b)=>order.indexOf(a.car_class)
-
- -order.indexOf(b.car_class)
-
- );
-
- if(!tariffs.some(t=>t.car_class===selectedClass)){
-
-  selectedClass = tariffs[0]?.car_class || "";
-
- }
-
- updatePrice();
+return;
 
 }
 
-function calculatePrice(tariff){
+const order=["economy","comfort","business","minivan"];
 
- if(!routeReady || !tariff) return null;
+tariffs=(data||[]).sort(
 
- return Math.round((
+(a,b)=>order.indexOf(a.car_class)-order.indexOf(b.car_class)
 
-  Number(tariff.base_price)
+);
 
-  +distanceKm*Number(tariff.price_per_km)
+if(!tariffs.some(t=>t.car_class===selectedClass)){
 
- )*100)/100;
-
-}
-
-function updatePrice(){
-
- $("cars").innerHTML = tariffs.map(t=>{
-
- const price = calculatePrice(t);
-
- return `
-
- <button class="car ${t.car_class===selectedClass?"active":""}"
-
- data-class="${esc(t.car_class)}">
-
- <div class="carIcon">
-
- ${t.car_class==="minivan"?"🚐":"🚕"}
-
- </div>
-
- <div class="carName">
-
- ${esc(classNames[t.car_class] || t.name)}
-
- </div>
-
- <div class="carPrice">
-
- ${price===null?"—":esc(money(price))}
-
- </div>
-
- </button>
-
- `;
-
- }).join("");
-
- const tariff = tariffs.find(t=>
-
- t.car_class===selectedClass
-
- );
-
- const price = calculatePrice(tariff);
-
- $("tripPrice").textContent =
-
- price===null?"—":money(price);
-
- $("tripInfo").textContent = routeReady
-
- ? distanceKm+" км · "+durationMin+" дақиқа"
-
- : "Масирро интихоб кунед.";
-
- $("orderButton").disabled =
-
- !routeReady || !tariff || busy || !!activeOrder;
+selectedClass=tariffs[0]?.car_class||"";
 
 }
 
-$("cars").addEventListener("click",event=>{
+renderClasses();
 
- const b = event.target.closest("[data-class]");
+renderPrice();
 
- if(!b || busy) return;
+}
 
- selectedClass = b.dataset.class;
+function renderClasses(){
 
- updatePrice();
+$("classes").innerHTML=tariffs.map(t=>`
+
+<button type="button"
+
+class="car ${selectedClass===t.car_class?"active":""}"
+
+data-class="${esc(t.car_class)}">
+
+<span>${carIcons[t.car_class]||"🚗"}</span>
+
+<strong>${esc(t.name)}</strong>
+
+<small>${money(t.base_price)} +</small>
+
+<small>${money(t.price_per_km)}/км</small>
+
+</button>
+
+`).join("")||"Тариф дастрас нест.";
+
+}
+
+$("classes").onclick=e=>{
+
+const button=e.target.closest("[data-class]");
+
+if(!button||busy)return;
+
+selectedClass=button.dataset.class;
+
+renderClasses();
+
+renderPrice();
+
+};
+
+function renderPrice(){
+
+const tariff=tariffs.find(
+
+t=>t.car_class===selectedClass
+
+);
+
+$("distance").textContent=route?
+
+route.distance.toFixed(2)+" км":"—";
+
+$("duration").textContent=route?
+
+route.duration+" дақ":"—";
+
+$("price").textContent=route&&tariff?
+
+money(
+
+Number(tariff.base_price)+
+
+route.distance*Number(tariff.price_per_km)
+
+):"—";
+
+$("bookButton").disabled=
+
+busy||!route||!tariff;
+
+}
+
+// =======================
+// ROUTE CALCULATION
+// =======================
+
+async function calculateRoute(){
+
+if(!pickup||!destination){
+
+notice("Ҳар ду ҷойро интихоб кунед.");
+
+return false;
+
+}
+
+const version=++routeVersion;
+
+route=null;
+
+renderPrice();
+
+$("calculate").disabled=true;
+
+try{
+
+const coordinates=
+
+pickup.lng+","+pickup.lat+";"+
+
+destination.lng+","+destination.lat;
+
+const url=
+
+"https://router.project-osrm.org/route/v1/driving/"+
+
+coordinates+
+
+"?overview=full&geometries=geojson";
+
+const response=await fetch(url);
+
+if(!response.ok){
+
+throw new Error("Масир дастрас нест.");
+
+}
+
+const data=await response.json();
+
+if(version!==routeVersion)return false;
+
+if(data.code!=="Ok"||!data.routes?.length){
+
+throw new Error("Роҳ ёфт нашуд.");
+
+}
+
+const result=data.routes[0];
+
+const distance=Math.round(result.distance/10)/100;
+
+const duration=Math.max(1,Math.ceil(result.duration/60));
+
+if(distance<0.1||distance>1000||duration>1440){
+
+throw new Error("Масофаи сафар нодуруст аст.");
+
+}
+
+route={distance,duration};
+
+clearLayer(routeLine);
+
+routeLine=L.geoJSON(result.geometry,{
+
+style:{color:"#ff6500",weight:6}
+
+}).addTo(map);
+
+map.fitBounds(routeLine.getBounds(),{
+
+padding:[30,30]
 
 });
 
-["from","to"].forEach(type=>{
+notice("");
 
- $(type+"Address").addEventListener("input",()=>{
+renderPrice();
 
-  clearPoint(type);
+return true;
 
- });
+}catch(error){
+
+if(version===routeVersion){
+
+notice(error.message);
+
+}
+
+return false;
+
+}finally{
+
+$("calculate").disabled=false;
+
+}
+
+}
+
+$("calculate").onclick=calculateRoute;
+
+// =======================
+// BOOK TAXI
+// =======================
+
+$("bookingForm").onsubmit=async e=>{
+
+e.preventDefault();
+
+if(!requireLogin()||busy||activeOrder)return;
+
+if(!pickup||!destination||!route){
+
+notice("Аввал масирро ҳисоб кунед.");
+
+return;
+
+}
+
+busy=true;
+
+renderPrice();
+
+const uid=user.id;
+
+try{
+
+const customerName=$("customerName").value.trim();
+
+const customerPhone=phone($("customerPhone").value);
+
+const {data,error}=await db.rpc(
+
+"vayo_create_taxi_order",
+
+{
+
+p_customer_name:customerName,
+
+p_customer_phone:customerPhone,
+
+p_pickup_address:pickup.address,
+
+p_destination_address:destination.address,
+
+p_pickup_lat:pickup.lat,
+
+p_pickup_lng:pickup.lng,
+
+p_destination_lat:destination.lat,
+
+p_destination_lng:destination.lng,
+
+p_car_class:selectedClass,
+
+p_distance_km:route.distance,
+
+p_duration_min:route.duration,
+
+p_city:$("city").value,
+
+p_note:$("note").value.trim(),
+
+p_call_on_arrival:$("call").checked
+
+}
+
+);
+
+if(error)throw error;
+
+if(user?.id!==uid)return;
+
+notice("✓ Фармоиш сабт шуд. Ронанда ҷустуҷӯ мешавад.");
+
+await loadOrders();
+
+}catch(error){
+
+notice(error.message);
+
+}finally{
+
+busy=false;
+
+renderPrice();
+
+}
+
+};
+
+// =======================
+// ORDERS
+// =======================
+
+async function loadOrders(){
+
+if(!user||orderLoading)return;
+
+orderLoading=true;
+
+const version=++orderVersion;
+
+const uid=user.id;
+
+try{
+
+const result=await db
+
+.from("taxi_orders")
+
+.select("*")
+
+.eq("customer_id",uid)
+
+.in("status",[
+
+"searching",
+
+"accepted",
+
+"arrived",
+
+"in_progress"
+
+])
+
+.maybeSingle();
+
+if(version!==orderVersion||user?.id!==uid)return;
+
+if(result.error)throw result.error;
+
+const previousId=activeOrder?.id;
+
+activeOrder=result.data||null;
+
+if(activeOrder){
+
+renderActive();
+
+await loadDriver();
+
+}else{
+
+$("activeSection").classList.add("hidden");
+
+$("booking").classList.remove("hidden");
+
+clearLayer(driverMarker);
+
+driverMarker=null;
+
+if(previousId){
+
+clearRoute();
+
+clearLayer(pickupMarker);
+
+clearLayer(destinationMarker);
+
+pickupMarker=null;
+
+destinationMarker=null;
+
+pickup=null;
+
+destination=null;
+
+$("pickup").value="";
+
+$("destination").value="";
+
+}
+
+}
+
+if(version!==orderVersion||user?.id!==uid)return;
+
+const history=await db
+
+.from("taxi_orders")
+
+.select("*")
+
+.eq("customer_id",uid)
+
+.in("status",["completed","cancelled"])
+
+.order("created_at",{ascending:false})
+
+.limit(50);
+
+if(version!==orderVersion||user?.id!==uid)return;
+
+if(history.error)throw history.error;
+
+renderHistory(history.data||[]);
+
+}catch(error){
+
+if(version===orderVersion){
+
+notice(error.message);
+
+}
+
+}finally{
+
+orderLoading=false;
+
+}
+
+}
+
+function renderActive(){
+
+const o=activeOrder;
+
+if(!o)return;
+
+$("booking").classList.add("hidden");
+
+$("activeSection").classList.remove("hidden");
+
+$("activeStatus").textContent=
+
+statuses[o.status]||o.status;
+
+$("activeDetails").innerHTML=`
+
+<p>🟢 ${esc(o.pickup_address)}</p>
+
+<p>🔴 ${esc(o.destination_address)}</p>
+
+<p>🚗 ${esc(o.car_class)}</p>
+
+<p>Масофа: ${esc(o.distance_km)} км</p>
+
+<p>Вақт: ${esc(o.duration_min)} дақиқа</p>
+
+<div class="price">${money(o.price)}</div>
+
+<p class="small">Пардохт нақдӣ</p>
+
+`;
+
+$("activeActions").innerHTML=`
+
+${o.driver_id&&["accepted","arrived","in_progress"].includes(o.status)?
+
+`<button id="driverChat" class="btn green full">
+
+💬 Паём ба ронанда
+
+</button>`:""}
+
+${["searching","accepted"].includes(o.status)?
+
+`<button id="cancelRide" class="btn red full">
+
+Бекор кардани сафар
+
+</button>`:""}
+
+`;
+
+if($("driverChat")){
+
+$("driverChat").onclick=()=>{
+
+location.href="./chat.html?service=taxi&ref="+
+
+encodeURIComponent(o.id);
+
+};
+
+}
+
+if($("cancelRide")){
+
+$("cancelRide").onclick=cancelRide;
+
+}
+
+if(!pickupMarker){
+
+pickupMarker=L.marker([
+
+o.pickup_lat,o.pickup_lng
+
+]).addTo(map).bindPopup("Ҷои саворшавӣ");
+
+}
+
+if(!destinationMarker){
+
+destinationMarker=L.marker([
+
+o.destination_lat,o.destination_lng
+
+]).addTo(map).bindPopup("Ҷои таъинот");
+
+}
+
+}
+
+// =======================
+// DRIVER INFORMATION
+// =======================
+
+async function loadDriver(){
+
+const o=activeOrder;
+
+if(!o)return;
+
+if(!o.driver_id){
+
+$("driverDetails").innerHTML=`
+
+<div class="notice">
+
+⏳ Ронанда ҷустуҷӯ мешавад...
+
+</div>`;
+
+return;
+
+}
+
+const {data,error}=await db.rpc(
+
+"vayo_my_taxi_driver",
+
+{p_order_id:o.id}
+
+);
+
+if(activeOrder?.id!==o.id)return;
+
+if(error){
+
+$("driverDetails").textContent=error.message;
+
+return;
+
+}
+
+const d=Array.isArray(data)?data[0]:data;
+
+if(!d){
+
+$("driverDetails").textContent="Маълумоти ронанда дастрас нест.";
+
+return;
+
+}
+
+const number=String(d.phone||"").replace(/[^\d+]/g,"");
+
+const updated=new Date(d.location_updated_at||0).getTime();
+
+const fresh=Date.now()-updated<300000;
+
+$("driverDetails").innerHTML=`
+
+<div class="driverCard">
+
+<div class="row">
+
+<div class="driverAvatar">👨‍✈️</div>
+
+<div>
+
+<h3>${esc(d.full_name)}</h3>
+
+<p>${esc(d.car_brand)} ${esc(d.car_model)}</p>
+
+<p>Ранг: ${esc(d.car_color)}</p>
+
+<strong>${esc(d.car_number)}</strong>
+
+</div>
+
+</div>
+
+<p class="small">
+
+${fresh?"📍 Ҷойгиршавии ронанда дастрас аст":"Ҷойгиршавии нав ҳоло дастрас нест."}
+
+</p>
+
+${number?`
+
+<a href="tel:${esc(number)}"
+
+class="btn full">
+
+📞 Занг ба ронанда
+
+</a>`:""}
+
+</div>
+
+`;
+
+if(d.latitude!=null&&d.longitude!=null&&fresh&&
+
+validCoords(Number(d.latitude),Number(d.longitude))){
+
+const position=[
+
+Number(d.latitude),
+
+Number(d.longitude)
+
+];
+
+const icon=L.divIcon({
+
+html:'<div style="font-size:30px">🚕</div>',
+
+className:"",
+
+iconSize:[35,35]
 
 });
 
-$("city").addEventListener("change",()=>{
+if(driverMarker){
 
- clearPoint("from");
+driverMarker.setLatLng(position);
 
- clearPoint("to");
+}else{
 
- $("fromAddress").value = "";
+driverMarker=L.marker(position,{icon})
 
- $("toAddress").value = "";
+.addTo(map)
 
-});
+.bindPopup("Ронандаи шумо");
 
-async function requireUser(){
+map.fitBounds([
 
- const {data,error} = await db.auth.getUser();
+position,
 
- if(error || !data.user){
+[o.pickup_lat,o.pickup_lng],
 
-  if(confirm("Барои фармоиш ба аккаунт ворид шавед.")){
+[o.destination_lat,o.destination_lng]
 
-   location.href = "./account.html";
-
-  }
-
-  return null;
-
- }
-
- user = data.user;
-
- return user;
+],{padding:[35,35]});
 
 }
 
-async function openBooking(){
+}else{
 
- if(busy || !routeReady || activeOrder) return;
+clearLayer(driverMarker);
 
- if(!await requireUser()) return;
-
- await refreshActive();
-
- if(activeOrder) return;
-
- if(!routeReady || !points.from || !points.to) return;
-
- const tariff = tariffs.find(t=>
-
- t.car_class===selectedClass
-
- );
-
- if(!tariff) return;
-
- $("customerName").value =
-
- user.user_metadata?.full_name || "";
-
- $("customerPhone").value =
-
- user.user_metadata?.phone || "";
-
- $("bookingPrice").textContent =
-
- "Нархи тахминӣ: "+money(calculatePrice(tariff));
-
- $("bookingError").textContent = "";
-
- $("bookingDialog").showModal();
+driverMarker=null;
 
 }
 
-$("bookingForm").addEventListener("submit",async event=>{
+}
 
- event.preventDefault();
+// =======================
+// CANCEL
+// =======================
 
- if(busy || !routeReady || activeOrder) return;
+async function cancelRide(){
 
- busy = true;
+if(!activeOrder||busy)return;
 
- $("confirmButton").disabled = true;
+if(!confirm("Сафарро бекор мекунед?"))return;
 
- updatePrice();
+busy=true;
 
- $("bookingError").textContent = "";
+const id=activeOrder.id;
 
- try{
+try{
 
- const name = $("customerName").value.trim();
+const {error}=await db.rpc(
 
- if(!name) throw new Error("Номро ворид кунед.");
+"vayo_taxi_status",
 
- const phone = normalizePhone(
+{
 
-  $("customerPhone").value
+p_order_id:id,
 
- );
-
- const from = points.from;
-
- const to = points.to;
-
- if(!from || !to){
-
-  throw new Error("Масирро интихоб кунед.");
-
- }
-
- const id = await rpc(
-
- "vayo_create_taxi_order",{
-
-  p_customer_name:name,
-
-  p_customer_phone:phone,
-
-  p_pickup_address:from.address,
-
-  p_destination_address:to.address,
-
-  p_pickup_lat:from.lat,
-
-  p_pickup_lng:from.lng,
-
-  p_destination_lat:to.lat,
-
-  p_destination_lng:to.lng,
-
-  p_car_class:selectedClass,
-
-  p_distance_km:distanceKm,
-
-  p_duration_min:durationMin,
-
-  p_city:$("city").value,
-
-  p_note:$("note").value.trim(),
-
-  p_call_on_arrival:$("callOnArrival").checked
-
- }
-
- );
-
- $("bookingDialog").close();
-
- notice("Фармоиш сабт шуд. Ронанда ҷустуҷӯ мешавад.");
-
- await refreshActive();
-
- }catch(error){
-
- $("bookingError").textContent = error.message;
-
- }finally{
-
- busy = false;
-
- $("confirmButton").disabled = false;
-
- updatePrice();
-
- }
-
-});
-
-async function refreshActive(){
-
- if(!user || refreshing) return;
-
- refreshing = true;
-
- try{
-
- const {data,error} = await db
-
- .from("taxi_orders")
-
- .select("*")
-
- .eq("customer_id",user.id)
-
- .in("status",[
-
-  "searching",
-
-  "accepted",
-
-  "arrived",
-
-  "in_progress"
-
- ])
-
- .order("created_at",{ascending:false})
-
- .limit(1)
-
- .maybeSingle();
-
- if(error) throw error;
-
- const previous = activeOrder;
-
- activeOrder = data;
-
- if(!activeOrder){
-
- $("bookingSection").classList.remove("hidden");
-
- $("activeSection").classList.add("hidden");
-
- if(driverMarker){
-
-  map.removeLayer(driverMarker);
-
-  driverMarker = null;
-
- }
-
- if(previous){
-
-  notice("Сафари фаъол анҷом ёфт ё бекор шуд.");
-
- }
-
- updatePrice();
-
- return;
-
- }
-
- $("bookingSection").classList.add("hidden");
-
- $("activeSection").classList.remove("hidden");
-
- if($("bookingDialog").open){
-
-  $("bookingDialog").close();
-
- }
-
- if(!previous || previous.id!==activeOrder.id){
-
-  showOrderMap(activeOrder);
-
- }
-
- await renderActive();
-
- }catch(error){
-
- notice(error.message);
-
- }finally{
-
- refreshing = false;
-
- }
+p_status:"cancelled"
 
 }
 
-function showOrderMap(o){
+);
 
- invalidateRoute();
+if(error)throw error;
 
- setMarker("from",o.pickup_lat,o.pickup_lng);
+notice("Сафар бекор шуд.");
 
- setMarker(
+await loadOrders();
 
-  "to",
+}catch(error){
 
-  o.destination_lat,
+notice(error.message);
 
-  o.destination_lng
+}finally{
 
- );
+busy=false;
 
- const positions = [
-
-  [o.pickup_lat,o.pickup_lng],
-
-  [o.destination_lat,o.destination_lng]
-
- ];
-
- routeLine = L.polyline(positions,{
-
-  color:"#e6a900",
-
-  weight:4,
-
-  dashArray:"8 8"
-
- }).addTo(map);
-
- map.fitBounds(positions,{
-
-  padding:[30,30],
-
-  maxZoom:16
-
- });
+renderPrice();
 
 }
 
-async function renderActive(){
+}
 
- const o = activeOrder;
+// =======================
+// HISTORY
+// =======================
 
- if(!o) return;
+function renderHistory(orders){
 
- let driver = null;
+$("history").innerHTML=orders.map(o=>`
 
- if(o.driver_id){
+<div class="historyItem">
 
- const result = await rpc(
+<div class="row between">
 
- "vayo_my_taxi_driver",{
+<strong>${money(o.price)}</strong>
 
-  p_order_id:o.id
+<span class="status">
 
- }
+${esc(statuses[o.status]||o.status)}
 
- );
+</span>
 
- driver = Array.isArray(result)
+</div>
 
- ? result[0]
+<p>🟢 ${esc(o.pickup_address)}</p>
 
- : result;
+<p>🔴 ${esc(o.destination_address)}</p>
 
- }
+<div class="small">
 
- let driverHTML = "";
+${esc(new Date(o.created_at).toLocaleString("ru-RU",{
 
- if(driver){
+timeZone:"Asia/Dushanbe"
 
- const tel = String(driver.phone || "")
+}))}
 
- .replace(/[^\d+]/g,"");
+</div>
 
- driverHTML = `
+</div>
 
- <div class="card">
-
- <h3>🚕 Ронандаи шумо</h3>
-
- <p>👤 ${esc(driver.full_name)}</p>
-
- <p>${esc(driver.car_brand)}
-
- ${esc(driver.car_model)}</p>
-
- <p>Ранг: ${esc(driver.car_color)}</p>
-
- <h2>${esc(driver.car_number)}</h2>
-
- <a class="btn green"
-
- href="tel:${esc(tel)}">
-
- 📞 Занг задан
-
- </a>
-
- </div>
-
- `;
-
- const fresh = driver.location_updated_at
-
- && Date.now()-new Date(
-
- driver.location_updated_at
-
- ).getTime()<120000;
-
- if(fresh
-
- && driver.latitude!==null
-
- && driver.longitude!==null){
-
- const coords = [
-
-  driver.latitude,
-
-  driver.longitude
-
- ];
-
- if(!driverMarker){
-
- driverMarker = L.marker(coords,{
-
-  icon:L.divIcon({
-
-   className:"",
-
-   html:'<div style="font-size:32px">🚕</div>',
-
-   iconSize:[36,36],
-
-   iconAnchor:[18,18]
-
-  })
-
- }).addTo(map);
-
- }else{
-
- driverMarker.setLatLng(coords);
-
- }
-
- }else if(driverMarker){
-
- map.removeLayer(driverMarker);
-
- driverMarker = null;
-
- }
-
- }
-
- $("activeContent").innerHTML = `
-
- <h2>${esc(statuses[o.status] || o.status)}</h2>
-
- <span class="badge">
-
- Фармоиш #${esc(o.id.slice(0,8))}
-
- </span>
-
- <div class="card">
-
- <p>🟢 ${esc(o.pickup_address)}</p>
-
- <p>🔴 ${esc(o.destination_address)}</p>
-
- <p>${esc(o.distance_km)} км ·
-
- ${esc(o.duration_min)} дақиқа</p>
-
- <div class="price">
-
- ${esc(money(o.price))}
-
- </div>
-
- <p>Пардохт: нақдӣ</p>
-
- </div>
-
- ${driverHTML}
-
- ${["searching","accepted"].includes(o.status)
-
- ? `<button class="red full"
-
- onclick="cancelOrder()">
-
- Бекор кардани фармоиш
-
- </button>`
-
- : ""}
-
- `;
+`).join("")||"Ҳоло сафар нест.";
 
 }
 
-async function cancelOrder(){
+// =======================
+// CITY
+// =======================
 
- if(!activeOrder || busy) return;
+$("city").onchange=()=>{
 
- if(!confirm("Фармоишро бекор мекунед?")) return;
+if(activeOrder||busy)return;
 
- busy = true;
+searchVersion++;
 
- try{
+pickup=null;
 
- await rpc("vayo_taxi_status",{
+destination=null;
 
-  p_order_id:activeOrder.id,
+clearLayer(pickupMarker);
 
-  p_status:"cancelled"
+clearLayer(destinationMarker);
 
- });
+pickupMarker=null;
 
- await refreshActive();
+destinationMarker=null;
 
- notice("Фармоиш бекор шуд.");
+$("pickup").value="";
 
- }catch(error){
+$("destination").value="";
 
- notice(error.message);
+$("pickupResults").replaceChildren();
 
- }finally{
+$("destinationResults").replaceChildren();
 
- busy = false;
+clearRoute();
 
- updatePrice();
+map.setView(cities[$("city").value]||cities["Душанбе"],13);
 
- }
+try{
+
+localStorage.setItem("vayo_city",$("city").value);
+
+}catch{}
+
+};
+
+// =======================
+// AUTH
+// =======================
+
+async function loadSession(){
+
+const version=++authVersion;
+
+const {data}=await db.auth.getUser();
+
+if(version!==authVersion)return;
+
+const oldId=user?.id;
+
+user=data?.user||null;
+
+if(oldId!==user?.id){
+
+orderVersion++;
+
+activeOrder=null;
+
+$("activeDetails").replaceChildren();
+
+$("driverDetails").replaceChildren();
+
+$("activeActions").replaceChildren();
+
+$("activeSection").classList.add("hidden");
+
+$("booking").classList.remove("hidden");
+
+$("history").textContent="";
+
+clearLayer(driverMarker);
+
+driverMarker=null;
+
+}
+
+if(!user){
+
+$("customerName").value="";
+
+$("customerPhone").value="";
+
+$("history").innerHTML=`
+
+<a href="./account.html" class="btn">
+
+Ба аккаунт ворид шавед
+
+</a>`;
+
+return;
 
 }
 
-async function openHistory(){
+$("customerName").value=
 
- if(!await requireUser()) return;
+user.user_metadata?.full_name||"";
 
- $("historyList").textContent = "Боргирӣ...";
+$("customerPhone").value=
 
- $("historyDialog").showModal();
+user.user_metadata?.phone||"+992";
 
- try{
-
- const {data,error} = await db
-
- .from("taxi_orders")
-
- .select("*")
-
- .eq("customer_id",user.id)
-
- .order("created_at",{ascending:false})
-
- .limit(100);
-
- if(error) throw error;
-
- $("historyList").innerHTML =
-
- (data || []).map(o=>`
-
- <div class="card">
-
- <span class="badge">
-
- ${esc(statuses[o.status] || o.status)}
-
- </span>
-
- <p>${esc(new Date(o.created_at)
-
- .toLocaleString("ru-RU",{
-
-  timeZone:"Asia/Dushanbe"
-
- }))}</p>
-
- <p>🟢 ${esc(o.pickup_address)}</p>
-
- <p>🔴 ${esc(o.destination_address)}</p>
-
- <strong>${esc(money(o.price))}</strong>
-
- </div>
-
- `).join("") || "<p>Ҳоло сафар надоред.</p>";
-
- }catch(error){
-
- $("historyList").textContent = error.message;
-
- }
+await loadOrders();
 
 }
+
+// =======================
+// START
+// =======================
 
 async function start(){
 
- try{
+try{
 
- if(!db){
+const saved=localStorage.getItem("vayo_city");
 
-  throw new Error("config.js ёфт нашуд.");
+if(cities[saved]){
 
- }
+$("city").value=saved;
 
- await loadTariffs();
-
- const {data} = await db.auth.getUser();
-
- user = data?.user || null;
-
- if(user){
-
-  await refreshActive();
-
- }
-
- }catch(error){
-
- notice(error.message);
-
- }
+map.setView(cities[saved],13);
 
 }
 
-setInterval(async()=>{
+}catch{}
 
- if(!user || busy
+if(!db){
 
- || document.visibilityState!=="visible") return;
+notice("Supabase дастрас нест.");
 
- await refreshActive();
+return;
+
+}
+
+renderPrice();
+
+db.auth.onAuthStateChange(event=>{
+
+if([
+
+"INITIAL_SESSION",
+
+"SIGNED_IN",
+
+"SIGNED_OUT"
+
+].includes(event)){
+
+setTimeout(()=>loadSession().catch(console.error),0);
+
+}
+
+});
+
+await loadTariffs();
+
+}
+
+setInterval(()=>{
+
+if(user&&document.visibilityState==="visible"){
+
+loadOrders();
+
+}
 
 },6000);
 
-start();
+document.addEventListener("visibilitychange",()=>{
+
+if(user&&document.visibilityState==="visible"){
+
+loadOrders();
+
+}
+
+});
+
+start().catch(error=>notice(error.message));
 
 </script>
+
+<script src="./chat.js"></script>
 
 </body>
 </html>
